@@ -50,7 +50,7 @@ def end_routine():
 @op
 def load(*, code: dict[str, Any] = None):
     if code is not None:
-        for op, func_def in code.pop("defs").items():
+        for op, func_def in code.pop("defs", {}).items():
             if "feval" in func_def:
                 feval = func_def.pop("feval")
                 f = eval(feval)
@@ -62,6 +62,8 @@ def load(*, code: dict[str, Any] = None):
             else:
                 f = None
             zvm.state.ops[op] = {'f': f, **func_def}
+        for module in code.pop("imports", []):
+            exec(f"import {module}")
 
 
 @op
