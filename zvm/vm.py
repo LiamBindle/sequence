@@ -73,6 +73,10 @@ def _run(*args, instr: list = [], code: dict[str, Any] = None):
                 f = None
                 n = 0
 
+            argc = ex.pop("argc", None)
+            if argc is not None:
+                n = argc
+
             args = [zvm.state.stack.pop() for _ in range(n)][::-1]
 
             if f is not None:

@@ -29,6 +29,8 @@ def test_trivial_routine():
             {"op": "if", "true": [1], "false": [0]},
             {"op": "run", "instr": [1, 2]},  # anonymous routine
             {"op": "add3"},
+            {"op": "assert", "size": 4, "eq": [5, 1, 1, 11]},
+            {"op": "assert", "end": 2, "size": 2, "eq": [5, 1]},
         ]
     }
 

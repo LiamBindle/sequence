@@ -24,3 +24,21 @@ def op(func: callable):
 @op
 def if_(cond, /, *, true, false):
     return true if cond else false
+
+
+@op
+def assert_(*, start: int = None, end: int = None, step: int = 1, size: int = None, eq: list = None, neq: list = None):
+    if start is None:
+        start = -1
+    else:
+        start = -start - 1
+    if end is not None:
+        end = -end - 1
+
+    values = zvm.state.stack[start:end:-step]
+    if size is not None:
+        assert len(values) == size
+    if eq is not None:
+        assert values == eq
+    if neq is not None:
+        assert values != neq
