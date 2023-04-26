@@ -3,9 +3,9 @@
 # state variables
 _routine_ops = [{}]
 _routine_stacks = []
-_routine_exes = []
+_routine_instructions = []
 
 # current routine pointers
 ops: dict[str, dict] = _routine_ops[-1]
 stack: list = None
-exe: list[str] = None
+instr: list[str] = None
