@@ -3,25 +3,49 @@
 # question: how to represent diagnostics (debugging)
 import copy
 from typing import Any
+from urllib.parse import urlparse
 from functools import partial
 import zvm.std
 import zvm.state
 
 
-def _start_routine(*, instr: list, args: list):
+def _start_routine(*, instr: list, args: list, includes: list, conf: dict):
+    # push new frame
     zvm.state._routine_ops.append(copy.deepcopy(zvm.state.ops))
     zvm.state._routine_stacks.append(list(args))
     zvm.state._routine_instructions.append(instr)
+    zvm.state._routine_confs.append(copy.deepcopy(zvm.state.conf))
+    # update frame pointers
     zvm.state.ops = zvm.state._routine_ops[-1]
     zvm.state.stack = zvm.state._routine_stacks[-1]
     zvm.state.instr = zvm.state._routine_instructions[-1]
+    zvm.state.conf = zvm.state._routine_confs[-1]
+
+    # handle conf
+    zvm.state.conf.update(conf)
+
+    code: dict = {}
+    # handle includes
+    for include in includes:
+        url = urlparse(include)
+        fetcher = zvm.state.fetchers[url.scheme]['application/json']
+        data = fetcher(include)
+        zvm.state.conf.update(data.get('conf', {}))
+        if 'instr' in data:
+            zvm.state.instr = data['instr']
+        code.update(data.get('code', {}))
+
+    # load code
+    _load(code=code)
 
 
 def _end_routine():
     zvm.state._routine_ops.pop()
     rv = zvm.state._routine_stacks.pop()
     zvm.state._routine_instructions.pop()
+    zvm.state._routine_confs.pop()
     zvm.state.ops = zvm.state._routine_ops[-1]
+    zvm.state.conf = zvm.state._routine_confs[-1]
     new_depth = len(zvm.state._routine_instructions)
     if new_depth > 0:
         zvm.state.stack = zvm.state._routine_stacks[-1]
@@ -32,35 +56,44 @@ def _end_routine():
     return rv
 
 
-def _load(*, code: dict = None):
-    if code is not None:
-        for op, func_def in code.get('defs', {}).items():
-            if "eval" in func_def:
-                feval = func_def.pop("eval")
-                f = eval(feval)
-            elif "exec" in func_def:
-                fexec = func_def.pop("exec")
-                fname = func_def.pop("name")
-                exec(fexec)
-                f = locals()[fname]
-            elif "instr" in func_def:
-                f = partial(_run, instr=func_def.pop("instr"), code=func_def.pop("code", None))
-            else:
-                f = None
-            zvm.state.ops[op] = {'f': f, **func_def}
-        for module in code.get("imports", []):
-            exec(f"import {module}")
+def _load(*, code: dict = {}):
+    # handle setup/teardown
+    for op, func_def in code.get('defs', {}).items():
+        if "eval" in func_def:
+            feval = func_def.pop("eval")
+            f = eval(feval)
+        elif "exec" in func_def:
+            fexec = func_def.pop("exec")
+            fname = func_def.pop("name")
+            exec(fexec)
+            f = locals()[fname]
+        elif "instr" in func_def:
+            f = partial(
+                _run, 
+                instr=func_def.pop("instr", []),
+                code=func_def.pop("code", {}),
+                conf=func_def.pop("conf", {}),
+                includes=func_def.pop("includes", [])
+            )
+        else:
+            f = None
+        zvm.state.ops[op] = {'f': f, **func_def}
+    for module in code.get("imports", []):
+        exec(f"import {module}")
 
 
-def _run(*args, instr: list = [], code: dict[str, Any] = None):
-    _start_routine(instr=instr, args=args)
+def _run(*args, instr: list = [], code: dict[str, Any] = {}, conf: dict = {}, includes: list[str] = []):
+    # setup/teardown
+    _start_routine(instr=instr, args=args, conf=conf, includes=includes)
     _load(code=code)
 
-    for ex in instr:
+    for ex in zvm.state.instr:
         if isinstance(ex, list):
             result = _run(instr=ex)
         elif isinstance(ex, dict):
             op = ex.pop('op', None)
+
+            # start zvm.call -- runs function in current stack
             if op is not None:
                 if op == 'run':
                     # anonymous routine
@@ -82,14 +115,16 @@ def _run(*args, instr: list = [], code: dict[str, Any] = None):
             if f is not None:
                 result = f(*args, **ex)
             else:
-                # handle stack routine
+                # todo: is this needed?
                 result = None
+
+            # end zvm.call
         else:
             result = ex
 
         if result is not None:
             if isinstance(result, list):
-                zvm.state.stack.extend(result)
+                zvm.state.stack.extend(result)  # types should be wrapped in a custom type (for custom repr, hash, etc.)
             else:
                 zvm.state.stack.append(result)
 
@@ -97,4 +132,9 @@ def _run(*args, instr: list = [], code: dict[str, Any] = None):
 
 
 def run(routine: dict):
-    return _run(instr=routine.pop("instr", []), code=routine.pop("code", None))
+    return _run(
+        instr=routine.pop("instr", []),
+        code=routine.pop("code", {}),
+        conf=routine.pop("conf", {}),
+        includes=routine.pop("includes", [])
+    )

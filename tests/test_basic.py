@@ -36,3 +36,63 @@ def test_trivial_routine():
 
     result = run(routine)
     assert result == [11, 1, 1, 5]
+
+
+def test_trivial_include():
+    routine = {
+        "includes": [
+            "file:./tests/data/include-1.json"
+        ],
+        "instr": [
+            1,
+            {"op": "plus5"},
+            {"op": "assert", "eq": [6]},
+        ]
+    }
+
+    assert run(routine)
+
+    # {
+    #     "include": [
+    #         # must be uri, but uri scheme is extensible
+    #         {"$ref": "#/other-code/code-1.json"}  # .inst, .code, and .conf are initialized by includes, overriden by .
+    #     ],
+    #     "conf": {  # todo: a routine can modify the config
+    #         "debug": True,
+    #         "progress": False,
+    #         "run.until": "next|next-in|next-out|checkpoint|eof"
+    #     },
+    #     "tests": [  # todo: a routine can have tests
+    #         {
+    #             "name": "simple",
+    #             "fixture": {"op": "run"},  # result is passed to test
+    #             "instr": [],  # the test
+    #         }
+    #     ]
+    # }
+
+    # recursive functions via "op": "."; need zvm.call(op, **kwargs) -- take current logic in run
+
+# def test_dereference():
+#     d = {
+#         "a": {"value": 1},
+#         "b": {"$ref": "#/a"},
+#         "c": [{"$ref": "#/a"}],
+#         "d": [[{"a": [{"$ref": "#/c"}]}]]
+#     }
+#     answer = {
+#         "a": {"value": 1},
+#         "b": {"value": 1},
+#         "c": [{"value": 1}],
+#         "d": [[{"a": [{"value": 1}]}]]
+#     }
+#     import jsonref
+#     json = """{
+#     "include": [
+#         {"$ref": "/home/liam/zvm/test.json"}
+#     ]
+#     }
+#     """
+    
+#     x = jsonref.loads(json)
+#     print(x)

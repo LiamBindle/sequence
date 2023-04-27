@@ -1,0 +1,7 @@
+{
+    "code": {
+        "defs": {
+            "plus5": {"eval": "lambda x: x + 5", "n": 1}
+        }
+    }
+}
