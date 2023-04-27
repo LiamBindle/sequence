@@ -36,6 +36,16 @@ def uri_scheme(*, schemes: str | list[str], content_type: str):
 # @uri_scheme -- function is passed urlparse objected and expected to return dict resulting from loading json object
 
 
+# format string
+# looping (see forth)
+# conditionals
+# reodering (see stack machine)
+# asserts
+# get expression from uri (content type: application/zvm-expression)
+# save/load/delete from memory (use uri with scheme=zvm)
+# logging
+
+
 @op("if")
 def if_(cond, /, *, true, false):
     return true if cond else false

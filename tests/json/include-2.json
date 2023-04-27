@@ -1,0 +1,19 @@
+{
+    "includes": [
+        "file:./tests/json/include-1.json"
+    ],
+    "instr": [
+        1,
+        {"op": "plus5"},
+        {"op": "assert", "eq": [6]}
+    ],
+    "tests": [
+        {
+            "name": "trivial",
+            "setup": [],
+            "checks": [
+                {"eq": [6]}
+            ]
+        }
+    ]
+}

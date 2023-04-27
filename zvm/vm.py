@@ -2,11 +2,13 @@
 # question: how to track multiple things
 # question: how to represent diagnostics (debugging)
 import copy
+import re
 from typing import Any
 from urllib.parse import urlparse
 from functools import partial
-import zvm.std
+import importlib
 import zvm.state
+import zvm.std
 
 
 def _start_routine(*, instr: list, args: list, includes: list, conf: dict):
@@ -69,7 +71,7 @@ def _load(*, code: dict = {}):
             f = locals()[fname]
         elif "instr" in func_def:
             f = partial(
-                _run, 
+                _run,
                 instr=func_def.pop("instr", []),
                 code=func_def.pop("code", {}),
                 conf=func_def.pop("conf", {}),
@@ -132,9 +134,44 @@ def _run(*args, instr: list = [], code: dict[str, Any] = {}, conf: dict = {}, in
 
 
 def run(routine: dict):
-    return _run(
+    zvm.state.restart()
+    importlib.reload(zvm.std)
+    result = _run(
         instr=routine.pop("instr", []),
         code=routine.pop("code", {}),
         conf=routine.pop("conf", {}),
         includes=routine.pop("includes", [])
     )
+    zvm.state.finished = True
+    return result
+
+
+def run_test(routine: dict, name: str = None) -> int:
+    tests: dict = routine.pop("tests", [])
+    checks_passed = 0
+    for test in tests:
+        test_name = test.get("name", "unnamed-test")
+        if name is not None and not re.match(name, test_name):
+            continue
+        test_routine = {
+            "instr": [
+                test.get("setup", []),
+                {"op": "run", **routine}
+            ]
+        }
+        result = run(test_routine)[::-1]
+        assert zvm.state.finished, f"test {test_name} failed to finish"
+
+        if "checks" in test:
+            for i, check in enumerate(test["checks"]):
+                if "eq" in check:
+                    eq_routine = {
+                        "instr": [
+                            check["eq"]
+                        ]
+                    }
+                    answer = run(eq_routine)[::-1]
+                    assert zvm.state.finished, f"eq routine of test {test_name} failed to finish"
+                    assert result == answer, f"check {i} of test {test_name} failed"
+                    checks_passed += 1
+    return checks_passed
