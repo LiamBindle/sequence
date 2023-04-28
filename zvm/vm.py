@@ -15,10 +15,10 @@ import zvm.std
 
 def _start_routine(*, instr: list, args: list, includes: list, conf: dict):
     # push new frame
-    zvm.state._routine_ops.append(copy.deepcopy(zvm.state.ops))
+    zvm.state._routine_ops.append(copy.copy(zvm.state.ops))
     zvm.state._routine_stacks.append(list(args[::-1]))
     zvm.state._routine_instructions.append(instr)
-    zvm.state._routine_confs.append(copy.deepcopy(zvm.state.conf))
+    zvm.state._routine_confs.append(copy.copy(zvm.state.conf))
     # update frame pointers
     zvm.state.ops = zvm.state._routine_ops[-1]
     zvm.state.stack = zvm.state._routine_stacks[-1]
@@ -75,10 +75,10 @@ def _load(*, code: dict = {}):
         elif "instr" in func_def:
             f = partial(
                 _run,
-                instr=copy.deepcopy(func_def.pop("instr", [])),
-                code=copy.deepcopy(func_def.pop("code", {})),
-                conf=copy.deepcopy(func_def.pop("conf", {})),
-                includes=copy.deepcopy(func_def.pop("includes", []))
+                instr=func_def.pop("instr", []),
+                code=func_def.pop("code", {}),
+                conf=func_def.pop("conf", {}),
+                includes=func_def.pop("includes", [])
             )
         else:
             f = None
@@ -163,13 +163,14 @@ def run_test(routine: dict, name: str = None) -> int:
         test_name = test.get("name", "unnamed-test")
         if name is not None and not re.match(name, test_name):
             continue
+        setup_code = copy.deepcopy(routine.get("code", {}))
         test_routine = {
             "instr": [
-                {"op": "run", "code":  copy.deepcopy(routine.get("code", {})), "instr": [test.get("setup", [])]},
+                {"op": "run", "code":  setup_code, "instr": [test.get("setup", [])]},
                 {"op": "run", **routine}
             ]
         }
-        result = run(test_routine)[::-1]
+        result = run(test_routine)
         assert zvm.state.finished, f"test '{test_name}' failed to finish"
 
         if "checks" in test:
