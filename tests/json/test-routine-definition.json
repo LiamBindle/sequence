@@ -1,0 +1,35 @@
+{
+    "code": {
+        "imports": [],
+        "defs": {
+            "add":{"name": "op_add", "exec": "def op_add(a, b): return a + b", "n": 2},
+            "mult":{"eval": "lambda a, b: [a*b]", "n": 2},
+            "int": {"name": "make_int", "exec": "def make_int(*, value): return int(value)", "n": 0},
+            "add3": {"instr": [3, {"op": "add"}], "n": 1}
+        }
+    },
+    "instr": [
+        [
+            [[1, 2, {"op": "add"}]],
+            {"op": "int", "value": 2},
+            {"op": "mult"}
+        ],
+        3,
+        {"op": "add"},
+        {"op": "add3"},
+        1,
+        {"op": "if", "true": [-1], "false": [-2]},
+        {"op": "run", "instr": [1, 2]},
+        {"op": "add3"},
+        {"op": "assert", "size": 4, "eq": [5, 1, -1, 12]},
+        {"op": "assert", "end": 2, "size": 2, "eq": [5, 1]}
+    ],
+    "tests": [
+        {
+            "name": "code.defs",
+            "checks": [
+                {"eq": [5, 1, -1, 12]}
+            ]
+        }
+    ]
+}

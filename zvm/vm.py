@@ -75,10 +75,10 @@ def _load(*, code: dict = {}):
         elif "instr" in func_def:
             f = partial(
                 _run,
-                instr=func_def.pop("instr", []),
-                code=func_def.pop("code", {}),
-                conf=func_def.pop("conf", {}),
-                includes=func_def.pop("includes", [])
+                instr=copy.deepcopy(func_def.pop("instr", [])),
+                code=copy.deepcopy(func_def.pop("code", {})),
+                conf=copy.deepcopy(func_def.pop("conf", {})),
+                includes=copy.deepcopy(func_def.pop("includes", []))
             )
         else:
             f = None
@@ -105,6 +105,7 @@ def _run(*args, instr: list = [], code: dict[str, Any] = {}, conf: dict = {}, in
             result = _run(instr=ex)
             result_reversed = False
         elif isinstance(ex, dict):
+            ex = copy.copy(ex)
             op = ex.pop('op')
 
             # start zvm.call -- runs function in current stack
@@ -164,7 +165,7 @@ def run_test(routine: dict, name: str = None) -> int:
             continue
         test_routine = {
             "instr": [
-                {"op": "run", "code": routine.get("code"), "instr": [test.get("setup", [])]},
+                {"op": "run", "code":  copy.deepcopy(routine.get("code", {})), "instr": [test.get("setup", [])]},
                 {"op": "run", **routine}
             ]
         }
@@ -179,7 +180,7 @@ def run_test(routine: dict, name: str = None) -> int:
                             check["eq"]
                         ]
                     }
-                    answer = run(eq_routine)[::-1]
+                    answer = run(eq_routine)
                     assert zvm.state.finished, f"eq routine of test '{test_name}' failed to finish"
                     assert result == answer, f"check {i} of test '{test_name}' failed"
                     checks_passed += 1
