@@ -81,7 +81,7 @@ def _load(*, code: dict = {}):
                 includes=func_def.pop("includes", [])
             )
         else:
-            f = None
+            raise RuntimeError(f"The definition of routine '{op}' is missing its definition")
         zvm.state.ops[op] = {'f': f, **func_def}
     for module in code.get("imports", []):
         import_module = module not in sys.modules
@@ -95,7 +95,6 @@ def _load(*, code: dict = {}):
 
 
 def _run(*args, instr: list = [], code: dict[str, Any] = {}, conf: dict = {}, includes: list[str] = []):
-    # setup/teardown
     _start_routine(instr=instr, args=args, conf=conf, includes=includes)
     if code:
         _load(code=code)

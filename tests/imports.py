@@ -1,4 +1,5 @@
 import zvm
+import zvm.state
 
 
 @zvm.op("discard_if_neq")
@@ -22,3 +23,11 @@ def is_increasing(*args):
 @zvm.op("pass_through")
 def pass_through(*args):
     return list(args)
+
+
+@zvm.op("check_conf")
+def check_conf(*, key, value):
+    if zvm.state.conf[key] == value:
+        return 1
+    else:
+        return 0

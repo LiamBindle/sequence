@@ -1,0 +1,35 @@
+{
+    "code": {
+        "imports": [
+            "tests.imports"
+        ]
+    },
+    "instr": [
+        {"op": "check_conf", "key": "foo", "value": 1},
+        {"op": "check_conf", "key": "bar", "value": "baz"},
+        {"op": "check_conf", "key": "bar", "value": "bazz"},
+        {
+            "op": "run",
+            "conf": {
+                "bar": "bazbaz"
+            },
+            "instr": [
+                {"op": "check_conf", "key": "bar", "value": "bazbaz"},
+                {"op": "check_conf", "key": "foo", "value": 1}
+            ]
+        },
+        {"op": "check_conf", "key": "bar", "value": "baz"}
+    ],
+    "conf": {
+        "foo": 1,
+        "bar": "baz"
+    },
+    "tests": [
+        {
+            "name": "op.argorder - 1",
+            "checks": [
+                {"eq": [1, 1, 0, 1, 1, 1]}
+            ]
+        }
+    ]
+}
