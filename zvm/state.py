@@ -15,6 +15,7 @@ conf: dict[str, Any] = _routine_confs[-1]
 # global variables
 fetchers: dict[str, dict[str, callable]] = {}
 finished: bool = False
+_imports = set()
 
 
 def restart():
@@ -28,6 +29,7 @@ def restart():
     global conf
     global fetchers
     global finished
+    global _imports
 
     _routine_ops = [{}]
     _routine_stacks = []
@@ -39,3 +41,4 @@ def restart():
     conf = _routine_confs[-1]
     fetchers = {}
     finished = False
+    _imports = set()

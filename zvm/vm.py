@@ -6,6 +6,8 @@ import re
 from typing import Any
 from urllib.parse import urlparse
 from functools import partial
+import sys
+
 import importlib
 import zvm.state
 import zvm.std
@@ -14,7 +16,7 @@ import zvm.std
 def _start_routine(*, instr: list, args: list, includes: list, conf: dict):
     # push new frame
     zvm.state._routine_ops.append(copy.deepcopy(zvm.state.ops))
-    zvm.state._routine_stacks.append(list(args))
+    zvm.state._routine_stacks.append(list(args[::-1]))
     zvm.state._routine_instructions.append(instr)
     zvm.state._routine_confs.append(copy.deepcopy(zvm.state.conf))
     # update frame pointers
@@ -38,7 +40,8 @@ def _start_routine(*, instr: list, args: list, includes: list, conf: dict):
         code.update(data.get('code', {}))
 
     # load code
-    _load(code=code)
+    if code:
+        _load(code=code)
 
 
 def _end_routine():
@@ -81,46 +84,44 @@ def _load(*, code: dict = {}):
             f = None
         zvm.state.ops[op] = {'f': f, **func_def}
     for module in code.get("imports", []):
-        exec(f"import {module}")
+        import_module = module not in sys.modules
+        reload_module = (not import_module) and (module not in zvm.state._imports)
+
+        if import_module:
+            # exec(f"import {module}")
+            importlib.import_module(module)
+        elif reload_module:
+            importlib.reload(sys.modules[module])
 
 
 def _run(*args, instr: list = [], code: dict[str, Any] = {}, conf: dict = {}, includes: list[str] = []):
     # setup/teardown
     _start_routine(instr=instr, args=args, conf=conf, includes=includes)
-    _load(code=code)
+    if code:
+        _load(code=code)
 
     for ex in zvm.state.instr:
         if isinstance(ex, list):
             result = _run(instr=ex)
         elif isinstance(ex, dict):
-            op = ex.pop('op', None)
+            op = ex.pop('op')
 
             # start zvm.call -- runs function in current stack
-            if op is not None:
-                if op == 'run':
-                    # anonymous routine
-                    f = _run
-                    n = ex.pop('n', 0)
-                else:
-                    f = zvm.state.ops[op].get("f")
-                    n = zvm.state.ops[op].get("n", 0)
+            if op == 'run':
+                # anonymous routine
+                f = _run
+                n = ex.pop('n', 0)
             else:
-                f = None
-                n = 0
+                f = zvm.state.ops[op].get("f")
+                n = zvm.state.ops[op].get("n", 0)
 
             argc = ex.pop("argc", None)
             if argc is not None:
                 n = argc
 
-            args = [zvm.state.stack.pop() for _ in range(n)][::-1]
+            args = [zvm.state.stack.pop() for _ in range(n)]
 
-            if f is not None:
-                result = f(*args, **ex)
-            else:
-                # todo: is this needed?
-                result = None
-
-            # end zvm.call
+            result = f(*args, **ex)
         else:
             result = ex
 
@@ -134,6 +135,7 @@ def _run(*args, instr: list = [], code: dict[str, Any] = {}, conf: dict = {}, in
 
 
 def run(routine: dict):
+    routine = copy.deepcopy(routine)
     zvm.state.restart()
     importlib.reload(zvm.std)
     result = _run(
@@ -160,7 +162,7 @@ def run_test(routine: dict, name: str = None) -> int:
             ]
         }
         result = run(test_routine)[::-1]
-        assert zvm.state.finished, f"test {test_name} failed to finish"
+        assert zvm.state.finished, f"test '{test_name}' failed to finish"
 
         if "checks" in test:
             for i, check in enumerate(test["checks"]):
@@ -171,7 +173,7 @@ def run_test(routine: dict, name: str = None) -> int:
                         ]
                     }
                     answer = run(eq_routine)[::-1]
-                    assert zvm.state.finished, f"eq routine of test {test_name} failed to finish"
-                    assert result == answer, f"check {i} of test {test_name} failed"
+                    assert zvm.state.finished, f"eq routine of test '{test_name}' failed to finish"
+                    assert result == answer, f"check {i} of test '{test_name}' failed"
                     checks_passed += 1
     return checks_passed

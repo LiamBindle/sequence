@@ -1,0 +1,41 @@
+{
+    "code": {
+        "imports": [
+            "tests.imports"
+        ]
+    },
+    "instr": [
+        {"op": "is_increasing", "argc": 3}
+    ],
+    "n": 3,
+    "tests": [
+        {
+            "name": "op.argorder - 1",
+            "setup": [3, 2, 1],
+            "checks": [
+                {"eq": [true]}
+            ]
+        },
+        {
+            "name": "op.argorder - 2",
+            "setup": [[3, 2, 1]],
+            "checks": [
+                {"eq": [true]}
+            ]
+        },
+        {
+            "name": "op.argorder - 3",
+            "setup": [{"op": "run", "instr": [3, 2, 1]}],
+            "checks": [
+                {"eq": [true]}
+            ]
+        },
+        {
+            "name": "op.argorder - 4",
+            "setup": [1, 2, 3],
+            "checks": [
+                {"eq": [false]}
+            ]
+        }
+    ]
+}

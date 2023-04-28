@@ -4,7 +4,9 @@ import zvm.state
 import json
 
 TEST_FILES = [
-    "./tests/json/include-2.json"
+    "./tests/json/test-import.json",
+    "./tests/json/test-include.json",
+    "./tests/json/test-argument-order.json",
 ]
 
 
@@ -17,8 +19,8 @@ def test_all(path):
 
 
 def test_bench_routine():
-    path = "./tests/json/include-2.json"
-    name = "trivial"
+    path = "./tests/json/test-argument-order.json"
+    name = "op.argorder - 3"
     with open(path, 'r') as f:
         test: dict = json.load(f)
     zvm.vm.run_test(test, name)
