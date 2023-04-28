@@ -5,6 +5,7 @@ _routine_ops = [{}]
 _routine_stacks = []
 _routine_instructions = []
 _routine_confs = [{}]
+_routine_imports = [set()]
 
 # current routine pointers
 ops: dict[str, dict] = _routine_ops[-1]
@@ -15,7 +16,6 @@ conf: dict[str, Any] = _routine_confs[-1]
 # global variables
 fetchers: dict[str, dict[str, callable]] = {}
 finished: bool = False
-_imports = set()
 
 
 def restart():
@@ -23,13 +23,13 @@ def restart():
     global _routine_stacks
     global _routine_instructions
     global _routine_confs
+    global _routine_imports
     global ops
     global stack
     global instr
     global conf
     global fetchers
     global finished
-    global _imports
 
     _routine_ops = [{}]
     _routine_stacks = []
@@ -41,4 +41,4 @@ def restart():
     conf = _routine_confs[-1]
     fetchers = {}
     finished = False
-    _imports = set()
+    _routine_imports = [set()]

@@ -19,6 +19,7 @@ def _start_routine(*, instr: list, args: list, includes: list, conf: dict):
     zvm.state._routine_stacks.append(list(args[::-1]))
     zvm.state._routine_instructions.append(instr)
     zvm.state._routine_confs.append(copy.copy(zvm.state.conf))
+    zvm.state._routine_imports.append(copy.copy(zvm.state._routine_imports[-1]))
     # update frame pointers
     zvm.state.ops = zvm.state._routine_ops[-1]
     zvm.state.stack = zvm.state._routine_stacks[-1]
@@ -49,6 +50,7 @@ def _end_routine():
     rv = zvm.state._routine_stacks.pop()
     zvm.state._routine_instructions.pop()
     zvm.state._routine_confs.pop()
+    zvm.state._routine_imports.pop()
     zvm.state.ops = zvm.state._routine_ops[-1]
     zvm.state.conf = zvm.state._routine_confs[-1]
     new_depth = len(zvm.state._routine_instructions)
@@ -85,13 +87,13 @@ def _load(*, code: dict = {}):
         zvm.state.ops[op] = {'f': f, **func_def}
     for module in code.get("imports", []):
         import_module = module not in sys.modules
-        reload_module = (not import_module) and (module not in zvm.state._imports)
-
+        reload_module = (not import_module) and (module not in zvm.state._routine_imports[-1])
         if import_module:
             # exec(f"import {module}")
             importlib.import_module(module)
         elif reload_module:
             importlib.reload(sys.modules[module])
+        zvm.state._routine_imports[-1].add(module)
 
 
 def _run(*args, instr: list = [], code: dict[str, Any] = {}, conf: dict = {}, includes: list[str] = []):

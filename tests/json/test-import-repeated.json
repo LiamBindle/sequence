@@ -1,0 +1,57 @@
+{
+    "instr": [
+        {
+            "op": "run",
+            "code": {
+                "imports": [
+                    "tests.imports"
+                ]
+            },
+            "instr": [
+                {"op": "discard_if_neq", "value": 1}
+            ],
+            "n": 1
+        },
+        1,
+        {
+            "op": "run",
+            "code": {
+                "imports": [
+                    "tests.imports"
+                ]
+            },
+            "instr": [
+                {"op": "discard_if_neq", "value": 1},
+                {
+                    "op": "run",
+                    "code": {
+                        "imports": [
+                            "tests.imports"
+                        ]
+                    },
+                    "instr": [
+                        2, {"op": "discard_if_neq", "value": 2}
+                    ]
+                }
+            ],
+            "n": 1
+        }
+    ],
+    "n": 1,
+    "tests": [
+        {
+            "name": "code.import - 1",
+            "setup": [1],
+            "checks": [
+                {"eq": [1, 1, 2]}
+            ]
+        },
+        {
+            "name": "code.import - 2",
+            "setup": [2],
+            "checks": [
+                {"eq": [1, 2]}
+            ]
+        }
+    ]
+}

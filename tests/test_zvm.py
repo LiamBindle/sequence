@@ -5,6 +5,7 @@ import json
 
 TEST_FILES = [
     "./tests/json/test-import.json",
+    "./tests/json/test-import-repeated.json",
     "./tests/json/test-include.json",
     "./tests/json/test-argument-order.json",
     "./tests/json/test-conf.json",
