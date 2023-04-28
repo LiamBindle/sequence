@@ -18,21 +18,41 @@
         },
         {
             "name": "op.argorder - 2",
-            "setup": [[3, 2, 1]],
+            "setup": [3, 2, 1, {"op": "pass_through", "argc": 3}],
             "checks": [
                 {"eq": [true]}
             ]
         },
         {
             "name": "op.argorder - 3",
-            "setup": [{"op": "run", "instr": [3, 2, 1]}],
+            "setup": [[3, 2, 1]],
             "checks": [
                 {"eq": [true]}
             ]
         },
         {
             "name": "op.argorder - 4",
+            "setup": {"op": "run", "instr": [3, 2, 1]},
+            "checks": [
+                {"eq": [true]}
+            ]
+        },
+        {
+            "name": "op.argorder - 5",
+            "setup": [{"op": "run", "instr": [3, 2, 1]}],
+            "checks": [
+                {"eq": [true]}
+            ]
+        },
+        {
+            "name": "op.argorder - 6",
             "setup": [1, 2, 3],
+            "checks": [
+                {"eq": [false]}
+            ]
+        },        {
+            "name": "op.argorder - 7",
+            "setup": [1, 2, 3, {"op": "pass_through", "argc": 3}],
             "checks": [
                 {"eq": [false]}
             ]

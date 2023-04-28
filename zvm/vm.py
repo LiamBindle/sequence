@@ -103,6 +103,7 @@ def _run(*args, instr: list = [], code: dict[str, Any] = {}, conf: dict = {}, in
     for ex in zvm.state.instr:
         if isinstance(ex, list):
             result = _run(instr=ex)
+            result_reversed = False
         elif isinstance(ex, dict):
             op = ex.pop('op')
 
@@ -111,9 +112,11 @@ def _run(*args, instr: list = [], code: dict[str, Any] = {}, conf: dict = {}, in
                 # anonymous routine
                 f = _run
                 n = ex.pop('n', 0)
+                result_reversed = False
             else:
                 f = zvm.state.ops[op].get("f")
                 n = zvm.state.ops[op].get("n", 0)
+                result_reversed = True
 
             argc = ex.pop("argc", None)
             if argc is not None:
@@ -124,10 +127,14 @@ def _run(*args, instr: list = [], code: dict[str, Any] = {}, conf: dict = {}, in
             result = f(*args, **ex)
         else:
             result = ex
+            result_reversed = False
 
         if result is not None:
             if isinstance(result, list):
-                zvm.state.stack.extend(result)  # types should be wrapped in a custom type (for custom repr, hash, etc.)
+                if result_reversed:
+                    zvm.state.stack.extend(reversed(result))
+                else:
+                    zvm.state.stack.extend(result)  # types should be wrapped in a custom type (for custom repr, hash, etc.)
             else:
                 zvm.state.stack.append(result)
 
@@ -157,7 +164,7 @@ def run_test(routine: dict, name: str = None) -> int:
             continue
         test_routine = {
             "instr": [
-                test.get("setup", []),
+                {"op": "run", "code": routine.get("code"), "instr": [test.get("setup", [])]},
                 {"op": "run", **routine}
             ]
         }

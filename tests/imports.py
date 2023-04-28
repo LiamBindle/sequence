@@ -17,3 +17,8 @@ def is_increasing(*args):
         gt.append(v > c)
         c = v
     return all(gt)
+
+
+@zvm.op("pass_through")
+def pass_through(*args):
+    return list(args)
