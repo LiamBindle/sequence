@@ -82,6 +82,11 @@ def _load(*, code: dict = {}):
                 conf=func_def.pop("conf", {}),
                 includes=func_def.pop("includes", [])
             )
+        elif "uri" in func_def:
+            uri = urlparse(func_def['uri'])
+            fetcher = zvm.state.fetchers[uri.scheme]['application/json']
+            zvm.state.ops[op] = fetcher(func_def['uri'])
+            continue
         else:
             raise RuntimeError(f"The definition of routine '{op}' is missing its definition")
         zvm.state.ops[op] = {'f': f, **func_def}
