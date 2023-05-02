@@ -4,6 +4,8 @@ from typing import Any
 _routine_ops = [{}]
 _routine_stacks = []
 _routine_instructions = []
+_routine_pc = []
+_routine_begin_stacks = []
 _routine_confs = [{}]
 _routine_imports = [set()]
 
@@ -22,6 +24,8 @@ def restart():
     global _routine_ops
     global _routine_stacks
     global _routine_instructions
+    global _routine_begin_stacks
+    global _routine_pc
     global _routine_confs
     global _routine_imports
     global ops
@@ -34,6 +38,8 @@ def restart():
     _routine_ops = [{}]
     _routine_stacks = []
     _routine_instructions = []
+    _routine_begin_stacks = []
+    _routine_pc = []
     _routine_confs = [{}]
     ops = _routine_ops[-1]
     stack = None

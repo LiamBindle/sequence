@@ -15,11 +15,7 @@ from zvm.utils import op, uri_scheme
 # get expression from uri (content type: application/zvm-expression)
 # save/load/delete from memory (use uri with scheme=zvm)
 # logging
-
-
-@op("if")
-def if_(cond, /, *, true, false):
-    return true if cond else false
+# recurse
 
 
 @op("assert")
@@ -38,6 +34,101 @@ def assert_(*, start: int = None, end: int = None, step: int = 1, size: int = No
         assert values == eq
     if neq is not None:
         assert values != neq
+
+
+@op("begin")
+def begin_():
+    zvm.state._routine_begin_stacks[-1].append(zvm.state._routine_pc[-1])
+
+
+@op("repeat")
+def repeat_():
+    zvm.state._routine_pc[-1] = zvm.state._routine_begin_stacks[-1][-1]
+
+
+@op("break")
+def break_():
+    nested_loops = 0
+    pc = zvm.state._routine_pc[-1]
+    while pc < len(zvm.state.instr):
+        pc += 1
+        ex = zvm.state.instr[pc]
+        if not isinstance(ex, dict):
+            continue
+        if 'op' not in ex:
+            continue
+        op = ex["op"]
+        if op == 'begin':  # or any loop-start
+            nested_loops += 1
+        elif op == 'repeat':  # or any loop-end
+            if nested_loops == 0:
+                zvm.state._routine_pc[-1] = pc
+                zvm.state._routine_begin_stacks[-1].pop()
+                return
+            else:
+                nested_loops -= 1
+
+    # continue until repeat
+    raise RuntimeError("Unterminated begin statement")
+
+
+@op("if")
+def if_(cond, /):
+    if cond:
+        return
+    # set PC to address to else/endif
+    nested_branches = 0
+    pc = zvm.state._routine_pc[-1]
+    while pc < len(zvm.state.instr):
+        pc += 1
+        ex = zvm.state.instr[pc]
+        if not isinstance(ex, dict):
+            continue
+        if 'op' not in ex:
+            continue
+        op = ex["op"]
+        if op == 'if':
+            nested_branches += 1
+        elif (op == 'else') or (op == 'endif'):
+            if nested_branches == 0:
+                zvm.state._routine_pc[-1] = pc
+                return
+            else:
+                nested_branches -= 1
+
+    raise RuntimeError("Unterminated if statement")
+
+
+@op("else")
+def else_():
+    # set PC to address to else/endif
+    nested_branches = 0
+    pc = zvm.state._routine_pc[-1]
+    while pc < len(zvm.state.instr):
+        pc += 1
+        ex = zvm.state.instr[pc]
+        if not isinstance(ex, dict):
+            continue
+        if 'op' not in ex:
+            continue
+        op = ex["op"]
+        if op == 'if':
+            nested_branches += 1
+        elif op == 'else':
+            if nested_branches == 0:
+                raise RuntimeError("Unbound else")
+            else:
+                nested_branches -= 1
+        elif op == 'endif' and nested_branches == 0:
+            zvm.state._routine_pc[-1] = pc
+            return
+    raise RuntimeError("Unterminated if statement")
+
+
+@op("endif")
+def endif_():
+    # noop
+    pass
 
 
 @uri_scheme(schemes=['http', 'https'], content_type='application/json')

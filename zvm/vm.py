@@ -20,6 +20,8 @@ def _start_routine(*, instr: list, args: list, includes: list, conf: dict):
     zvm.state._routine_instructions.append(instr)
     zvm.state._routine_confs.append(copy.copy(zvm.state.conf))
     zvm.state._routine_imports.append(copy.copy(zvm.state._routine_imports[-1]))
+    zvm.state._routine_begin_stacks.append([])
+    zvm.state._routine_pc.append(0)
     # update frame pointers
     zvm.state.ops = zvm.state._routine_ops[-1]
     zvm.state.stack = zvm.state._routine_stacks[-1]
@@ -51,6 +53,9 @@ def _end_routine():
     zvm.state._routine_instructions.pop()
     zvm.state._routine_confs.pop()
     zvm.state._routine_imports.pop()
+    zvm.state._routine_pc.pop()
+    begin_stack = zvm.state._routine_begin_stacks.pop()
+    assert len(begin_stack) == 0, "Begin stack is not empty"
     zvm.state.ops = zvm.state._routine_ops[-1]
     zvm.state.conf = zvm.state._routine_confs[-1]
     new_depth = len(zvm.state._routine_instructions)
@@ -106,7 +111,8 @@ def _run(*args, instr: list = [], code: dict[str, Any] = {}, conf: dict = {}, in
     if code:
         _load(code=code)
 
-    for ex in zvm.state.instr:
+    while zvm.state._routine_pc[-1] < len(zvm.state.instr):
+        ex = copy.copy(zvm.state.instr[zvm.state._routine_pc[-1]])
         if isinstance(ex, list):
             result = _run(instr=ex)
             result_reversed = False
@@ -144,6 +150,7 @@ def _run(*args, instr: list = [], code: dict[str, Any] = {}, conf: dict = {}, in
                     zvm.state.stack.extend(result)  # types should be wrapped in a custom type (for custom repr, hash, etc.)
             else:
                 zvm.state.stack.append(result)
+        zvm.state._routine_pc[-1] += 1
 
     return _end_routine()
 
