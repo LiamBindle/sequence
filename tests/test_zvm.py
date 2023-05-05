@@ -10,7 +10,8 @@ TEST_FILES = [
     "./tests/json/test-argument-order.json",
     "./tests/json/test-conf.json",
     "./tests/json/test-routine-definition.json",
-    "./tests/json/test-if-else.json",
+    "./tests/json/test-std-if.json",
+    "./tests/json/test-std-begin.json",
 ]
 
 
@@ -23,8 +24,8 @@ def test_all(path):
 
 
 def test_bench_routine():
-    path = "./tests/json/test-if-else.json"
-    name = "std.if - Ie-iE-i"
+    path = "./tests/json/test-std-begin.json"
+    name = "std.begin - 11..44"
     with open(path, 'r') as f:
         test: dict = json.load(f)
     zvm.vm.run_test(test, name)

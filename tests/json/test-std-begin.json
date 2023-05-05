@@ -1,0 +1,44 @@
+{
+    "code": {
+        "defs": {
+            "+": {"eval": "lambda a, b: a + b", "n": 2},
+            "++": {"eval": "lambda a: a + 1", "n": 1},
+            "*": {"eval": "lambda a, b: a * b", "n": 2},
+            "dup": {"eval": "lambda a : [a, a]", "n": 1},
+            "equals": {"name": "is_equal", "exec": "def is_equal(a, b): return [a == b, b]", "n": 2},
+            "ends_in_4": {"eval": "lambda a: [a % 10 == 4, a]", "n": 1},
+            "next10": {"eval": "lambda a: a//10*10+10", "n": 1}
+        }
+    },
+    "instr": [
+        10,
+        {"op": "begin"},
+            {"op": "begin"},
+                1,
+                {"op": "+"},
+                {"op": "ends_in_4"},
+            {"op": "if"},
+            {"op": "break"},
+            {"op": "else"},
+                {"op": "dup"},
+            {"op": "repeat"},
+            {"op": "endif"},
+        44,
+        {"op": "equals"},
+        {"op": "if"},
+            {"op": "break"},
+        {"op": "else"},
+            {"op": "dup"},
+            {"op": "next10"},
+        {"op": "repeat"},
+        {"op": "endif"}
+    ],
+    "tests": [
+        {
+            "name": "std.begin - 11..44",
+            "checks": [
+                {"eq": [11, 12, 13, 14, 21, 22, 23, 24, 31, 32, 33, 34, 41, 42, 43, 44]}
+            ]
+        }
+    ]
+}

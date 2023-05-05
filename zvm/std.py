@@ -16,6 +16,7 @@ from zvm.utils import op, uri_scheme
 # save/load/delete from memory (use uri with scheme=zvm)
 # logging
 # recurse
+# pop from stack (so anonymous routines can have arguments)
 
 
 @op("assert")
