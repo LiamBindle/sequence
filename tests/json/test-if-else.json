@@ -1,0 +1,83 @@
+{
+    "instr": [
+        {"op": "if"},
+            {"op": "if"},
+                {"op": "if"},
+                    1,
+                {"op": "else"},
+                    2,
+                {"op": "endif"},
+            {"op": "else"},
+                {"op": "if"},
+                    3,
+                {"op": "endif"},
+            {"op": "endif"},
+        {"op": "else"},
+            {
+                "op": "run", "n": 2, 
+                "instr": [
+                    {"op": "if"},
+                        {"op": "if"},
+                            5,
+                        {"op": "else"},
+                            6,
+                        {"op": "endif"},
+                    {"op": "else"},
+                        {"op": "if"},
+                            7,
+                        {"op": "else"},
+                            8,
+                        {"op": "endif"},
+                    {"op": "endif"}
+                ]
+            },
+        {"op": "endif"}
+    ],
+    "n": 3,
+    "tests": [
+        {
+            "name": "std.if - Ie-Ie-Ie",
+            "setup": [
+                true,
+                true,
+                true
+            ],
+            "checks": [
+                {"eq": [1]}
+            ]
+        },
+        {
+            "name": "std.if - iE-Ie-Ie",
+            "setup": [
+                true,
+                true,
+                false
+            ],
+            "checks": [
+                {"eq": [5]}
+            ]
+        },
+        {
+            "name": "std.if - Ie-iE-I",
+            "setup": [
+                true,
+                false,
+                true
+            ],
+            "checks": [
+                {"eq": [3]}
+            ]
+        },
+        {
+            "name": "std.if - Ie-iE-i",
+            "setup": [
+                false,
+                false,
+                true
+            ],
+            "checks": [
+                {"eq": []}
+            ]
+        }
+    ]
+}

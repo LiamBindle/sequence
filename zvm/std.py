@@ -89,12 +89,11 @@ def if_(cond, /):
         op = ex["op"]
         if op == 'if':
             nested_branches += 1
-        elif (op == 'else') or (op == 'endif'):
-            if nested_branches == 0:
-                zvm.state._routine_pc[-1] = pc
-                return
-            else:
-                nested_branches -= 1
+        elif nested_branches == 0 and (op == 'else' or op == 'endif'):
+            zvm.state._routine_pc[-1] = pc
+            return
+        elif op == 'endif':
+            nested_branches -= 1
 
     raise RuntimeError("Unterminated if statement")
 
