@@ -35,7 +35,13 @@
             3,
             {"op": "eq"},
 
-            {"op": "delete", "uri": "locals://y"}
+            {"op": "delete", "uri": "locals://y"},
+
+            4,
+            {"op": "store", "uri": "globals://z"},
+            {"op": "load", "uri": "globals://z"},
+            4,
+            {"op": "eq"}
         ],
 
         {"op": "load", "uri": "locals://x"},
@@ -44,7 +50,13 @@
 
         {"op": "load", "uri": "locals://y"},
         3,
-        {"op": "eq"}
+        {"op": "eq"},
+
+        {"op": "load", "uri": "globals://z"},
+        4,
+        {"op": "eq"},
+
+        {"op": "delete", "uri": "globals://z"}
     ],
     "locals": {
         "foo": 1,
@@ -56,8 +68,8 @@
             "checks": [
                 {"eq": [
                     1, 1, 0, 1, 1, 1,
-                    true, true,
-                    true, true
+                    true, true, true,
+                    true, true, true
                 ]}
             ]
         }

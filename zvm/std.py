@@ -339,3 +339,18 @@ def store_local_variable(data, key):
 @deleter(schemes='locals')
 def delete_local_variable(key):
     del zvm.state.local_vars[key]
+
+
+@loader(schemes='globals', media_type=None)
+def load_global_variable(key):
+    return zvm.state.global_vars[key]
+
+
+@storer(schemes='globals', media_type=None)
+def store_global_variable(data, key):
+    zvm.state.global_vars[key] = data
+
+
+@deleter(schemes='globals')
+def delete_global_variable(key):
+    del zvm.state.global_vars[key]

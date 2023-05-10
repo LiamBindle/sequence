@@ -14,6 +14,7 @@ ops: dict[str, dict] = _routine_ops[-1]
 stack: list = None
 instr: list[str] = None
 local_vars: dict[str, Any] = _routine_locals[-1]
+global_vars: dict[str, Any] = {}
 
 # global variables
 loaders: dict[str, dict[str, callable]] = {}
@@ -34,6 +35,7 @@ def restart():
     global stack
     global instr
     global local_vars
+    global global_vars
     global loaders
     global storers
     global deleters
@@ -49,6 +51,7 @@ def restart():
     stack = None
     instr = None
     local_vars = _routine_locals[-1]
+    global_vars = {}
     loaders = {}
     storers = {}
     deleters = {}
