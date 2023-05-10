@@ -18,7 +18,7 @@ def op(name):
     return inner
 
 
-def uri_scheme(*, schemes: str | list[str], media_type: str):
+def loader(*, schemes: str | list[str], media_type: str):
     if isinstance(schemes, str):
         schemes = [schemes]
 
@@ -27,5 +27,31 @@ def uri_scheme(*, schemes: str | list[str], media_type: str):
             if scheme not in zvm.state.loaders:
                 zvm.state.loaders[scheme] = {}
             zvm.state.loaders[scheme][media_type] = func
+        return func
+    return inner
+
+
+def storer(*, schemes: str | list[str], media_type: str):
+    if isinstance(schemes, str):
+        schemes = [schemes]
+
+    def inner(func: callable):
+        for scheme in schemes:
+            if scheme not in zvm.state.storers:
+                zvm.state.storers[scheme] = {}
+            zvm.state.storers[scheme][media_type] = func
+        return func
+    return inner
+
+
+def deleter(*, schemes: str | list[str], media_type: str = None):
+    if isinstance(schemes, str):
+        schemes = [schemes]
+
+    def inner(func: callable):
+        for scheme in schemes:
+            if scheme not in zvm.state.deleters:
+                zvm.state.deleters[scheme] = {}
+            zvm.state.deleters[scheme][media_type] = func
         return func
     return inner

@@ -1,0 +1,50 @@
+{
+    "code": {
+        "defs": {
+            "change_key_value": {"name": "change_key_value", "exec": "def change_key_value(d, /, *, key, value): d[key] = value; return d", "n": 1},
+            "check_file_exists": {"name": "check_file_exists", "exec": "def check_file_exists(*, path): import os.path; return os.path.exists(path)"}
+        }
+    },
+    "instr": [
+        {
+            "op": "load",
+            "uri": "file:./tests/json/data/load-sample.json", 
+            "mediaType": "application/json"
+        },
+        {"op": "dup", "deep": true},
+        {"op": "change_key_value", "key": "foo", "value": "baz"},
+        {"op": "dup", "deep": true},
+        {
+            "op": "store",
+            "uri": "file:./tests/json/data/temp-store-data.json", 
+            "mediaType": "application/json"
+        },
+        {"op": "check_file_exists", "path": "./tests/json/data/temp-store-data.json"},
+        {
+            "op": "load",
+            "uri": "file:./tests/json/data/temp-store-data.json", 
+            "mediaType": "application/json"
+        },
+        {
+            "op": "delete",
+            "uri": "file:./tests/json/data/temp-store-data.json"
+        },
+        {"op": "check_file_exists", "path": "./tests/json/data/temp-store-data.json"}
+    ],
+    "tests": [
+        {
+            "name": "std.load",
+            "checks": [
+                {
+                    "eq": [
+                        {"foo": "bar"},
+                        {"foo": "baz"},
+                        true,
+                        {"foo": "baz"},
+                        false
+                    ]
+                }
+            ]
+        }
+    ]
+}

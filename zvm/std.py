@@ -2,9 +2,10 @@ import requests
 import urllib.parse
 import json
 import zvm.state
-from zvm.utils import op, uri_scheme
+from zvm.utils import op, loader, storer, deleter
 import copy
 import string
+import pathlib
 
 # @uri_scheme -- function is passed urlparse objected and expected to return dict resulting from loading json object
 
@@ -251,10 +252,24 @@ def endif_():
 
 # state
 @op("load")
-def load(*, uri: str, mediaType: str):
+def load(*, uri: str, mediaType: str, **kwargs):
     parsed_uri = urllib.parse.urlparse(uri)
-    loader = zvm.state.loaders[parsed_uri.scheme][mediaType]
-    return loader(uri)
+    uri_media_loader = zvm.state.loaders[parsed_uri.scheme][mediaType]
+    return uri_media_loader(uri, **kwargs)
+
+
+@op("store")
+def store(data, /, *, uri: str, mediaType: str, **kwargs):
+    parsed_uri = urllib.parse.urlparse(uri)
+    uri_media_storer = zvm.state.storers[parsed_uri.scheme][mediaType]
+    uri_media_storer(data, uri, **kwargs)
+
+
+@op("delete")
+def delete(*, uri: str, mediaType: str = None, **kwargs):
+    parsed_uri = urllib.parse.urlparse(uri)
+    uri_media_deleter = zvm.state.deleters[parsed_uri.scheme][mediaType]
+    uri_media_deleter(uri, **kwargs)
 
 # misc
 
@@ -285,15 +300,28 @@ def assert_(x, /, *, error: str = '', negate: bool = False):
         assert x, error
 
 
-@uri_scheme(schemes=['http', 'https'], media_type='application/json')
+@loader(schemes=['http', 'https'], media_type='application/json')
 def fetch_json_http(url: str):
     response = requests.get(url=url)
     return response.json()
 
 
-@uri_scheme(schemes=['file'], media_type='application/json')
+@loader(schemes=['file'], media_type='application/json')
 def fetch_json_file(url: str):
     path = urllib.parse.urlparse(url).path
     with open(path, 'r') as f:
         data = json.load(f)
     return data
+
+
+@storer(schemes=['file'], media_type='application/json')
+def store_json_file(data, uri: str):
+    path = urllib.parse.urlparse(uri).path
+    with open(path, 'w') as f:
+        json.dump(data, f)
+
+
+@deleter(schemes=['file'])
+def delete_generic_file(uri: str, missing_ok: bool = False):
+    path = urllib.parse.urlparse(uri).path
+    pathlib.Path(path).unlink()

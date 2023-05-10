@@ -17,6 +17,8 @@ conf: dict[str, Any] = _routine_confs[-1]
 
 # global variables
 loaders: dict[str, dict[str, callable]] = {}
+storers: dict[str, dict[str, callable]] = {}
+deleters: dict[str, dict[str, callable]] = {}
 finished: bool = False
 
 
@@ -33,6 +35,8 @@ def restart():
     global instr
     global conf
     global loaders
+    global storers
+    global deleters
     global finished
 
     _routine_ops = [{}]
@@ -46,5 +50,7 @@ def restart():
     instr = None
     conf = _routine_confs[-1]
     loaders = {}
+    storers = {}
+    deleters = {}
     finished = False
     _routine_imports = [set()]
