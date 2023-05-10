@@ -15,12 +15,11 @@ import pathlib
 # x conditionals
 # x reodering (see stack machine)
 # x asserts
-# get expression from uri (content type: application/zvm-expression)
-# save/load/delete from memory (use uri with scheme=zvm)
+# x save/load/delete
+# add local and global variables
 # logging
 # x recurse
 # x ppop from stack (so anonymous routines can have arguments)
-# load?
 
 # need decorator to register copy (shallow/deep), store, load, delete for arbitrary data types
 

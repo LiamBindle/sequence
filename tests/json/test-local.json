@@ -5,22 +5,22 @@
         ]
     },
     "instr": [
-        {"op": "check_conf", "key": "foo", "value": 1},
-        {"op": "check_conf", "key": "bar", "value": "baz"},
-        {"op": "check_conf", "key": "bar", "value": "bazz"},
+        {"op": "check_local", "key": "foo", "value": 1},
+        {"op": "check_local", "key": "bar", "value": "baz"},
+        {"op": "check_local", "key": "bar", "value": "bazz"},
         {
             "op": "run",
-            "conf": {
+            "local": {
                 "bar": "bazbaz"
             },
             "instr": [
-                {"op": "check_conf", "key": "bar", "value": "bazbaz"},
-                {"op": "check_conf", "key": "foo", "value": 1}
+                {"op": "check_local", "key": "bar", "value": "bazbaz"},
+                {"op": "check_local", "key": "foo", "value": 1}
             ]
         },
-        {"op": "check_conf", "key": "bar", "value": "baz"}
+        {"op": "check_local", "key": "bar", "value": "baz"}
     ],
-    "conf": {
+    "local": {
         "foo": 1,
         "bar": "baz"
     },
