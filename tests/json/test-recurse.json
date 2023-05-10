@@ -1,0 +1,54 @@
+{
+    "instr": [
+        {"op": "ssize"},
+        1,
+        {"op": "eq"},
+        {"op": "if"},
+            1,
+            {"op": "swap"},
+        {"op": "endif"},
+
+        {"op": "dup"},
+        {"op": "if"},
+
+            {"op": "dup"},
+            {"op": "reorder", "order": [1, 2, 0]},
+            {"op": "*"},
+            {"op": "swap"},
+            1,
+            {"op": "-"},
+            {"op": "recurse"},
+        {"op": "else"},
+            {"op": "drop"},
+        {"op": "endif"}
+    ],
+    "n": 1,
+    "tests": [
+        {
+            "name": "std.recurse - factorial(5)",
+            "setup": [
+                5
+            ],
+            "checks": [
+                {
+                    "eq": [
+                        120
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "std.recurse - factorial(13)",
+            "setup": [
+                13
+            ],
+            "checks": [
+                {
+                    "eq": [
+                        6227020800
+                    ]
+                }
+            ]
+        }
+    ]
+}

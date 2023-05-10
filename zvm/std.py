@@ -9,16 +9,16 @@ import string
 # @uri_scheme -- function is passed urlparse objected and expected to return dict resulting from loading json object
 
 
-# format string
-# looping (see forth)
-# conditionals
-# reodering (see stack machine)
-# asserts
+# x format string
+# x looping (see forth)
+# x conditionals
+# x reodering (see stack machine)
+# x asserts
 # get expression from uri (content type: application/zvm-expression)
 # save/load/delete from memory (use uri with scheme=zvm)
 # logging
-# recurse
-# pop from stack (so anonymous routines can have arguments)
+# x recurse
+# x ppop from stack (so anonymous routines can have arguments)
 # load?
 
 # need decorator to register copy (shallow/deep), store, load, delete for arbitrary data types
@@ -107,6 +107,10 @@ def less_than_or_equal_to(y, x, /) -> bool:
 
 
 # stack ops
+def pop_from_current(*, n: int = 1):
+    return [zvm.state.stack.pop() for _ in range(n)]
+
+
 @op("ppop")
 def pop_from_parent(*, n: int = 1):
     return [zvm.state._routine_stacks[-2].pop() for _ in range(n)]
@@ -134,9 +138,14 @@ def drop(_, /):
 
 @op("reorder")
 def reorder(*, order: list = []):  # e.g., [2, 0, 1] puts current TOS+2 at TOS, current TOS at TOS+1, and current TOS+1 at TOS+2
-    items = [zvm.state.stack.pop() for _ in range(len(order))]
+    items = pop_from_current(n=len(order))
     new_items = [items[i] for i in reversed(order)]
     return new_items
+
+
+@op("ssize")
+def ssize():
+    return len(zvm.state.stack)
 
 
 # looping
@@ -174,6 +183,11 @@ def break_():
 
     # continue until repeat
     raise RuntimeError("Unterminated begin statement")
+
+
+@op("recurse")
+def recurse():
+    zvm.state._routine_pc[-1] = -1
 
 
 # branching
@@ -251,7 +265,7 @@ def format_string(*, fmt: str, **kwargs):
             format_nargs += 1
         else:
             format_kwargs.add(field_name)
-    args = [zvm.state.stack.pop() for _ in range(format_nargs)]
+    args = pop_from_current(n=format_nargs)
     return fmt.format(*args, **kwargs)
 
 
