@@ -248,6 +248,14 @@ def endif_():
     # noop
     pass
 
+
+# state
+@op("load")
+def load(*, uri: str, mediaType: str):
+    parsed_uri = urllib.parse.urlparse(uri)
+    loader = zvm.state.loaders[parsed_uri.scheme][mediaType]
+    return loader(uri)
+
 # misc
 
 
@@ -277,13 +285,13 @@ def assert_(x, /, *, error: str = '', negate: bool = False):
         assert x, error
 
 
-@uri_scheme(schemes=['http', 'https'], content_type='application/json')
+@uri_scheme(schemes=['http', 'https'], media_type='application/json')
 def fetch_json_http(url: str):
     response = requests.get(url=url)
     return response.json()
 
 
-@uri_scheme(schemes=['file'], content_type='application/json')
+@uri_scheme(schemes=['file'], media_type='application/json')
 def fetch_json_file(url: str):
     path = urllib.parse.urlparse(url).path
     with open(path, 'r') as f:

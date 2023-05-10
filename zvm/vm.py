@@ -35,8 +35,8 @@ def _start_routine(*, instr: list, args: list, includes: list, conf: dict):
     # handle includes
     for include in includes:
         url = urlparse(include)
-        fetcher = zvm.state.fetchers[url.scheme]['application/json']
-        data = fetcher(include)
+        loader = zvm.state.loaders[url.scheme]['application/json']
+        data = loader(include)
         zvm.state.conf.update(data.get('conf', {}))
         if 'instr' in data:
             zvm.state.instr = data['instr']
@@ -89,8 +89,8 @@ def _load(*, code: dict = {}):
             )
         elif "uri" in func_def:
             uri = urlparse(func_def['uri'])
-            fetcher = zvm.state.fetchers[uri.scheme]['application/json']
-            zvm.state.ops[op] = fetcher(func_def['uri'])
+            loader = zvm.state.loaders[uri.scheme]['application/json']
+            zvm.state.ops[op] = loader(func_def['uri'])
             continue
         else:
             raise RuntimeError(f"The definition of routine '{op}' is missing its definition")

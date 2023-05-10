@@ -16,7 +16,7 @@ instr: list[str] = None
 conf: dict[str, Any] = _routine_confs[-1]
 
 # global variables
-fetchers: dict[str, dict[str, callable]] = {}
+loaders: dict[str, dict[str, callable]] = {}
 finished: bool = False
 
 
@@ -32,7 +32,7 @@ def restart():
     global stack
     global instr
     global conf
-    global fetchers
+    global loaders
     global finished
 
     _routine_ops = [{}]
@@ -45,6 +45,6 @@ def restart():
     stack = None
     instr = None
     conf = _routine_confs[-1]
-    fetchers = {}
+    loaders = {}
     finished = False
     _routine_imports = [set()]

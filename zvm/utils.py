@@ -18,14 +18,14 @@ def op(name):
     return inner
 
 
-def uri_scheme(*, schemes: str | list[str], content_type: str):
+def uri_scheme(*, schemes: str | list[str], media_type: str):
     if isinstance(schemes, str):
         schemes = [schemes]
 
     def inner(func: callable):
         for scheme in schemes:
-            if scheme not in zvm.state.fetchers:
-                zvm.state.fetchers[scheme] = {}
-            zvm.state.fetchers[scheme][content_type] = func
+            if scheme not in zvm.state.loaders:
+                zvm.state.loaders[scheme] = {}
+            zvm.state.loaders[scheme][media_type] = func
         return func
     return inner
