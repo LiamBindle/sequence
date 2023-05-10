@@ -1,0 +1,65 @@
+{
+    "code": {
+        "imports": [
+            "tests.imports"
+        ]
+    },
+    "instr": [
+        {"op": "check_local", "key": "foo", "value": 1},
+        {"op": "check_local", "key": "bar", "value": "baz"},
+        {"op": "check_local", "key": "bar", "value": "bazz"},
+        {
+            "op": "run",
+            "locals": {
+                "bar": "bazbaz"
+            },
+            "instr": [
+                {"op": "check_local", "key": "bar", "value": "bazbaz"},
+                {"op": "check_local", "key": "foo", "value": 1}
+            ]
+        },
+        {"op": "check_local", "key": "bar", "value": "baz"},
+
+        2,
+        {"op": "store", "uri": "locals://x"},
+        3,
+        {"op": "store", "uri": "locals://y"},
+        [
+            {"op": "load", "uri": "locals://x"},
+            2,
+            {"op": "eq"},
+
+            3,
+            {"op": "store", "uri": "locals://x"},
+            {"op": "load", "uri": "locals://x"},
+            3,
+            {"op": "eq"},
+
+            {"op": "delete", "uri": "locals://y"}
+        ],
+
+        {"op": "load", "uri": "locals://x"},
+        2,
+        {"op": "eq"},
+
+        {"op": "load", "uri": "locals://y"},
+        3,
+        {"op": "eq"}
+    ],
+    "locals": {
+        "foo": 1,
+        "bar": "baz"
+    },
+    "tests": [
+        {
+            "name": "locals",
+            "checks": [
+                {"eq": [
+                    1, 1, 0, 1, 1, 1,
+                    true, true,
+                    true, true
+                ]}
+            ]
+        }
+    ]
+}

@@ -251,14 +251,14 @@ def endif_():
 
 # state
 @op("load")
-def load(*, uri: str, mediaType: str, **kwargs):
+def load(*, uri: str, mediaType: str = None, **kwargs):
     parsed_uri = urllib.parse.urlparse(uri)
     uri_media_loader = zvm.state.loaders[parsed_uri.scheme][mediaType]
     return uri_media_loader(uri, **kwargs)
 
 
 @op("store")
-def store(data, /, *, uri: str, mediaType: str, **kwargs):
+def store(data, /, *, uri: str, mediaType: str = None, **kwargs):
     parsed_uri = urllib.parse.urlparse(uri)
     uri_media_storer = zvm.state.storers[parsed_uri.scheme][mediaType]
     uri_media_storer(data, uri, **kwargs)
@@ -324,3 +324,18 @@ def store_json_file(data, uri: str):
 def delete_generic_file(uri: str, missing_ok: bool = False):
     path = urllib.parse.urlparse(uri).path
     pathlib.Path(path).unlink()
+
+
+@loader(schemes='locals', media_type=None)
+def load_local_variable(key):
+    return zvm.state.local_vars[key]
+
+
+@storer(schemes='locals', media_type=None)
+def store_local_variable(data, key):
+    zvm.state.local_vars[key] = data
+
+
+@deleter(schemes='locals')
+def delete_local_variable(key):
+    del zvm.state.local_vars[key]

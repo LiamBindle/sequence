@@ -8,7 +8,7 @@ TEST_FILES = [
     "./tests/json/test-import-repeated.json",
     "./tests/json/test-include.json",
     "./tests/json/test-argument-order.json",
-    "./tests/json/test-local.json",
+    "./tests/json/test-routine-locals.json",
     "./tests/json/test-routine-definition.json",
     "./tests/json/test-std-if.json",
     "./tests/json/test-recurse.json",
