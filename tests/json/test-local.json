@@ -10,7 +10,7 @@
         {"op": "check_local", "key": "bar", "value": "bazz"},
         {
             "op": "run",
-            "local": {
+            "locals": {
                 "bar": "bazbaz"
             },
             "instr": [
@@ -20,7 +20,7 @@
         },
         {"op": "check_local", "key": "bar", "value": "baz"}
     ],
-    "local": {
+    "locals": {
         "foo": 1,
         "bar": "baz"
     },

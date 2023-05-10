@@ -13,12 +13,12 @@ import zvm.state
 import zvm.std
 
 
-def _start_routine(*, instr: list, args: list, includes: list, local: dict):
+def _start_routine(*, instr: list, args: list, includes: list, local_vars: dict):
     # push new frame
     zvm.state._routine_ops.append(copy.copy(zvm.state.ops))
     zvm.state._routine_stacks.append(list(args[::-1]))
     zvm.state._routine_instructions.append(instr)
-    zvm.state._routine_locals.append(copy.copy(zvm.state.local))
+    zvm.state._routine_locals.append(copy.copy(zvm.state.local_vars))
     zvm.state._routine_imports.append(copy.copy(zvm.state._routine_imports[-1]))
     zvm.state._routine_begin_stacks.append([])
     zvm.state._routine_pc.append(0)
@@ -26,10 +26,10 @@ def _start_routine(*, instr: list, args: list, includes: list, local: dict):
     zvm.state.ops = zvm.state._routine_ops[-1]
     zvm.state.stack = zvm.state._routine_stacks[-1]
     zvm.state.instr = zvm.state._routine_instructions[-1]
-    zvm.state.local = zvm.state._routine_locals[-1]
+    zvm.state.local_vars = zvm.state._routine_locals[-1]
 
-    # handle local
-    zvm.state.local.update(local)
+    # handle locals
+    zvm.state.local_vars.update(local_vars)
 
     code: dict = {}
     # handle includes
@@ -37,7 +37,7 @@ def _start_routine(*, instr: list, args: list, includes: list, local: dict):
         url = urlparse(include)
         loader = zvm.state.loaders[url.scheme]['application/json']
         data = loader(include)
-        zvm.state.local.update(data.get('local', {}))
+        zvm.state.local_vars.update(data.get('locals', {}))
         if 'instr' in data:
             zvm.state.instr = data['instr']
         code.update(data.get('code', {}))
@@ -57,7 +57,7 @@ def _end_routine():
     begin_stack = zvm.state._routine_begin_stacks.pop()
     assert len(begin_stack) == 0, "Begin stack is not empty"
     zvm.state.ops = zvm.state._routine_ops[-1]
-    zvm.state.local = zvm.state._routine_locals[-1]
+    zvm.state.local_vars = zvm.state._routine_locals[-1]
     new_depth = len(zvm.state._routine_instructions)
     if new_depth > 0:
         zvm.state.stack = zvm.state._routine_stacks[-1]
@@ -84,7 +84,7 @@ def _load(*, code: dict = {}):
                 _run,
                 instr=func_def.pop("instr", []),
                 code=func_def.pop("code", {}),
-                local=func_def.pop("local", {}),
+                local_vars=func_def.pop("locals", {}),
                 includes=func_def.pop("includes", [])
             )
         elif "uri" in func_def:
@@ -106,8 +106,8 @@ def _load(*, code: dict = {}):
         zvm.state._routine_imports[-1].add(module)
 
 
-def _run(*args, instr: list = [], code: dict[str, Any] = {}, local: dict = {}, includes: list[str] = []):
-    _start_routine(instr=instr, args=args, local=local, includes=includes)
+def _run(*args, instr: list = [], code: dict[str, Any] = {}, local_vars: dict = {}, includes: list[str] = []):
+    _start_routine(instr=instr, args=args, local_vars=local_vars, includes=includes)
     if code:
         _load(code=code)
 
@@ -125,6 +125,9 @@ def _run(*args, instr: list = [], code: dict[str, Any] = {}, local: dict = {}, i
                 # anonymous routine
                 f = _run
                 n = ex.pop('n', 0)
+                if 'locals' in ex:
+                    # rename locals -> local_vars
+                    ex['local_vars'] = ex.pop('locals')
                 result_reversed = False
             else:
                 f = zvm.state.ops[op].get("f")
@@ -162,7 +165,7 @@ def run(routine: dict):
     result = _run(
         instr=routine.pop("instr", []),
         code=routine.pop("code", {}),
-        local=routine.pop("local", {}),
+        local_vars=routine.pop("locals", {}),
         includes=routine.pop("includes", [])
     )
     zvm.state.finished = True

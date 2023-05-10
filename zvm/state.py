@@ -13,7 +13,7 @@ _routine_imports = [set()]
 ops: dict[str, dict] = _routine_ops[-1]
 stack: list = None
 instr: list[str] = None
-local: dict[str, Any] = _routine_locals[-1]
+local_vars: dict[str, Any] = _routine_locals[-1]
 
 # global variables
 loaders: dict[str, dict[str, callable]] = {}
@@ -33,7 +33,7 @@ def restart():
     global ops
     global stack
     global instr
-    global local
+    global local_vars
     global loaders
     global storers
     global deleters
@@ -48,7 +48,7 @@ def restart():
     ops = _routine_ops[-1]
     stack = None
     instr = None
-    local = _routine_locals[-1]
+    local_vars = _routine_locals[-1]
     loaders = {}
     storers = {}
     deleters = {}

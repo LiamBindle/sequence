@@ -27,7 +27,7 @@ def pass_through(*args):
 
 @zvm.op("check_local")
 def check_local(*, key, value):
-    if zvm.state.local[key] == value:
+    if zvm.state.local_vars[key] == value:
         return 1
     else:
         return 0
