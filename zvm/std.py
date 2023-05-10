@@ -4,6 +4,7 @@ import json
 import zvm.state
 from zvm.utils import op, uri_scheme
 import copy
+import string
 
 # @uri_scheme -- function is passed urlparse objected and expected to return dict resulting from loading json object
 
@@ -235,9 +236,23 @@ def endif_():
 
 # misc
 
-# @op("fstring")
-# def format_string(*args, fmt: str, **kwargs):
-#     return fmt.format(*args, **kwargs)
+
+@op("fstring")
+def format_string(*, fmt: str, **kwargs):
+    formatter = string.Formatter()
+    parsed_fmt = formatter.parse(fmt)
+    format_nargs = 0
+    format_kwargs = set()
+    for (_, field_name, _, _) in parsed_fmt:
+        if field_name is None:
+            # no replacement field
+            continue
+        if field_name == '' or field_name.isnumeric():
+            format_nargs += 1
+        else:
+            format_kwargs.add(field_name)
+    args = [zvm.state.stack.pop() for _ in range(format_nargs)]
+    return fmt.format(*args, **kwargs)
 
 
 @op("assert")
