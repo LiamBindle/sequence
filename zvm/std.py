@@ -3,6 +3,7 @@ import urllib.parse
 import json
 import zvm.state
 from zvm.utils import op, uri_scheme
+import copy
 
 # @uri_scheme -- function is passed urlparse objected and expected to return dict resulting from loading json object
 
@@ -17,26 +18,127 @@ from zvm.utils import op, uri_scheme
 # logging
 # recurse
 # pop from stack (so anonymous routines can have arguments)
+# load?
+
+# need decorator to register copy (shallow/deep), store, load, delete for arbitrary data types
+
+# operators
+@op("/")
+def divide(y, x, /):
+    return x / y
 
 
-@op("assert")
-def assert_(*, start: int = None, end: int = None, step: int = 1, size: int = None, eq: list = None, neq: list = None):
-    if start is None:
-        start = -1
+@op("*")
+def multiply(y, x, /):
+    return x * y
+
+
+@op("-")
+def minus(y, x, /):
+    return x - y
+
+
+@op("+")
+def plus(y, x, /):
+    return x + y
+
+
+@op("%")
+def mod(y, x, /):
+    return x % y
+
+
+# bool ops
+@op("not")
+def not_(x, /):
+    return not x
+
+
+@op("and")
+def and_(y, x, /):
+    return x and y
+
+
+@op("or")
+def or_(y, x, /):
+    return x or y
+
+
+@op("xor")
+def xor_(y, x, /):
+    return bool(x) != bool(y)
+
+
+@op("asbool")
+def asbool_(x, /):
+    return bool(x)
+
+
+# comparison
+@op("eq")
+def equal(y, x, /) -> bool:
+    return x == y
+
+
+@op("neq")
+def not_equal(y, x, /) -> bool:
+    return x != y
+
+
+@op("gt")
+def greater_than(y, x, /) -> bool:
+    return x > y
+
+
+@op("ge")
+def greater_than_or_equal_to(y, x, /) -> bool:
+    return x >= y
+
+
+@op("lt")
+def less_than(y, x, /) -> bool:
+    return x < y
+
+
+@op("le")
+def less_than_or_equal_to(y, x, /) -> bool:
+    return x <= y
+
+
+# stack ops
+@op("ppop")
+def pop_from_parent(*, n: int = 1):
+    return [zvm.state._routine_stacks[-2].pop() for _ in range(n)]
+
+
+@op("dup")
+def duplicate(*, deep: bool = False, offset: int = 0):
+    offset = -1 - offset
+    item = zvm.state.stack[offset]
+    if deep:
+        return copy.deepcopy(item)
     else:
-        start = -start - 1
-    if end is not None:
-        end = -end - 1
-
-    values = zvm.state.stack[start:end:-step]
-    if size is not None:
-        assert len(values) == size
-    if eq is not None:
-        assert values == eq
-    if neq is not None:
-        assert values != neq
+        return copy.copy(item)
 
 
+@op("swap")
+def swap(y, x, /):
+    return [x, y]
+
+
+@op("drop")
+def drop(_, /):
+    return []
+
+
+@op("reorder")
+def reorder(*, order: list = []):  # e.g., [2, 0, 1] puts current TOS+2 at TOS, current TOS at TOS+1, and current TOS+1 at TOS+2
+    items = [zvm.state.stack.pop() for _ in range(len(order))]
+    new_items = [items[i] for i in reversed(order)]
+    return new_items
+
+
+# looping
 @op("begin")
 def begin_():
     zvm.state._routine_begin_stacks[-1].append(zvm.state._routine_pc[-1])
@@ -73,6 +175,7 @@ def break_():
     raise RuntimeError("Unterminated begin statement")
 
 
+# branching
 @op("if")
 def if_(cond, /):
     if cond:
@@ -129,6 +232,20 @@ def else_():
 def endif_():
     # noop
     pass
+
+# misc
+
+# @op("fstring")
+# def format_string(*args, fmt: str, **kwargs):
+#     return fmt.format(*args, **kwargs)
+
+
+@op("assert")
+def assert_(x, /, *, error: str = '', negate: bool = False):
+    if negate:
+        assert not x, error
+    else:
+        assert x, error
 
 
 @uri_scheme(schemes=['http', 'https'], content_type='application/json')

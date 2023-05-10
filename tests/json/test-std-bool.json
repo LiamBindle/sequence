@@ -1,0 +1,83 @@
+{
+    "instr": [
+        "this is true",
+        {"op": "asbool"},
+        "",
+        {"op": "asbool"},
+        
+        true,
+        true,
+        {"op": "and"},
+        false,
+        true,
+        {"op": "and"},
+        true,
+        false,
+        {"op": "and"},
+        false,
+        false,
+        {"op": "and"},
+
+        true,
+        true,
+        {"op": "or"},
+        false,
+        true,
+        {"op": "or"},
+        true,
+        false,
+        {"op": "or"},
+        false,
+        false,
+        {"op": "or"},
+
+        true,
+        true,
+        {"op": "xor"},
+        false,
+        true,
+        {"op": "xor"},
+        true,
+        false,
+        {"op": "xor"},
+        false,
+        false,
+        {"op": "xor"},
+
+        false,
+        {"op": "not"},
+        true,
+        {"op": "not"}
+    ],
+    "tests": [
+        {
+            "name": "std.bool",
+            "checks": [
+                {
+                    "eq": [
+                        true,
+                        false,
+
+                        true,
+                        false,
+                        false,
+                        false,
+
+                        true,
+                        true,
+                        true,
+                        false,
+
+                        false,
+                        true,
+                        true,
+                        false,
+
+                        true,
+                        false
+                    ]
+                }
+            ]
+        }
+    ]
+}

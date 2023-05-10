@@ -1,0 +1,87 @@
+{
+    "instr": [
+        1,
+        2,
+        {"op": "eq"},
+        2,
+        2,
+        {"op": "eq"},
+        1,
+        2,
+        {"op": "neq"},
+        2,
+        2,
+        {"op": "neq"},
+
+        1,
+        2,
+        {"op": "gt"},
+        2,
+        1,
+        {"op": "gt"},
+        2,
+        2,
+        {"op": "gt"},
+
+        1,
+        2,
+        {"op": "ge"},
+        2,
+        1,
+        {"op": "ge"},
+        2,
+        2,
+        {"op": "ge"},
+
+        1,
+        2,
+        {"op": "lt"},
+        2,
+        1,
+        {"op": "lt"},
+        2,
+        2,
+        {"op": "lt"},
+
+        1,
+        2,
+        {"op": "le"},
+        2,
+        1,
+        {"op": "le"},
+        2,
+        2,
+        {"op": "le"}
+    ],
+    "tests": [
+        {
+            "name": "std.compare",
+            "checks": [
+                {
+                    "eq": [
+                        false,
+                        true,
+                        true,
+                        false,
+
+                        false,
+                        true,
+                        false,
+
+                        false,
+                        true,
+                        true,
+
+                        true,
+                        false,
+                        false,
+
+                        true,
+                        false,
+                        true
+                    ]
+                }
+            ]
+        }
+    ]
+}

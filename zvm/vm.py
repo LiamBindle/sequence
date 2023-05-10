@@ -69,7 +69,7 @@ def _end_routine():
 
 
 def _load(*, code: dict = {}):
-    # handle setup/teardown
+    # is subroutine decides if the routine should be called with its own stack or operate in the calling stack (idea: to facilitate routines like foreach which wrap "break" and "repeat")
     for op, func_def in code.get('defs', {}).items():
         if "eval" in func_def:
             feval = func_def.pop("eval")
@@ -116,7 +116,7 @@ def _run(*args, instr: list = [], code: dict[str, Any] = {}, conf: dict = {}, in
         if isinstance(ex, list):
             result = _run(instr=ex)
             result_reversed = False
-        elif isinstance(ex, dict):
+        elif isinstance(ex, dict) and 'op' in ex:
             ex = copy.copy(ex)
             op = ex.pop('op')
 

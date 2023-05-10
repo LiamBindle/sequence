@@ -24,9 +24,7 @@
         -2,
         {"op": "endif"},
         {"op": "run", "instr": [1, 2]},
-        {"op": "add3"},
-        {"op": "assert", "size": 4, "eq": [5, 1, -1, 12]},
-        {"op": "assert", "end": 2, "size": 2, "eq": [5, 1]}
+        {"op": "add3"}
     ],
     "tests": [
         {

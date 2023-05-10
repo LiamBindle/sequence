@@ -12,6 +12,10 @@ TEST_FILES = [
     "./tests/json/test-routine-definition.json",
     "./tests/json/test-std-if.json",
     "./tests/json/test-std-begin.json",
+    "./tests/json/test-std-algebra.json",
+    "./tests/json/test-std-bool.json",
+    "./tests/json/test-std-compare.json",
+    "./tests/json/test-std-stack.json",
 ]
 
 
