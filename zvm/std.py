@@ -16,10 +16,15 @@ import pathlib
 # x reodering (see stack machine)
 # x asserts
 # x save/load/delete
-# add local and global variables
+# x add local and global variables
 # logging
 # x recurse
 # x ppop from stack (so anonymous routines can have arguments)
+# continue
+# for loop (should use local variable to avoid interfering with the stack)
+# while loop (begin...while...repeat avoid code duplication by putting condition logic in begin...while section)
+# pack/unpack to pack n items into a tuple or unpack a tuple onto the stack
+# switch statement
 
 # need decorator to register copy (shallow/deep), store, load, delete for arbitrary data types
 
