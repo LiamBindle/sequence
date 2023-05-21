@@ -5,7 +5,7 @@
         ]
     },
     "instr": [
-        {"op": "is_increasing", "argc": 3}
+        {"op": "is_decreasing", "argc": 3}
     ],
     "n": 3,
     "tests": [

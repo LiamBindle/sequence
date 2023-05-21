@@ -37,7 +37,7 @@ def print_console_update(name, local_vars: dict):
 def _start_routine(*, instr: list, args: list, includes: list, local_vars: dict):
     # push new frame
     zvm.state._routine_ops.append(copy.copy(zvm.state.ops))
-    zvm.state._routine_stacks.append(list(args[::-1]))
+    zvm.state._routine_stacks.append(list(args))
     zvm.state._routine_instructions.append(instr)
     zvm.state._routine_locals.append(copy.copy(zvm.state.local_vars))
     zvm.state._routine_imports.append(copy.copy(zvm.state._routine_imports[-1]))
@@ -137,7 +137,6 @@ def _run(*args, instr: list = [], code: dict[str, Any] = {}, local_vars: dict = 
         if isinstance(ex, list):
             print_console_update("", local_vars)
             result = _run(instr=ex, local_vars=local_vars)
-            result_reversed = False
         elif isinstance(ex, dict) and 'op' in ex:
             ex = copy.copy(ex)
             op = ex.pop('op')
@@ -151,30 +150,24 @@ def _run(*args, instr: list = [], code: dict[str, Any] = {}, local_vars: dict = 
                 if 'locals' in ex:
                     # rename locals -> local_vars
                     ex['local_vars'] = ex.pop('locals')
-                result_reversed = False
             else:
                 f = zvm.state.ops[op].get("f")
                 n = zvm.state.ops[op].get("n", 0)
-                result_reversed = True
 
             argc = ex.pop("argc", None)
             if argc is not None:
                 n = argc
 
-            args = [zvm.state.stack.pop() for _ in range(n)]
+            args = [zvm.state.stack.pop() for _ in range(n)][::-1]
 
             result = f(*args, **ex)
         else:
             print_console_update("put", local_vars)
             result = ex
-            result_reversed = False
 
         if result is not None:
             if isinstance(result, list):
-                if result_reversed:
-                    zvm.state.stack.extend(reversed(result))
-                else:
-                    zvm.state.stack.extend(result)  # types should be wrapped in a custom type (for custom repr, hash, etc.)
+                zvm.state.stack.extend(result)
             else:
                 zvm.state.stack.append(result)
         zvm.state._routine_pc[-1] += 1

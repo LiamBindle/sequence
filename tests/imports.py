@@ -8,16 +8,16 @@ def discard_if_neq(a, /, *, value):
         return value
 
 
-@zvm.op("is_increasing")
-def is_increasing(*args):
+@zvm.op("is_decreasing")
+def is_decreasing(*args):
     if len(args) == 0:
         return False
     c = args[0]
-    gt = []
+    lt = []
     for v in args[1:]:
-        gt.append(v > c)
+        lt.append(v < c)
         c = v
-    return all(gt)
+    return all(lt)
 
 
 @zvm.op("pass_through")

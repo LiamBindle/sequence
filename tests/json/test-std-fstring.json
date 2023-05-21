@@ -2,11 +2,11 @@
     "instr": [
         {"op": "fstring", "fmt": "no replacement fields"},
         {"op": "fstring", "fmt": "foo{baz:s}", "baz": "bar"},
-        "bar",
         "foo",
+        "bar",
         {"op": "fstring", "fmt": "{}{}{baz}", "baz": "baz"},
-        "foo",
         "bar",
+        "foo",
         {"op": "fstring", "fmt": "{1}{0}{baz}", "baz": "baz"}
     ],
     "tests": [

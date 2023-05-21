@@ -30,27 +30,27 @@ import pathlib
 
 # operators
 @op("/")
-def divide(y, x, /):
+def divide(x, y, /):
     return x / y
 
 
 @op("*")
-def multiply(y, x, /):
+def multiply(x, y, /):
     return x * y
 
 
 @op("-")
-def minus(y, x, /):
+def minus(x, y, /):
     return x - y
 
 
 @op("+")
-def plus(y, x, /):
+def plus(x, y, /):
     return x + y
 
 
 @op("%")
-def mod(y, x, /):
+def mod(x, y, /):
     return x % y
 
 
@@ -61,17 +61,17 @@ def not_(x, /):
 
 
 @op("and")
-def and_(y, x, /):
+def and_(x, y, /):
     return x and y
 
 
 @op("or")
-def or_(y, x, /):
+def or_(x, y, /):
     return x or y
 
 
 @op("xor")
-def xor_(y, x, /):
+def xor_(x, y, /):
     return bool(x) != bool(y)
 
 
@@ -82,43 +82,43 @@ def asbool_(x, /):
 
 # comparison
 @op("eq")
-def equal(y, x, /) -> bool:
+def equal(x, y, /) -> bool:
     return x == y
 
 
 @op("neq")
-def not_equal(y, x, /) -> bool:
+def not_equal(x, y, /) -> bool:
     return x != y
 
 
 @op("gt")
-def greater_than(y, x, /) -> bool:
+def greater_than(x, y, /) -> bool:
     return x > y
 
 
 @op("ge")
-def greater_than_or_equal_to(y, x, /) -> bool:
+def greater_than_or_equal_to(x, y, /) -> bool:
     return x >= y
 
 
 @op("lt")
-def less_than(y, x, /) -> bool:
+def less_than(x, y, /) -> bool:
     return x < y
 
 
 @op("le")
-def less_than_or_equal_to(y, x, /) -> bool:
+def less_than_or_equal_to(x, y, /) -> bool:
     return x <= y
 
 
 # stack ops
 def pop_from_current(*, n: int = 1):
-    return [zvm.state.stack.pop() for _ in range(n)]
+    return [zvm.state.stack.pop() for _ in range(n)][::-1]
 
 
 @op("ppop")
 def pop_from_parent(*, n: int = 1):
-    return [zvm.state._routine_stacks[-2].pop() for _ in range(n)]
+    return [zvm.state._routine_stacks[-2].pop() for _ in range(n)][::-1]
 
 
 @op("dup")
@@ -132,8 +132,8 @@ def duplicate(*, deep: bool = False, offset: int = 0):
 
 
 @op("swap")
-def swap(y, x, /):
-    return [x, y]
+def swap(x, y, /):
+    return [y, x]
 
 
 @op("drop")
@@ -143,8 +143,10 @@ def drop(_, /):
 
 @op("reorder")
 def reorder(*, order: list = []):  # e.g., [2, 0, 1] puts current TOS+2 at TOS, current TOS at TOS+1, and current TOS+1 at TOS+2
-    items = pop_from_current(n=len(order))
-    new_items = [items[i] for i in reversed(order)]
+                                   # e.g., [1, 0, 2] puts current TOS+2 at TOS, current TOS at TOS+1, and current TOS+1 at TOS+2
+    size = len(order)
+    items = pop_from_current(n=size)
+    new_items = [items[size-1-i] for i in order]
     return new_items
 
 

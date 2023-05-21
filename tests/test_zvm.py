@@ -31,8 +31,8 @@ def test_all(path):
 
 
 def test_bench_routine():
-    path = "./tests/json/test-std-begin.json"
-    name = "std.begin - 11..44"
+    path = "./tests/json/test-std-if.json"
+    name = "std.if - iE-Ie-Ie"
     with open(path, 'r') as f:
         test: dict = json.load(f)
     zvm.vm.run_test(test, name)
