@@ -177,20 +177,23 @@ def _run(*args, instr: list = [], code: dict[str, Any] = {}, local_vars: dict = 
 
 def run(routine: dict):
     timestamp = datetime.datetime.utcnow().strftime('%F%T.%f')[:-2] + 'Z'
-    print(f"""--- Starting zvm at {timestamp} ---""")
+    local_vars = routine.pop("locals", {})
+    if local_vars.get("logging", True):
+        print(f"""--- Starting zvm at {timestamp} ---""")
     routine = copy.deepcopy(routine)
     zvm.state.restart()
     importlib.reload(zvm.std)
     result = _run(
         instr=routine.pop("instr", []),
         code=routine.pop("code", {}),
-        local_vars=routine.pop("locals", {}),
+        local_vars=local_vars,
         includes=routine.pop("includes", [])
     )
     zvm.state.finished = True
-    timestamp = datetime.datetime.now().strftime('%F %T.%f')[:-3] + 'Z'
-    result_size_str = f"{len(result):2d}"[-2:] if result is not None else "-"
-    print(f"{' ' * 12} {result_size_str} {timestamp:>32s}\n")
+    if local_vars.get("logging", True):
+        timestamp = datetime.datetime.now().strftime('%F %T.%f')[:-3] + 'Z'
+        result_size_str = f"{len(result):2d}"[-2:] if result is not None else "-"
+        print(f"{' ' * 12} {result_size_str} {timestamp:>32s}\n")
     return result
 
 
@@ -203,8 +206,13 @@ def run_test(routine: dict, name: str = None) -> int:
             continue
         setup_code = copy.deepcopy(routine.get("code", {}))
         test_routine = {
+            "code": {
+                "defs": {
+                    "setup_test": {"code":  setup_code, "instr": [test.get("setup", [])], "locals": {"logging": False}}
+                }
+            },
             "instr": [
-                {"op": "run", "code":  setup_code, "instr": [test.get("setup", [])], "locals": {"logging": False}},  # todo: move to defs so opname shows up in log
+                {"op": "setup_test"},
                 {"op": "run", **routine}
             ]
         }
@@ -215,6 +223,7 @@ def run_test(routine: dict, name: str = None) -> int:
             for i, check in enumerate(test["checks"]):
                 if "eq" in check:
                     eq_routine = {
+                        "locals": {'logging': False},
                         "instr": [
                             check["eq"]
                         ]
