@@ -15,8 +15,8 @@ import datetime
 
 
 def print_console_update(name, local_vars: dict):
-    lpad = " " * (len(zvm.state._routine_pc) - 1)
-    rpad = " " * max(0, 8 - len(lpad))
+    lpad = "  " * (len(zvm.state._routine_pc) - 1)
+    rpad = " " * max(0, 10 - len(lpad))
     if local_vars.get("logging", True):
         pc_str = f"{zvm.state._routine_pc[-1]:02d}"[-2:]
         name = name[-12:]
@@ -31,7 +31,7 @@ def print_console_update(name, local_vars: dict):
         if minutes:
             elapsed += f"{minutes: 2d}m"
         elapsed += f"{seconds: 6.3f}"[:6] + "s"
-        print(f"{lpad}{pc_str}{rpad} {len(zvm.state.stack):2d} {name:12s}{elapsed:>18s}")
+        print(f"{lpad}{pc_str}{rpad} {len(zvm.state.stack):2d} {name:14s}{elapsed:>18s}")
 
 
 def _start_routine(*, instr: list, args: list, includes: list, local_vars: dict):
@@ -136,7 +136,7 @@ def _run(*args, instr: list = [], code: dict[str, Any] = {}, local_vars: dict = 
         ex = copy.copy(zvm.state.instr[zvm.state._routine_pc[-1]])
         if isinstance(ex, list):
             print_console_update("", local_vars)
-            result = _run(instr=ex)
+            result = _run(instr=ex, local_vars=local_vars)
             result_reversed = False
         elif isinstance(ex, dict) and 'op' in ex:
             ex = copy.copy(ex)
@@ -183,8 +183,8 @@ def _run(*args, instr: list = [], code: dict[str, Any] = {}, local_vars: dict = 
 
 
 def run(routine: dict):
-    timestamp = datetime.datetime.utcnow().strftime('%F%T.%f')[:-3] + 'Z'
-    print(f"""** Starting z5 at {timestamp} **""")
+    timestamp = datetime.datetime.utcnow().strftime('%F%T.%f')[:-2] + 'Z'
+    print(f"""--- Starting zvm at {timestamp} ---""")
     routine = copy.deepcopy(routine)
     zvm.state.restart()
     importlib.reload(zvm.std)
@@ -197,7 +197,7 @@ def run(routine: dict):
     zvm.state.finished = True
     timestamp = datetime.datetime.now().strftime('%F %T.%f')[:-3] + 'Z'
     result_size_str = f"{len(result):2d}"[-2:] if result is not None else "-"
-    print(f"{' ' * 10} {result_size_str} {timestamp:>30s}\n")
+    print(f"{' ' * 12} {result_size_str} {timestamp:>32s}\n")
     return result
 
 
@@ -209,12 +209,9 @@ def run_test(routine: dict, name: str = None) -> int:
         if name is not None and not re.match(name, test_name):
             continue
         setup_code = copy.deepcopy(routine.get("code", {}))
-        if 'locals' not in routine:
-            routine['locals'] = {}
-        routine['locals']['logging'] = True
         test_routine = {
             "instr": [
-                {"op": "run", "code":  setup_code, "instr": [test.get("setup", [])], "locals": {"logging": False}},
+                {"op": "run", "code":  setup_code, "instr": [test.get("setup", [])], "locals": {"logging": False}},  # todo: move to defs so opname shows up in log
                 {"op": "run", **routine}
             ]
         }
