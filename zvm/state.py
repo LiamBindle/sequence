@@ -1,4 +1,5 @@
 from typing import Any
+from datetime import datetime
 
 # state variables
 _routine_ops = [{}]
@@ -21,6 +22,7 @@ loaders: dict[str, dict[str, callable]] = {}
 storers: dict[str, dict[str, callable]] = {}
 deleters: dict[str, dict[str, callable]] = {}
 finished: bool = False
+start_datetime: datetime = None
 
 
 def restart():
@@ -40,6 +42,7 @@ def restart():
     global storers
     global deleters
     global finished
+    global start_datetime
 
     _routine_ops = [{}]
     _routine_stacks = []
@@ -57,3 +60,4 @@ def restart():
     deleters = {}
     finished = False
     _routine_imports = [set()]
+    start_datetime = datetime.utcnow()

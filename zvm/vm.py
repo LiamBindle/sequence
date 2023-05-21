@@ -20,9 +20,18 @@ def print_console_update(name, local_vars: dict):
     if local_vars.get("logging", True):
         pc_str = f"{zvm.state._routine_pc[-1]:02d}"[-2:]
         name = name[-12:]
-        timestamp = datetime.datetime.now().strftime('%F %T.%f')[:-3] + 'Z'
-        print(f"{lpad}{pc_str}{rpad} {len(zvm.state.stack):2d} {name:12s}{timestamp:>26s}")
-
+        elapsed = datetime.datetime.utcnow() - zvm.state.start_datetime
+        t = elapsed.total_seconds()
+        seconds = t % 60
+        minutes = int(t//60) % 60
+        hours = int(t//3600)
+        elapsed = ""
+        if hours:
+            elapsed += f"{hours:d}h"
+        if minutes:
+            elapsed += f"{minutes: 2d}m"
+        elapsed += f"{seconds: 6.3f}"[:6] + "s"
+        print(f"{lpad}{pc_str}{rpad} {len(zvm.state.stack):2d} {name:12s}{elapsed:>18s}")
 
 
 def _start_routine(*, instr: list, args: list, includes: list, local_vars: dict):
@@ -174,7 +183,8 @@ def _run(*args, instr: list = [], code: dict[str, Any] = {}, local_vars: dict = 
 
 
 def run(routine: dict):
-    print("""-----------------  z5 is starting  -----------------""")
+    timestamp = datetime.datetime.utcnow().strftime('%F%T.%f')[:-3] + 'Z'
+    print(f"""** Starting z5 at {timestamp} **""")
     routine = copy.deepcopy(routine)
     zvm.state.restart()
     importlib.reload(zvm.std)
@@ -187,7 +197,7 @@ def run(routine: dict):
     zvm.state.finished = True
     timestamp = datetime.datetime.now().strftime('%F %T.%f')[:-3] + 'Z'
     result_size_str = f"{len(result):2d}"[-2:] if result is not None else "-"
-    print(f"{' ' * 10} {result_size_str} {'':12s}{timestamp:>26s}")
+    print(f"{' ' * 10} {result_size_str} {timestamp:>30s}\n")
     return result
 
 
