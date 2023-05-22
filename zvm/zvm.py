@@ -91,10 +91,8 @@ class OpFrame:
             state = State(vm, self)
 
             # execute expression
-            if isinstance(ex, dict):
+            if isinstance(ex, dict) and "op" in ex:
                 # is an op
-                if "op" not in ex:
-                    raise RuntimeError("operation is missing 'op' key")
                 name = ex['op']
                 op = _static_ops[name]
                 print_console_update(state, name)

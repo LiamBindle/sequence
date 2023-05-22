@@ -1,17 +1,10 @@
 {
-    "code": {
-        "defs": {
-            "append_value_to_key": {"name": "append_value_to_key", "exec": "def append_value_to_key(d, /, *, key, value: int): d[key].append(value); return d", "n": 1}
-        }
-    },
-    "instr": [
+    "import": ["tests.imports"],
+    "run": [
         1,
         {"op": "dup"},
-        [
-            {"op": "ppop"},
-            2,
-            {"op": "+"}
-        ],
+        2,
+        {"op": "+"},
 
         {"op": "dup", "offset": 1},
         {"op": "dup", "offset": 1},
@@ -39,7 +32,7 @@
             "name": "std.stack",
             "checks": [
                 {
-                    "eq": [
+                    "answer": [
                         1,
                         3,
                         1,

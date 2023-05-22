@@ -1,7 +1,6 @@
 {   
+    "import": ["tests.imports"],
     "include": {
-        "++": {"run": [1, {"op": "+"}]},
-        "equals": {"run": [{"op": "dup"}, {"op": "eq"}]},
         "ends_in_4": {"run": [{"op": "dup"}, 10, {"op": "%"}, 4, {"op": "eq"}]},
         "next10": {
             "run": [

@@ -33,3 +33,29 @@ def check_local(state: zvm.State, *, key, value):
         return 1
     else:
         return 0
+
+
+@zvm.op("equals")
+def equals_(state: zvm.State):
+    x, y = state.popn(2)
+    return [x, x == y]
+
+
+@zvm.op("append_value_to_key")
+def append_value_to_key(state: zvm.State, *, key, value: int):
+    d = state.pop()
+    d[key].append(value)
+    return d
+
+
+@zvm.op("change_key_value")
+def change_key_value(state: zvm.State, *, key, value):
+    d = state.pop()
+    d[key] = value
+    return d
+
+
+@zvm.op("check_file_exists")
+def check_file_exists(state: zvm.State, *, path):
+    import os.path
+    return os.path.exists(path)
