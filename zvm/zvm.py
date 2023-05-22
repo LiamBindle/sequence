@@ -149,8 +149,13 @@ class ZVM:
             self._include(name, url_or_op)
 
 
-def run(op: dict, init_stack: list = None):
+def run(op_or_url: dict, init_stack: list = None):
     import zvm.std
+    if isinstance(op_or_url, str):
+        url = urllib.parse.urlparse(op_or_url)
+        op = _static_loaders[url.scheme]['application/json'](op_or_url)
+    else:
+        op = op_or_url
     vm = ZVM(OpFrame(op.get("set", {}), "root", None, op.get("run", [])))
     if init_stack is not None:
         vm._stack.extend(init_stack)
