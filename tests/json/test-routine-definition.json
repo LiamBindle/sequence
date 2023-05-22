@@ -1,4 +1,7 @@
-{
+{   
+    "include": {
+        "int"
+    }
     "code": {
         "imports": [],
         "defs": {
@@ -8,7 +11,7 @@
             "add3": {"instr": [3, {"op": "add"}], "n": 1}
         }
     },
-    "instr": [
+    "run": [
         [
             [[1, 2, {"op": "add"}]],
             {"op": "int", "value": 2},

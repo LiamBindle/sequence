@@ -1,6 +1,6 @@
 {
-    "instr": [
-        {"op": "ssize"},
+    "run": [
+        {"op": "size"},
         1,
         {"op": "eq"},
         {"op": "if"},
@@ -22,7 +22,6 @@
             {"op": "drop"},
         {"op": "endif"}
     ],
-    "n": 1,
     "tests": [
         {
             "name": "std.recurse - factorial(5)",
@@ -31,7 +30,7 @@
             ],
             "checks": [
                 {
-                    "eq": [
+                    "answer": [
                         120
                     ]
                 }
@@ -44,7 +43,7 @@
             ],
             "checks": [
                 {
-                    "eq": [
+                    "answer": [
                         6227020800
                     ]
                 }

@@ -1,26 +1,21 @@
 {
-    "code": {
-        "imports": [
-            "tests.imports"
-        ]
-    },
-    "instr": [
+    "import": ["tests.imports"],
+    "run": [
         {"op": "discard_if_neq", "value": 1}
     ],
-    "n": 1,
     "tests": [
         {
             "name": "code.import - 1",
             "setup": [1],
             "checks": [
-                {"eq": [1]}
+                {"answer": [1]}
             ]
         },
         {
             "name": "code.import - 2",
             "setup": [2],
             "checks": [
-                {"eq": []}
+                {"answer": []}
             ]
         }
     ]

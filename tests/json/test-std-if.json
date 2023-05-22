@@ -1,5 +1,24 @@
 {
-    "instr": [
+    "include": {
+        "nested_else_block": {
+            "run": [
+                {"op": "if"},
+                    {"op": "if"},
+                        5,
+                    {"op": "else"},
+                        6,
+                    {"op": "endif"},
+                {"op": "else"},
+                    {"op": "if"},
+                        7,
+                    {"op": "else"},
+                        8,
+                    {"op": "endif"},
+                {"op": "endif"}
+            ]
+        }
+    },
+    "run": [
         {"op": "if"},
             {"op": "if"},
                 {"op": "if"},
@@ -13,27 +32,9 @@
                 {"op": "endif"},
             {"op": "endif"},
         {"op": "else"},
-            {
-                "op": "run", "n": 2, 
-                "instr": [
-                    {"op": "if"},
-                        {"op": "if"},
-                            5,
-                        {"op": "else"},
-                            6,
-                        {"op": "endif"},
-                    {"op": "else"},
-                        {"op": "if"},
-                            7,
-                        {"op": "else"},
-                            8,
-                        {"op": "endif"},
-                    {"op": "endif"}
-                ]
-            },
+            {"op": "nested_else_block"},
         {"op": "endif"}
     ],
-    "n": 3,
     "tests": [
         {
             "name": "std.if - Ie-Ie-Ie",
@@ -43,7 +44,7 @@
                 true
             ],
             "checks": [
-                {"eq": [1]}
+                {"answer": [1]}
             ]
         },
         {
@@ -54,7 +55,7 @@
                 false
             ],
             "checks": [
-                {"eq": [5]}
+                {"answer": [5]}
             ]
         },
         {
@@ -65,7 +66,7 @@
                 true
             ],
             "checks": [
-                {"eq": [3]}
+                {"answer": [3]}
             ]
         },
         {
@@ -76,7 +77,7 @@
                 true
             ],
             "checks": [
-                {"eq": []}
+                {"answer": []}
             ]
         }
     ]
