@@ -54,6 +54,9 @@ class State:
             raise RuntimeError(f"Global variable has not been set: {key}")
         return self._set[key]
 
+    def delete(self, key):
+        del self._set[key]
+
     @staticmethod
     def op(name) -> Union[dict, Callable]:
         return _static_ops[name]
@@ -68,6 +71,9 @@ class State:
         if key not in self._vm._globals:
             raise RuntimeError(f"Global variable has not been set: {key}")
         return self._vm._globals[key]
+
+    def delete_global(self, key):
+        del self._vm._globals[key]
 
 
 def calc_depth(state: State) -> int:
