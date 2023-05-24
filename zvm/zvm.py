@@ -54,6 +54,10 @@ class State:
             raise RuntimeError(f"Variable has not been set: {key}")
         return self._set[key]
 
+    @staticmethod
+    def op(name) -> Union[dict, Callable]:
+        return _static_ops[name]
+
 
 def calc_depth(state: State) -> int:
     depth = 0
