@@ -51,12 +51,23 @@ class State:
 
     def get(self, key: str) -> Any:
         if key not in self._set:
-            raise RuntimeError(f"Variable has not been set: {key}")
+            raise RuntimeError(f"Global variable has not been set: {key}")
         return self._set[key]
 
     @staticmethod
     def op(name) -> Union[dict, Callable]:
         return _static_ops[name]
+
+    def set_global(self, key: str, value: Any):
+        self._vm._globals[key] = value
+
+    def has_global(self, key) -> bool:
+        return key in self._vm._globals
+
+    def get_global(self, key: str) -> Any:
+        if key not in self._vm._globals:
+            raise RuntimeError(f"Global variable has not been set: {key}")
+        return self._vm._globals[key]
 
 
 def calc_depth(state: State) -> int:
