@@ -153,7 +153,7 @@ class ZVM:
             print('here')
         if isinstance(url_or_op, str):
             url = urllib.parse.urlparse(url_or_op)
-            data = _static_loaders[url.scheme]['application/json'](url_or_op)
+            data = _static_loaders[url.scheme]['application/json'](self, url_or_op)
         elif isinstance(url_or_op, dict):
             data = url_or_op
         else:
@@ -173,7 +173,7 @@ class ZVM:
         if line.startswith("import "):
             self._import([line.removeprefix("import ")])
         elif bool(url.scheme) and bool(url.netloc):
-            op = _static_loaders[url.scheme]['application/json'](line)
+            op = _static_loaders[url.scheme]['application/json'](self, line)
             self.exec(op)
         else:
             op = ast.literal_eval(line)
@@ -235,8 +235,8 @@ def loader(*, schemes: str | list[str], media_type: str):
 
     def inner(func: Callable):
         global _static_loaders
-        if func.__code__.co_argcount != 1:
-            raise RuntimeError("function must take exactly one position argument (url: str)")
+        if func.__code__.co_argcount != 2:
+            raise RuntimeError("function must take exactly two position arguments (state: zvm.State, url: str)")
         for scheme in schemes:
             if scheme not in _static_loaders:
                 _static_loaders[scheme] = {}
@@ -252,8 +252,8 @@ def storer(*, schemes: str | list[str], media_type: str):
 
     def inner(func: Callable):
         global _static_storers
-        if func.__code__.co_argcount != 2:
-            raise RuntimeError("function must take exactly two position argument (data: Any, url: str)")
+        if func.__code__.co_argcount != 3:
+            raise RuntimeError("function must take exactly three position argument (state: zvm.State, data: Any, url: str)")
         for scheme in schemes:
             if scheme not in _static_storers:
                 _static_storers[scheme] = {}
@@ -269,8 +269,8 @@ def deleter(*, schemes: str | list[str], media_type: str = None):
 
     def inner(func: Callable):
         global _static_deleters
-        if func.__code__.co_argcount != 1:
-            raise RuntimeError("function must take exactly one position argument (url: str)")
+        if func.__code__.co_argcount != 2:
+            raise RuntimeError("function must take exactly two position argument (state: zvm.State, url: str)")
         for scheme in schemes:
             if scheme not in _static_deleters:
                 _static_deleters[scheme] = {}
@@ -532,11 +532,8 @@ def endif_(state: State):
 def load(state: State, *, uri: str, mediaType: str = None, **kwargs):
     global _static_loaders
     parsed_uri = urllib.parse.urlparse(uri)
-    extra_kwargs = {}
-    if parsed_uri.scheme == 'locals' or parsed_uri.scheme == 'globals':
-        extra_kwargs['state'] = state
     uri_media_loader = _static_loaders[parsed_uri.scheme][mediaType]
-    return uri_media_loader(uri, **extra_kwargs, **kwargs)
+    return uri_media_loader(state, uri, **kwargs)
 
 
 @op("store")
@@ -544,22 +541,16 @@ def store(state: State, *, uri: str, mediaType: str = None, **kwargs):
     global _static_storers
     data = state.pop()
     parsed_uri = urllib.parse.urlparse(uri)
-    extra_kwargs = {}
-    if parsed_uri.scheme == 'locals' or parsed_uri.scheme == 'globals':
-        extra_kwargs['state'] = state
     uri_media_storer = _static_storers[parsed_uri.scheme][mediaType]
-    uri_media_storer(data, uri, **extra_kwargs, **kwargs)
+    uri_media_storer(state, data, uri, **kwargs)
 
 
 @op("delete")
 def delete(state: State, *, uri: str, mediaType: str = None, **kwargs):
     global _static_deleters
     parsed_uri = urllib.parse.urlparse(uri)
-    extra_kwargs = {}
-    if parsed_uri.scheme == 'locals' or parsed_uri.scheme == 'globals':
-        extra_kwargs['state'] = state
     uri_media_deleter = _static_deleters[parsed_uri.scheme][mediaType]
-    uri_media_deleter(uri, **extra_kwargs, **kwargs)
+    uri_media_deleter(state, uri, **kwargs)
 
 # misc
 
@@ -592,13 +583,13 @@ def assert_(state: State, *, error: str = '', negate: bool = False):
 
 
 @loader(schemes=['http', 'https'], media_type='application/json')
-def fetch_json_http(url: str):
+def fetch_json_http(state: State, url: str):
     response = requests.get(url=url)
     return response.json()
 
 
 @loader(schemes=['file'], media_type='application/json')
-def fetch_json_file(url: str):
+def fetch_json_file(state: State, url: str):
     path = urllib.parse.urlparse(url).path
     with open(path, 'r') as f:
         data = json.load(f)
@@ -606,50 +597,50 @@ def fetch_json_file(url: str):
 
 
 @storer(schemes=['file'], media_type='application/json')
-def store_json_file(data, uri: str):
+def store_json_file(state: State, data, uri: str):
     path = urllib.parse.urlparse(uri).path
     with open(path, 'w') as f:
         json.dump(data, f)
 
 
 @deleter(schemes=['file'])
-def delete_generic_file(uri: str, *, missing_ok: bool = False):
+def delete_generic_file(state: State, uri: str, *, missing_ok: bool = False):
     path = urllib.parse.urlparse(uri).path
     pathlib.Path(path).unlink()
 
 
 @loader(schemes='locals', media_type=None)
-def load_local_variable(key, *, state: State):
+def load_local_variable(state: State, key):
     path = urllib.parse.urlparse(key).path
     return state._op_frame._set[path]
 
 
 @storer(schemes='locals', media_type=None)
-def store_local_variable(data, key, *, state: State):
+def store_local_variable(state: State, data, key):
     path = urllib.parse.urlparse(key).path
     state._op_frame._set[path] = data
 
 
 @deleter(schemes='locals')
-def delete_local_variable(key, *, state: State):
+def delete_local_variable(state: State, key):
     path = urllib.parse.urlparse(key).path
     del state._op_frame._set[path]
 
 
 @loader(schemes='globals', media_type=None)
-def load_global_variable(key, *, state: State):
+def load_global_variable(state: State, key):
     path = urllib.parse.urlparse(key).path
     return state._vm._globals[path]
 
 
 @storer(schemes='globals', media_type=None)
-def store_global_variable(data, key, *, state: State):
+def store_global_variable(state: State, data, key):
     path = urllib.parse.urlparse(key).path
     state._vm._globals[path] = data
 
 
 @deleter(schemes='globals')
-def delete_global_variable(key, *, state: State):
+def delete_global_variable(state: State, key):
     path = urllib.parse.urlparse(key).path
     del state._vm._globals[path]
 
