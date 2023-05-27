@@ -193,7 +193,7 @@ class ZVM:
         url = urllib.parse.urlparse(line)
         if line.startswith("import "):
             self._import([line.removeprefix("import ")])
-        elif bool(url.scheme) and bool(url.netloc):
+        elif bool(url.scheme) and bool(url.path):
             op = _static_loaders[url.scheme]['application/json'](self, line)
             self.exec(op)
         else:
@@ -612,6 +612,7 @@ def fetch_json_http(state: State, url: str):
 @loader(schemes=['file'], media_type='application/json')
 def fetch_json_file(state: State, url: str):
     path = urllib.parse.urlparse(url).path
+    path = urllib.parse.unquote(path)
     with open(path, 'r') as f:
         data = json.load(f)
     return data
@@ -620,6 +621,7 @@ def fetch_json_file(state: State, url: str):
 @storer(schemes=['file'], media_type='application/json')
 def store_json_file(state: State, data, uri: str):
     path = urllib.parse.urlparse(uri).path
+    path = urllib.parse.unquote(path)
     with open(path, 'w') as f:
         json.dump(data, f)
 
@@ -627,13 +629,14 @@ def store_json_file(state: State, data, uri: str):
 @deleter(schemes=['file'])
 def delete_generic_file(state: State, uri: str, *, missing_ok: bool = False):
     path = urllib.parse.urlparse(uri).path
-    pathlib.Path(path).unlink()
+    path = urllib.parse.unquote(path)
+    pathlib.Path(path).unlink(missing_ok)
 
 
 @loader(schemes='locals', media_type=None)
-def load_local_variable(state: State, key):
+def load_local_variable(state: State, key, *, default: Any = None):
     path = urllib.parse.urlparse(key).path
-    return state._op_frame._set[path]
+    return state._op_frame._set.get(path, default)
 
 
 @storer(schemes='locals', media_type=None)
@@ -649,9 +652,9 @@ def delete_local_variable(state: State, key):
 
 
 @loader(schemes='globals', media_type=None)
-def load_global_variable(state: State, key):
+def load_global_variable(state: State, key, *, default: Any = None):
     path = urllib.parse.urlparse(key).path
-    return state._vm._globals[path]
+    return state._vm._globals.get(path, default)
 
 
 @storer(schemes='globals', media_type=None)
