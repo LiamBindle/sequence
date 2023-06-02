@@ -8,7 +8,7 @@ import datetime
 import ast
 import sys
 import json
-import requests
+import urllib.request
 import urllib.parse
 import json
 import copy
@@ -488,6 +488,13 @@ def recurse(state: State):
     state._op_frame._pc = -1
 
 
+@op("while")
+def while_(state: State):
+    cond = state.pop()
+    if not cond:
+        break_(state)
+
+
 # branching
 @op("if")
 def if_(state: State):
@@ -605,8 +612,10 @@ def assert_(state: State, *, error: str = '', negate: bool = False):
 
 @loader(schemes=['http', 'https'], media_type='application/json')
 def fetch_json_http(state: State, url: str):
-    response = requests.get(url=url)
-    return response.json()
+    response = urllib.request.urlopen(url)
+    if response.code != 200:
+        raise RuntimeError(f"Error reading {url}")
+    return json.loads(response.read())
 
 
 @loader(schemes=['file'], media_type='application/json')

@@ -1,0 +1,43 @@
+{   
+    "import": ["tests.imports"],
+    "include": {
+        "not_ends_in_4": {"run": [{"op": "dup"}, 10, {"op": "%"}, 4, {"op": "neq"}]},
+        "next10": {
+            "run": [
+                10,
+                {"op": "/"},
+                {"op": "asint"},
+                10,
+                {"op": "*"},
+                10,
+                {"op": "+"}
+            ]
+        }
+    },
+    "run": [
+        10,
+        {"op": "begin"},
+            {"op": "begin"},
+                1,
+                {"op": "+"},
+                {"op": "not_ends_in_4"},
+            {"op": "while"},
+                {"op": "dup"},
+            {"op": "repeat"},
+        {"op": "dup"},
+        44,
+        {"op": "neq"},
+        {"op": "while"},
+            {"op": "dup"},
+            {"op": "next10"},
+        {"op": "repeat"}
+    ],
+    "tests": [
+        {
+            "name": "std.while - 11..44",
+            "checks": [
+                {"answer": [11, 12, 13, 14, 21, 22, 23, 24, 31, 32, 33, 34, 41, 42, 43, 44]}
+            ]
+        }
+    ]
+}

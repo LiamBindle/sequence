@@ -9,6 +9,7 @@ TEST_FILES = [
     "./tests/json/test-std-if.json",
     "./tests/json/test-recurse.json",
     "./tests/json/test-std-begin.json",
+    "./tests/json/test-std-while.json",
     "./tests/json/test-std-algebra.json",
     "./tests/json/test-std-bool.json",
     "./tests/json/test-std-compare.json",
