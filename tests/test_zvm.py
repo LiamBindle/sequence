@@ -15,6 +15,7 @@ TEST_FILES = [
     "./tests/json/test-std-compare.json",
     "./tests/json/test-std-stack.json",
     "./tests/json/test-std-fstring.json",
+    "./tests/json/test-std-pack-kwargs.json",
     "./tests/json/test-std-load-store-delete.json",
 ]
 

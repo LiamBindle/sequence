@@ -114,6 +114,7 @@ class OpFrame:
     _run: List[Union[str, dict]] = None
     _pc: int = None
     _begins: List[int] = field(default_factory=list)
+    _next_kwargs: dict = field(default_factory=dict)
 
     def run(self, vm: 'ZVM', _run: List[Union[str, dict]]):
         self._run = _run
@@ -143,7 +144,10 @@ class OpFrame:
                     result = None  # child.run will have updated the stack
                 elif callable(op):
                     # op is a function
-                    result = op(state, **{k: v for k, v in ex.items() if k != "op"})
+                    kwargs = self._next_kwargs
+                    kwargs.update({k: v for k, v in ex.items() if k != "op"})
+                    self._next_kwargs = {}
+                    result = op(state, **kwargs)
             else:
                 # is a literal
                 print_console_update(state, "put")
@@ -608,6 +612,36 @@ def assert_(state: State, *, error: str = '', negate: bool = False):
         assert not x, error
     else:
         assert x, error
+
+
+@op("pack")
+def pack_(state: State, *, n: int, forward: bool = True, keys: List[str] = None):
+    items = state.popn(n)
+    if not forward:
+        items.reverse()
+    if keys is not None:
+        items = {k: v for k, v in zip(keys, items)}
+    else:
+        items = tuple(items)
+    return items
+
+
+@op("unpack")
+def unpack_(state: State, *, keys: List[str] = None):
+    items = state.pop()
+    if keys is not None:
+        items = [items[k] for k in keys]
+    else:
+        items = list(items)
+    return items
+
+
+@op("set_next_kwargs")
+def set_next_kwargs(state: State):
+    kwargs = state.pop()
+    if not isinstance(kwargs, dict):
+        raise TypeError(f"Top-of-stack expected to be 'dict' but got '{type(kwargs)}'")
+    state._op_frame._next_kwargs = kwargs
 
 
 @loader(schemes=['http', 'https'], media_type='application/json')
