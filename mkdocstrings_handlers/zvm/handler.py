@@ -12,6 +12,18 @@ class ZVMHandler(BaseHandler):
     def __init__(self, *args: str | BaseCollector | BaseRenderer, **kwargs: str | BaseCollector | BaseRenderer) -> None:
         super().__init__(*args, **kwargs)
 
+    @staticmethod
+    def _docstring_section_regex(header: str, name: str):
+        return rf"(?:^{header}\n-{{{len(header)}}}\n(?P<{name}>[\s\S]*?)(?:\n\n|\Z))"
+
+    @staticmethod
+    def _docstring_parameter_regex():
+        return r"(?P<name>^\S[\S\h]*?)(?P<type>:[\S\h]*)?(?P<default>\(default:\h*[\S\h]*\))?(?P<description>(?:\n\h+[\S\h]+)+)"
+
+    @staticmethod
+    def _docstring_reference():
+        return r"^(?P<number>[[:digit:]]+)\.\h*(?P<reference>(?:(?:\n\h+)?[\S\h]+)+)"
+
     def collect(self, identifier: str, config: MutableMapping[str, Any]) -> CollectorItem:
         # if it's a module, import it, get all docstrings per function name
         # match functions to callables in zvm ops
