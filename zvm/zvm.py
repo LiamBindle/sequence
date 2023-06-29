@@ -243,6 +243,7 @@ def test(op: dict, tests_matching_re: str = None):
 
 
 def op(name):
+    # todo: add hints for pop order + type
     global _static_ops
     def inner(func: Callable):
         global _static_ops
@@ -253,7 +254,7 @@ def op(name):
     return inner
 
 
-def loader(*, schemes: str | list[str], media_type: str):
+def loader(*, schemes: Union[str, list[str]], media_type: str):
     global _static_loaders
     if isinstance(schemes, str):
         schemes = [schemes]
@@ -270,7 +271,7 @@ def loader(*, schemes: str | list[str], media_type: str):
     return inner
 
 
-def storer(*, schemes: str | list[str], media_type: str):
+def storer(*, schemes: Union[str, list[str]], media_type: str):
     global _static_storers
     if isinstance(schemes, str):
         schemes = [schemes]
@@ -287,7 +288,7 @@ def storer(*, schemes: str | list[str], media_type: str):
     return inner
 
 
-def deleter(*, schemes: str | list[str], media_type: str = None):
+def deleter(*, schemes: Union[str, list[str]], media_type: str = None):
     global _static_deleters
     if isinstance(schemes, str):
         schemes = [schemes]
@@ -300,6 +301,24 @@ def deleter(*, schemes: str | list[str], media_type: str = None):
             if scheme not in _static_deleters:
                 _static_deleters[scheme] = {}
             _static_deleters[scheme][media_type] = func
+        return func
+    return inner
+
+
+_static_copiers = {}
+
+
+def copier(*, types: Union[type, List[type]]):
+    global _static_copiers
+    if isinstance(types, type):
+        types = [types]
+
+    def inner(func: Callable):
+        global _static_copiers
+        if func.__code__.co_argcount != 2:
+            raise RuntimeError("function must take exactly two position argument (data: object, deep: bool)")
+        for t in types:
+            _static_copiers[t] = func
         return func
     return inner
 
@@ -325,6 +344,32 @@ def minus(state: State):
 
 @op("+")
 def plus(state: State):
+    """Computes the sum of two numbers.
+
+    Inputs
+    ------
+    a : int, float
+        first number
+    b : int, float
+        second number
+
+    Parameters
+    ----------
+    x : int, float (default: foo)
+        first param
+    y : int, float
+        second param
+
+    Outputs
+    -------
+    s : int, float
+        The sum
+
+    References
+    ----------
+    1. ZVM, GitHub. (https://github.com/LiamBindle/zvm)
+    2. Second reference
+    """
     x, y = state.popn(2)
     return x + y
 
@@ -418,12 +463,17 @@ def less_than_or_equal_to(state: State):
 # stack ops
 @op("dup")
 def duplicate(state: State, *, deep: bool = False, offset: int = 0):
+    global _static_copiers
     offset = -1 - offset
     item = state._stack[offset]
-    if deep:
-        return copy.deepcopy(item)
+    item_type = type(item)
+    if item_type in _static_copiers:
+        return _static_copiers[item_type](item, deep)
     else:
-        return copy.copy(item)
+        if deep:
+            return copy.deepcopy(item)
+        else:
+            return copy.copy(item)
 
 
 @op("swap")
