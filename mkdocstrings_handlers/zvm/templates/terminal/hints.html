@@ -1,0 +1,100 @@
+    {%- if hints.description -%}
+    <p>{{ hints.description }}</p>
+    {%- endif -%}
+
+    {%- if hints.inputs -%}
+    <p>
+        <strong>Inputs</strong><br>
+        {% for input in hints.inputs %}
+        <span style="float:right">
+            [S{{ loop.revindex }}]
+        </span>
+        <span style="float:left">
+            {{ input.name }}
+            {%- if 'type' in input -%}
+            : <i>{{ input.type }}</i>
+            {%- endif -%}
+        </span><br/>
+        {%- if input.description -%}
+        <span style='margin-left:2em'>
+            {{ input.description }}
+        </span><br/>
+        {%- endif -%}
+        {%- endfor -%}
+    </p>
+    {%- endif -%}
+
+    {%- if hints.parameters -%}
+    <p>
+        <strong>Parameters</strong><br>
+        {%- for param_name, param_hints in hints.parameters.items() if not 'default' in param_hints -%}
+        <span style="float:left">
+            {{ param_name }}
+            {%- if 'type' in param_hints -%}
+            : <i>{{ param_hints.type }}</i>
+            {%- endif -%}
+        </span>
+        <span style="float: right">(required)</span>
+        <br/>
+        {%- if 'description' in param_hints -%}
+        <span style='margin-left:2em'>
+            {{ param_hints.description }}
+        </span><br/>
+        {%- endif -%}
+        {%- endfor -%}
+
+        {%- for param_name, param_hints in hints.parameters.items() if 'default' in param_hints -%}
+        <span style="float: left">
+            {{ param_name }}
+            {%- if 'type' in param_hints -%}
+            : <i>{{ param_hints.type }}</i>
+            {%- endif -%}
+        </span>
+        <span style="float: right">(default: {{ param_hints.type }})</span>
+        <br/>
+        {%- if 'description' in param_hints -%}
+        <span style='margin-left:2em'>
+            {{ param_hints.description }}
+        </span><br/>
+        {%- endif -%}
+        {%- endfor -%}
+
+    </p>
+    {%- endif -%}
+
+    {%- if hints.outputs -%}
+    <p>
+        <strong>Outputs</strong><br>
+        {% for output in hints.outputs %}
+        <span style="float:right">
+            [S{{ loop.revindex }}]
+        </span>
+        <span style="float:left">
+            {{ output.name }}
+            {%- if 'type' in output -%}
+            : <i>{{ output.type }}</i>
+            {%- endif -%}
+        </span><br/>
+        {%- if output.description -%}
+        <span style='margin-left:2em'>
+            {{ output.description }}
+        </span><br/>
+        {%- endif -%}
+        {%- endfor -%}
+    </p>
+    {%- endif -%}
+
+    {%- if hints.references -%}
+    <p><strong>References</strong><br>
+        {% for reference in hints.references %}
+        <span>[{{ loop.index }}]</span>
+        <span style="margin-left: 1em">
+            {%- if reference is string -%}
+            {{ reference }}
+            {%- else -%}
+            <a href="{{ reference.url }}">{{ reference.text }}</a>
+            {%- endif -%}
+        </span><br>
+        {% endfor %}
+    </p>
+    {%- endif -%}

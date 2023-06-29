@@ -1,7 +1,7 @@
 {   
     "import": ["tests.imports"],
     "include": {
-        "ends_in_4": {"run": [{"op": "dup"}, 10, {"op": "%"}, 4, {"op": "eq"}]},
+        "not_ends_in_4": {"run": [{"op": "dup"}, 10, {"op": "%"}, 4, {"op": "neq"}]},
         "next10": {
             "run": [
                 10,
@@ -20,26 +20,21 @@
             {"op": "begin"},
                 1,
                 {"op": "+"},
-                {"op": "ends_in_4"},
-            {"op": "if"},
-            {"op": "break"},
-            {"op": "else"},
+                {"op": "not_ends_in_4"},
+            {"op": "while"},
                 {"op": "dup"},
             {"op": "repeat"},
-            {"op": "endif"},
+        {"op": "dup"},
         44,
-        {"op": "equals"},
-        {"op": "if"},
-            {"op": "break"},
-        {"op": "else"},
+        {"op": "neq"},
+        {"op": "while"},
             {"op": "dup"},
             {"op": "next10"},
-        {"op": "repeat"},
-        {"op": "endif"}
+        {"op": "repeat"}
     ],
     "tests": [
         {
-            "name": "std.begin - 11..44",
+            "name": "std.while - 11..44",
             "checks": [
                 {"answer": [11, 12, 13, 14, 21, 22, 23, 24, 31, 32, 33, 34, 41, 42, 43, 44]}
             ]

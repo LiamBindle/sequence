@@ -1,5 +1,5 @@
 {
-    "instr": [
+    "run": [
         1,
         2,
         {"op": "eq"},
@@ -58,7 +58,7 @@
             "name": "std.compare",
             "checks": [
                 {
-                    "eq": [
+                    "answer": [
                         false,
                         true,
                         true,

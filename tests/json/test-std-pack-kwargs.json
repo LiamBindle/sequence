@@ -1,0 +1,22 @@
+{
+    "run": [
+        "bar",
+        "foo",
+        {"op": "pack", "n": 2, "keys": ["k2", "k1"]},
+        {"op": "dup"},
+        {"op": "set_next_kwargs"},
+        {"op": "fstring", "fmt": "{k1}{k2}"},
+
+        {"op": "swap"},
+        {"op": "unpack", "keys": ["k1", "k2"]},
+        {"op": "fstring", "fmt": "{}{}"}
+    ],
+    "tests": [
+        {
+            "name": "std.algebra",
+            "checks": [
+                {"answer": ["foobar", "foobar"]}
+            ]
+        }
+    ]
+}

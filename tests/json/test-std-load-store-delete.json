@@ -1,11 +1,6 @@
 {
-    "code": {
-        "defs": {
-            "change_key_value": {"name": "change_key_value", "exec": "def change_key_value(d, /, *, key, value): d[key] = value; return d", "n": 1},
-            "check_file_exists": {"name": "check_file_exists", "exec": "def check_file_exists(*, path): import os.path; return os.path.exists(path)"}
-        }
-    },
-    "instr": [
+    "import": ["tests.imports"],
+    "run": [
         {
             "op": "load",
             "uri": "file:./tests/json/data/load-sample.json", 
@@ -36,7 +31,7 @@
             "name": "std.load",
             "checks": [
                 {
-                    "eq": [
+                    "answer": [
                         {"foo": "bar"},
                         {"foo": "baz"},
                         true,

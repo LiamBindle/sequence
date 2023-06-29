@@ -1,6 +1,45 @@
 {
-    "instr": [
-        {"op": "ssize"},
+    "hints": {
+        "description": "Calculates the factorial of a number",
+        "inputs": [
+            {
+                "name": "N",
+                "type": "int",
+                "description": "Number to calculate factorial of"
+            },
+            {
+                "name": "b",
+                "description": "This is a dummy"
+            },
+            {
+                "name": "c"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "F",
+                "type": "int",
+                "description": "Factorial result"
+            }
+        ],
+        "parameters": {
+            "dummy": {
+                "type": "str",
+                "description": "This dummy parameter has no effect.",
+                "default": "foobar"
+            },
+            "a_dummy": {
+                "type": "str",
+                "description": "This dummy parameter has no effect."
+            }
+        },
+        "references": [
+            {"url": "https://github.com/LiamBindle/zvm", "text": "ZVM, GitHub."},
+            "Second reference"
+        ]
+    },
+    "run": [
+        {"op": "size"},
         1,
         {"op": "eq"},
         {"op": "if"},
@@ -22,7 +61,6 @@
             {"op": "drop"},
         {"op": "endif"}
     ],
-    "n": 1,
     "tests": [
         {
             "name": "std.recurse - factorial(5)",
@@ -31,7 +69,7 @@
             ],
             "checks": [
                 {
-                    "eq": [
+                    "answer": [
                         120
                     ]
                 }
@@ -44,7 +82,7 @@
             ],
             "checks": [
                 {
-                    "eq": [
+                    "answer": [
                         6227020800
                     ]
                 }

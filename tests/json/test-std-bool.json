@@ -1,5 +1,5 @@
 {
-    "instr": [
+    "run": [
         "this is true",
         {"op": "asbool"},
         "",
@@ -54,7 +54,7 @@
             "name": "std.bool",
             "checks": [
                 {
-                    "eq": [
+                    "answer": [
                         true,
                         false,
 

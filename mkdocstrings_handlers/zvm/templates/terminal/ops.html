@@ -1,0 +1,8 @@
+{%- for op, hints in ops|dictsort -%}
+<details>
+    <summary><code>{ "op": "{{  op  }}", ... }</code></summary>
+    <div style="border-bottom: 1px solid; padding: 1em;">
+        {% include 'hints.html' %}
+    </div>
+</details>
+{%- endfor -%}

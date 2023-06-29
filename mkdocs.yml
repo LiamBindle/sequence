@@ -1,0 +1,6 @@
+site_name: ZVM
+site_url: https://zvm.run
+theme:
+  name: terminal
+plugins:
+  - mkdocstrings

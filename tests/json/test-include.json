@@ -1,24 +1,23 @@
 {
-    "includes": [
-        "file:./tests/json/test-import.json"
-    ],
-    "instr": [
+    "include": {
+        "test_import": "file:./tests/json/test-import.json"
+    },
+    "run": [
         {"op": "discard_if_neq", "value": 1}
     ],
-    "n": 1,
     "tests": [
         {
             "name": "code.include - 1",
             "setup": [1],
             "checks": [
-                {"eq": [1]}
+                {"answer": [1]}
             ]
         },
         {
             "name": "code.import - 2",
             "setup": [2],
             "checks": [
-                {"eq": []}
+                {"answer": []}
             ]
         }
     ]
