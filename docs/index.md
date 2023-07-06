@@ -28,4 +28,6 @@ For full documentation visit [mkdocs.org](https://www.mkdocs.org).
         - zvm.zvm
       includes:
         "factorial": "file:./tests/json/test-recurse.json"
-      filter: "factorial|\\+"
+      filter:
+        - "factorial"
+        - "drop"

@@ -13,28 +13,39 @@ class ZVMHandler(BaseHandler):
         super().__init__(*args, **kwargs)
 
     @staticmethod
-    def _docstring_section_regex(header: str, name: str):
-        return rf"(?:^{header}\n-{{{len(header)}}}\n(?P<{name}>[\s\S]*?)(?:\n\n|\Z))"
+    def _docstring_description_regex(headers: list):
+        return rf"\A(?P<base>[\s\S]+?)(?:\n\n|\Z)(?:{'|'.join(headers)})"
 
     @staticmethod
-    def _docstring_parameter_regex():
-        return r"(?P<name>^\S[\S\h]*?)(?P<type>:[\S\h]*)?(?P<default>\(default:\h*[\S\h]*\))?(?P<description>(?:\n\h+[\S\h]+)+)"
+    def _docstring_section_regex(header: str, name: str):
+        return rf"(?:^{header}[ \t]*\n-{{{len(header)}}}[ \t]*\n(?P<{name}>[\s\S]*?)(?:\n\n|\Z))"
+
+    # @staticmethod
+    # def _docstring_parameter_regex():
+    #     return r"(?P<name>^\S[^:\n]*)(?P<type>:[^\(\n]*)?(?P<default>\(default:[ \t]*[^\)]*\))?(?P<description>(?:\n[  \t]+[\S \t]+)+)?"
+
+    @staticmethod
+    def _docstrings_parse_args(text: str, optional_key: str):
+        pattern = r"(?P<name>^\S[^:\n]*)(?P<type>:[^\(\n]*)?(?P<default>\(default:[ \t]*[^\)]*\))?[ \t]*(?P<description>(?:\n[  \t]+[\S \t]+)+)?"
+        hints = []
+        for match in re.findall(pattern, text, re.MULTILINE):
+            arg = {}
+            name = match[0]
+            optional = bool(re.match(r"^\[\S+\]", name))
+            arg['name'] = name.strip(" []")
+            arg['type'] = match[1].strip(" :")
+            arg['default'] = match[2].removeprefix("(default:").removesuffix(")").strip()
+            arg['description'] = match[3].strip()
+            arg[optional_key] = optional or arg['default'] != ''
+            arg = {k: v for k, v in arg.items() if v != ''}
+            hints.append(arg)
+        return hints
 
     @staticmethod
     def _docstring_reference():
-        return r"^(?P<number>[[:digit:]]+)\.\h*(?P<reference>(?:(?:\n\h+)?[\S\h]+)+)"
+        return r"^\d+\.[ \t]*((?:(?:\n[ \t]+)?[^\n\(]+)+)(\([^\)]+\))?(?!\d)"
 
     def collect(self, identifier: str, config: MutableMapping[str, Any]) -> CollectorItem:
-        # if it's a module, import it, get all docstrings per function name
-        # match functions to callables in zvm ops
-        #
-        # import zvm.zvm
-        # zvm.zvm._static_ops['+'].__doc__
-        #
-        # import inspect
-        # inspect.getdoc(zvm.zvm._static_ops['+'])
-        # TODO: add kwarg for name
-
         imports: list[str] = config.get('imports', [])
         includes: dict[str, str] = config.get('includes', [])
 
@@ -44,27 +55,65 @@ class ZVMHandler(BaseHandler):
         for routine, url in includes.items():
             vm._include(routine, url)
 
-        re_filter = re.compile(config.get('filter', '.*'))
-        ops = sorted(filter(re_filter.match, zvm.zvm._static_ops.keys()))
+        re_filters = config.get('filter', ['.*'])
+        if isinstance(re_filters, str):
+            re_filters = [re_filters]
+        ops = set()
+        for re_filter in re_filters:
+            re_filter = re.compile(re_filter)
+            ops.update(filter(re_filter.match, zvm.zvm._static_ops.keys()))
+        ops = sorted(ops)
 
         docs: dict = {}
         for op_name in ops:
             op = zvm.zvm._static_ops[op_name]
             if callable(op):
                 docstring = inspect.getdoc(op)
-                sep_regex = r"(?:^|\n\n)"
-                summary_regex = r"(?P<base>[\s\S]+?)"
-                inputs_regex = rf"(?:{sep_regex}Inputs\n-{{6}}\n(?P<inputs>[\s\S]*?))"
-                parameters_regex = rf"(?:{sep_regex}Parameters\n-{{10}}\n(?P<parameters>[\s\S]*?))"
-                outputs_regex = rf"(?:{sep_regex}Outputs\n-{{7}}\n(?P<outputs>[\s\S]*?))"
-                references_regex = rf"(?:{sep_regex}References\n-{{10}}\n(?P<references>[\s\S]*))"
-                combined_regex = rf"^{summary_regex}??{inputs_regex}?{parameters_regex}?{outputs_regex}?{references_regex}?$"
-                match = re.search(combined_regex, docstring)  # text being your example text
-                matches = match.groupdict()
-                # TODO: continue parsing to build hints
-                docs[op_name]: dict = {}
+                hints = {}
+
+                SECTIONS = ['Inputs', 'Parameters', 'Outputs', 'References']
+                if matches := re.match(self._docstring_description_regex(SECTIONS), docstring):
+                    hints['description'] = matches.group(1)
+
+                if matches := re.search(self._docstring_section_regex('Inputs', 'inputs'), docstring, re.MULTILINE):
+                    text = matches.group('inputs')
+                    hints['inputs'] = self._docstrings_parse_args(text, 'conditional')
+
+                if matches := re.search(self._docstring_section_regex('Parameters', 'params'), docstring, re.MULTILINE):
+                    text = matches.group('params')
+                    params = self._docstrings_parse_args(text, 'optional')
+                    params_dict = {}
+                    for param in params:
+                        params_dict[param.pop("name")] = param
+                    hints['parameters'] = params_dict
+
+                if matches := re.search(self._docstring_section_regex('Outputs', 'outputs'), docstring, re.MULTILINE):
+                    text = matches.group('outputs')
+                    hints['outputs'] = self._docstrings_parse_args(text, 'conditional')
+
+                if matches := re.search(self._docstring_section_regex('References', 'references'), docstring, re.MULTILINE):
+                    text = matches.group('references')
+                    references = re.findall(self._docstring_reference(), text, re.MULTILINE)
+                    refs = []
+                    for ref in references:
+                        ref = {
+                            'text': ref[0].strip(),
+                            'url': ref[1].strip(" \t()")
+                        }
+                        ref = {k: v for k, v in ref.items() if v != ''}
+                        refs.append(ref)
+                    if len(refs):
+                        hints['references'] = refs
             else:
-                docs[op_name]: dict = op.get('hints', {})
+                hints: dict = op.get('hints', {})
+
+            if 'description' in hints and 'references' in hints:
+                for i, ref in enumerate(hints['references']):
+                    if 'url' not in ref:
+                        continue
+                    hints['description'] = hints['description'].replace(f"[{i+1}]", f'<a href="{ref["url"]}" target="_blank">[{i+1}]</a>')
+
+            docs[op_name] = hints
         return docs
 
     def render(self, data: CollectorItem, config: Mapping[str, Any]) -> str:
