@@ -114,7 +114,7 @@ class OpFrame:
     _run: List[Union[str, dict]] = None
     _pc: int = None
     _begins: List[int] = field(default_factory=list)
-    _next_kwargs: dict = field(default_factory=dict)
+    _next_params: dict = field(default_factory=dict)
 
     def run(self, vm: 'ZVM', _run: List[Union[str, dict]]):
         self._run = _run
@@ -144,10 +144,10 @@ class OpFrame:
                     result = None  # child.run will have updated the stack
                 elif callable(op):
                     # op is a function
-                    kwargs = self._next_kwargs
-                    kwargs.update({k: v for k, v in ex.items() if k != "op"})
-                    self._next_kwargs = {}
-                    result = op(state, **kwargs)
+                    params = self._next_params
+                    params.update({k: v for k, v in ex.items() if k != "op"})
+                    self._next_params = {}
+                    result = op(state, **params)
             else:
                 # is a literal
                 print_console_update(state, "put")
@@ -326,49 +326,91 @@ def copier(*, types: Union[type, List[type]]):
 # operators
 @op("/")
 def divide(state: State):
+    """
+    Divides the two numbers at the top of the stack. If the items at the top
+    of the stack are  not numbers, the binary operator '/' is applied to the
+    objects.
+
+    Inputs
+    ------
+    y: number, Any
+        The denominator.
+    x: number, Any
+        The numerator.
+
+    Outputs
+    -------
+    result: number, Any
+        The result of the division.
+    """
     x, y = state.popn(2)
     return x / y
 
 
 @op("*")
 def multiply(state: State):
+    """
+    Multiplies the two numbers at the top of the stack. If the items at the top
+    of the stack are  not numbers, the binary operator '*' is applied to the
+    objects.
+
+    Inputs
+    ------
+    y: number, Any
+        The second term.
+    x: number, Any
+        The first term.
+
+    Outputs
+    -------
+    result: number, Any
+        The result of the multiplication.
+    """
     x, y = state.popn(2)
     return x * y
 
 
 @op("-")
 def minus(state: State):
+    """
+    Subtracts the two numbers at the top of the stack. If the items at the top
+    of the stack are  not numbers, the binary operator '-' is applied to the
+    objects.
+
+    Inputs
+    ------
+    y: number, Any
+        The second term.
+    x: number, Any
+        The first term.
+
+    Outputs
+    -------
+    result: number, Any
+        The result of the subtraction.
+    """
     x, y = state.popn(2)
     return x - y
 
 
 @op("+")
 def plus(state: State):
-    """Computes the sum of two numbers.
+    """
+    Adds the two numbers at the top of the stack. If the items at the top
+    of the stack are  not numbers, the binary operator '+' is applied to the
+    objects.
 
     Inputs
     ------
-    a : int, float
-        first number
-    b : int, float
-        second number
-
-    Parameters
-    ----------
-    x : int, float (default: foo)
-        first param
-    y : int, float
-        second param
+    y: number, Any
+        The second term.
+    x: number, Any
+        The first term.
 
     Outputs
     -------
-    s : int, float
-        The sum
-
-    References
-    ----------
-    1. ZVM, GitHub. (https://github.com/LiamBindle/zvm)
-    2. Second reference
+    result: number, Any
+        The result of the addition.
     """
     x, y = state.popn(2)
     return x + y
@@ -376,6 +418,23 @@ def plus(state: State):
 
 @op("%")
 def mod(state: State):
+    """
+    Returns the modulous the two numbers at the top of the stack. If the items at the top
+    of the stack are  not numbers, the binary operator '%' is applied to the
+    objects.
+
+    Inputs
+    ------
+    y: number, Any
+        The divisor.
+    x: number, Any
+        The dividend.
+
+    Outputs
+    -------
+    result: number, Any
+        The result of x mod y.
+    """
     x, y = state.popn(2)
     return x % y
 
@@ -383,42 +442,147 @@ def mod(state: State):
 # bool ops
 @op("not")
 def not_(state: State):
+    """
+    Inverts the True/False value at the top of the stack. If the item at the
+    top of the stack is not a boolean value, it is coerced to a boolean and
+    then inverted.
+
+    Inputs
+    ------
+    x: bool, Any
+        The boolean value to be inverted.
+
+    Outputs
+    -------
+    x_inv: bool
+        The inverse boolean value of x.
+    """
     x = state.pop()
     return not x
 
 
 @op("and")
 def and_(state: State):
+    """
+    Logical AND of the two boolean values at the top of the stack.
+    If the items at the top of the stack are not booleans, they are coerced to
+    booleans.
+
+    Inputs
+    ------
+    y: bool, Any
+        The second term.
+    x: bool, Any
+        The first term.
+
+    Outputs
+    -------
+    z: bool
+        The result of the logical AND operation.
+    """
     x, y = state.popn(2)
     return x and y
 
 
 @op("or")
 def or_(state: State):
+    """
+    Logical OR of the two boolean values at the top of the stack.
+    If the items at the top of the stack are not booleans, they are coerced to
+    booleans.
+
+    Inputs
+    ------
+    y: bool, Any
+        The second term.
+    x: bool, Any
+        The first term.
+
+    Outputs
+    -------
+    z: bool
+        The result of the logical OR operation.
+    """
     x, y = state.popn(2)
     return x or y
 
 
 @op("xor")
 def xor_(state: State):
+    """
+    Logical XOR of the two boolean values at the top of the stack.
+    If the items at the top of the stack are not booleans, they are coerced to
+    booleans.
+
+    Inputs
+    ------
+    y: bool, Any
+        The second term.
+    x: bool, Any
+        The first term.
+
+    Outputs
+    -------
+    z: bool
+        The result of the logical XOR operation.
+    """
     x, y = state.popn(2)
     return bool(x) != bool(y)
 
 
 @op("asbool")
 def asbool_(state: State):
+    """
+    Coerces the item at the top of the stack to a boolean value.
+
+    Inputs
+    ------
+    x: Any
+        The item to be converted to a boolean value.
+
+    Outputs
+    -------
+    x_bool: bool
+        x as a boolean value.
+    """
     x = state.pop()
     return bool(x)
 
 
 @op("asint")
 def asint_(state: State):
+    """
+    Coerces the item at the top of the stack to an integer.
+
+    Inputs
+    ------
+    x: Any
+        The item to be converted to an integer.
+
+    Outputs
+    -------
+    x_int: int
+        x as an integer.
+    """
     x = state.pop()
     return int(x)
 
 
 @op("asfloat")
 def asfloat_(state: State):
+    """
+    Coerces the item at the top of the stack to a float.
+
+    Inputs
+    ------
+    x: Any
+        The item to be converted to a float.
+
+    Outputs
+    -------
+    x_float: float
+        x as an float.
+    """
     x = state.pop()
     return float(x)
 
@@ -426,36 +590,126 @@ def asfloat_(state: State):
 # comparison
 @op("eq")
 def equal(state: State):
+    """
+    Checks if x == y.
+
+    Inputs
+    ------
+    y: Any
+        The RHS operand.
+    x: Any
+        The LHS operand.
+
+    Outputs
+    -------
+    xy_eq: bool
+        The result of x == y.
+    """
     x, y = state.popn(2)
     return x == y
 
 
 @op("neq")
 def not_equal(state: State):
+    """
+    Checks if x is not equal to y.
+
+    Inputs
+    ------
+    y: Any
+        The RHS operand.
+    x: Any
+        The LHS operand.
+
+    Outputs
+    -------
+    xy_neq: bool
+        The result of x != y.
+    """
     x, y = state.popn(2)
     return x != y
 
 
 @op("gt")
 def greater_than(state: State):
+    """
+    Checks if x is greater than y.
+
+    Inputs
+    ------
+    y: Any
+        The RHS operand.
+    x: Any
+        The LHS operand.
+
+    Outputs
+    -------
+    x_gt_y: bool
+        The result of x > y.
+    """
     x, y = state.popn(2)
     return x > y
 
 
 @op("ge")
 def greater_than_or_equal_to(state: State):
+    """
+    Checks if x is greater than or equal to y.
+
+    Inputs
+    ------
+    y: Any
+        The RHS operand.
+    x: Any
+        The LHS operand.
+
+    Outputs
+    -------
+    x_ge_y: bool
+        The result of x >= y.
+    """
     x, y = state.popn(2)
     return x >= y
 
 
 @op("lt")
 def less_than(state: State):
+    """
+    Checks if x is less than y.
+
+    Inputs
+    ------
+    y: Any
+        The RHS operand.
+    x: Any
+        The LHS operand.
+
+    Outputs
+    -------
+    x_lt_y: bool
+        The result of x < y.
+    """
     x, y = state.popn(2)
     return x < y
 
 
 @op("le")
 def less_than_or_equal_to(state: State):
+    """
+    Checks if x is less than or equal to y.
+
+    Inputs
+    ------
+    y: Any
+        The RHS operand.
+    x: Any
+        The LHS operand.
+
+    Outputs
+    -------
+    x_le_y: bool
+        The result of x <= y.
+    """
     x, y = state.popn(2)
     return x <= y
 
@@ -463,6 +717,23 @@ def less_than_or_equal_to(state: State):
 # stack ops
 @op("dup")
 def duplicate(state: State, *, deep: bool = False, offset: int = 0):
+    """
+    Duplicates the item at the top of the stack. There are parameters
+    to control if a shallow or deep copy is done, as well as control
+    the TOS offset of the item to be duplicated.
+
+    Parameters
+    ----------
+    [deep]: bool (default: false)
+        Controls if the copy is a shallow or deep copy.
+    [offset]: int (default: 0)
+        The offset (from TOS) of the item you want to duplicate.
+
+    Outputs
+    -------
+    item_copy: Any
+        A copy of the requested item.
+    """
     global _static_copiers
     offset = -1 - offset
     item = state._stack[offset]
@@ -477,42 +748,66 @@ def duplicate(state: State, *, deep: bool = False, offset: int = 0):
 
 
 @op("swap")
-def swap(state: State):
-    x, y = state.popn(2)
-    return [y, x]
+def swap(state: State, *, order: list = [1, 0]):
+    """
+    Swaps the order of the items at the top of the stack.
+
+    Parameters
+    ----------
+    [order]: list (default: [1, 0])
+        The new order of the TOS. The first integer is the list is TOS
+        offset of the item that should be moved to the TOS. The length
+        of the list controls the number of items that are reordered.
+    """
+    size = len(order)
+    items = state.popn(size)
+    new_items = [items[size-1-i] for i in reversed(order)]
+    return new_items
 
 
 @op("drop")
 def drop(state: State):
+    """
+    Drops the item at the top of the stack.
+    """
     state.pop()
-
-
-@op("reorder")
-def reorder(state: State, *, order: list = []):
-    size = len(order)
-    items = state.popn(size)
-    new_items = [items[size-1-i] for i in order]
-    return new_items
 
 
 @op("size")
 def stack_size(state: State):
+    """
+    Returns the current size (depth) of the stack.
+
+    Outputs
+    -------
+    stack_size: int
+        The size of the stack.
+    """
     return len(state._stack)
 
 
 # looping
 @op("begin")
 def begin_(state: State):
+    """
+    Marks the beginning of a loop.
+    """
     state._op_frame._begins.append(state._op_frame._pc)
 
 
 @op("repeat")
 def repeat_(state: State):
+    """
+    Marks the end of a loop.
+    """
     state._op_frame._pc = state._op_frame._begins[-1]
 
 
 @op("break")
 def break_(state: State):
+    """
+    Breaks out of a loop (terminates the loop).
+    """
     nested_loops = 0
     pc = state._op_frame._pc
     while pc < len(state._op_frame._run):
@@ -539,11 +834,28 @@ def break_(state: State):
 
 @op("recurse")
 def recurse(state: State):
+    """
+    Restarts the current procedure.
+    """
     state._op_frame._pc = -1
 
 
 @op("while")
 def while_(state: State):
+    """
+    Continues the loop if the item at the top of the stack is true. If the
+    item at the top of the stack is not true, it terminates the loop.
+
+    This method is useful for constructing traditional while-loops in a
+    procedure.
+
+    This method MUST be placed between `{"op": "begin"}` and `{"op": "repeat"}`.
+
+    Inputs
+    ------
+    cond: bool, Any
+        If true, the loop continues. If false, the loop terminates.
+    """
     cond = state.pop()
     if not cond:
         break_(state)
@@ -552,6 +864,15 @@ def while_(state: State):
 # branching
 @op("if")
 def if_(state: State):
+    """
+    Marks the beginning of an if-block. An if statment MUST be terminated by `{"op": "endif"}`.
+
+    Inputs
+    ------
+    cond: bool, Any
+        If true, the if-block is evaluated. If false, the else-block is
+        evaluated if it exists.
+    """
     cond = state.pop()
     if cond:
         return
@@ -579,6 +900,10 @@ def if_(state: State):
 
 @op("else")
 def else_(state: State):
+    """
+    Marks the beginning of an else-block. This method MUST be placed between
+    `{"op": "if"}` and `{"op": "endif"}`.
+    """
     # set PC to address to else/endif
     nested_branches = 0
     pc = state._op_frame._pc
@@ -605,44 +930,115 @@ def else_(state: State):
 
 @op("endif")
 def endif_(state: State):
+    """
+    Marks the end of an if statement.
+    """
     # noop
     pass
 
 
 # state
 @op("load")
-def load(state: State, *, uri: str, mediaType: str = None, **kwargs):
+def load(state: State, *, uri: str, mediaType: str = None, **params):
+    """
+    Loads an resource from a URI and places it as the top of the stack.
+
+    Parameters
+    ----------
+    uri: str
+        The URI of the resource you want to load.
+    [mediaType]: str
+        The media type of the resource you want to load.
+    [**params]:
+        Additional parameters are passed to the loader.
+
+    Outputs
+    -------
+    item: Any
+        The loaded resource.
+    """
     global _static_loaders
     parsed_uri = urllib.parse.urlparse(uri)
     uri_media_loader = _static_loaders[parsed_uri.scheme][mediaType]
-    return uri_media_loader(state, uri, **kwargs)
+    return uri_media_loader(state, uri, **params)
 
 
 @op("store")
-def store(state: State, *, uri: str, mediaType: str = None, **kwargs):
+def store(state: State, *, uri: str, mediaType: str = None, **params):
+    """
+    Stores the item at the top of the stack.
+
+    Parameters
+    ----------
+    uri: str
+        The desination where you want to store the item.
+    [mediaType]: str
+        The media type of the resource you want to store.
+    [**params]:
+        Additional parameters are passed to the storer.
+
+    Inputs
+    -------
+    item: Any
+        The item to be stored.
+    """
     global _static_storers
     data = state.pop()
     parsed_uri = urllib.parse.urlparse(uri)
     uri_media_storer = _static_storers[parsed_uri.scheme][mediaType]
-    uri_media_storer(state, data, uri, **kwargs)
+    uri_media_storer(state, data, uri, **params)
 
 
 @op("delete")
-def delete(state: State, *, uri: str, mediaType: str = None, **kwargs):
+def delete(state: State, *, uri: str, mediaType: str = None, **params):
+    """
+    Deletes a resource.
+
+    Parameters
+    ----------
+    uri: str
+        The URI of the resource to be deleted.
+    [mediaType]: str
+        The media type of the resource you want to delete.
+    [**params]:
+        Additional parameters are passed to the deleter.
+    """
     global _static_deleters
     parsed_uri = urllib.parse.urlparse(uri)
     uri_media_deleter = _static_deleters[parsed_uri.scheme][mediaType]
-    uri_media_deleter(state, uri, **kwargs)
+    uri_media_deleter(state, uri, **params)
 
 # misc
 
 
 @op("fstring")
-def format_string(state: State, *, fmt: str, **kwargs):
+def format_string(state: State, *, fmt: str, **params):
+    """
+    Formats a string.
+
+    Parameters
+    ----------
+    fmt: str
+        The format string (a python f-string). See the Python documentation of
+        f-strings details.
+    [**params]:
+        Named arguments for the f-string.
+
+    Inputs
+    ------
+    ...: Any
+        The top N items are poped from the stack where N is the number of
+        positional arguments in the f-string.
+
+    Outputs
+    -------
+    result: str
+        The formatted string.
+    """
     formatter = string.Formatter()
     parsed_fmt = formatter.parse(fmt)
     format_nargs = 0
-    format_kwargs = set()
+    format_params = set()
     for (_, field_name, _, _) in parsed_fmt:
         if field_name is None:
             # no replacement field
@@ -650,13 +1046,30 @@ def format_string(state: State, *, fmt: str, **kwargs):
         if field_name == '' or field_name.isnumeric():
             format_nargs += 1
         else:
-            format_kwargs.add(field_name)
+            format_params.add(field_name)
     args = state.popn(format_nargs)
-    return fmt.format(*args, **kwargs)
+    return fmt.format(*args, **params)
 
 
 @op("assert")
 def assert_(state: State, *, error: str = '', negate: bool = False):
+    """
+    Asserts that the item at the top of the stack is true. Terminates
+    execution if false.
+
+    Parameters
+    ----------
+    [error]: str
+        The error message to print if the assertion fails.
+    [negate]: bool (default: false)
+        Assert that the item at the top of the stack if false (rather than
+        true).
+
+    Inputs
+    ------
+    cond: bool
+        The boolean value to check.
+    """
     x = state.pop()
     if negate:
         assert not x, error
@@ -666,11 +1079,35 @@ def assert_(state: State, *, error: str = '', negate: bool = False):
 
 @op("pack")
 def pack_(state: State, *, n: int, forward: bool = True, keys: List[str] = None):
+    """
+    Packs N items from the top of the stack into a single array at the top of
+    the stack.
+
+    Parameters
+    ----------
+    n: int
+        The number of items at the top of the stack to pack into the array.
+    [forward]: bool (default: true)
+        If false, the items are packed in reverse order.
+    [keys]: list
+        If provided, the items are packed as key-value pairs. The first key
+        applies to the TOS item.
+
+    Inputs
+    ------
+    ...: Any
+        n items are consumed from the top of the stack.
+
+    Outputs
+    -------
+    arr: Array
+        An array of items.
+    """
     items = state.popn(n)
     if not forward:
         items.reverse()
     if keys is not None:
-        items = {k: v for k, v in zip(keys, items)}
+        items = {k: v for k, v in zip(reversed(keys), items)}
     else:
         items = tuple(items)
     return items
@@ -678,6 +1115,21 @@ def pack_(state: State, *, n: int, forward: bool = True, keys: List[str] = None)
 
 @op("unpack")
 def unpack_(state: State, *, keys: List[str] = None):
+    """
+    Packs N items from the top of the stack into a single array at the top of
+    the stack.
+
+    Parameters
+    ----------
+    [keys]: list
+        Required to unpack a list of key-value pairs. The first key refers to the
+        new TOS item.
+
+    Outputs
+    -------
+    ...: Any
+        The unpacked items.
+    """
     items = state.pop()
     if keys is not None:
         items = [items[k] for k in keys]
@@ -686,12 +1138,22 @@ def unpack_(state: State, *, keys: List[str] = None):
     return items
 
 
-@op("set_next_kwargs")
-def set_next_kwargs(state: State):
-    kwargs = state.pop()
-    if not isinstance(kwargs, dict):
-        raise TypeError(f"Top-of-stack expected to be 'dict' but got '{type(kwargs)}'")
-    state._op_frame._next_kwargs = kwargs
+@op("set_next_params")
+def set_next_params(state: State):
+    """
+    Initializes the next op's parameters to the key-value array at the top-of-the-stack.
+
+    This is useful to set parameters dynamically.
+
+    Parameters
+    ----------
+    kv_arr: key-value array
+        Parameters for the next op.
+    """
+    params = state.pop()
+    if not isinstance(params, dict):
+        raise TypeError(f"Top-of-stack expected to be 'dict' but got '{type(params)}'")
+    state._op_frame._next_params = params
 
 
 @loader(schemes=['http', 'https'], media_type='application/json')

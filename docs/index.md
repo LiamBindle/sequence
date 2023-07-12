@@ -21,7 +21,112 @@ For full documentation visit [mkdocs.org](https://www.mkdocs.org).
     selection:
       docstring_style: numpy -->
 
-::: test-section
+## Stack Manipulation Ops
+::: zvm.zvm
+    handler: zvm
+    options:
+        imports:
+          - zvm.zvm
+        ops:
+          - dup
+          - swap
+          - drop
+          - size
+          - pack
+          - unpack
+
+
+## Comparison Ops
+::: zvm.zvm
+    handler: zvm
+    options:
+        imports:
+          - zvm.zvm
+        ops:
+          - eq
+          - neq
+          - gt
+          - ge
+          - lt
+          - le
+
+
+## Looping Ops
+::: zvm.zvm
+    handler: zvm
+    options:
+        imports:
+          - zvm.zvm
+        ops:
+          - begin
+          - while
+          - break
+          - repeat
+          - recurse
+
+
+## Branching Ops
+::: zvm.zvm
+    handler: zvm
+    options:
+        imports:
+          - zvm.zvm
+        ops:
+          - if
+          - else
+          - endif
+
+
+## Loading/Storing/Deleting Ops
+::: zvm.zvm
+    handler: zvm
+    options:
+        imports:
+          - zvm.zvm
+        ops:
+          - load
+          - store
+          - delete
+
+
+## Conversion Ops
+::: zvm.zvm
+    handler: zvm
+    options:
+        imports:
+          - zvm.zvm
+        ops:
+          - asbool
+          - asint
+          - asfloat
+
+
+## Arithmetic Ops
+::: zvm.zvm
+    handler: zvm
+    options:
+        imports:
+          - zvm.zvm
+        ops:
+          - "/"
+          - "*"
+          - "-"
+          - "+"
+          - "%"
+
+
+## Miscellaneous Ops
+::: zvm.zvm
+    handler: zvm
+    options:
+        imports:
+          - zvm.zvm
+        ops:
+          - fstring
+          - assert
+          - set_next_params
+
+<!-- ::: test-section
     handler: zvm
     options:
       imports:
@@ -30,4 +135,4 @@ For full documentation visit [mkdocs.org](https://www.mkdocs.org).
         "factorial": "file:./tests/json/test-recurse.json"
       filter:
         - "factorial"
-        - "drop"
+        - "drop" -->

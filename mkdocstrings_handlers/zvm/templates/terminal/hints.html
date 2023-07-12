@@ -2,30 +2,6 @@
     <p>{{ hints.description|safe }}</p>
     {%- endif -%}
 
-    {%- if hints.inputs -%}
-    <div>
-        <h2 style="margin-bottom: 0.2em;">Inputs</h2>
-        {% for input in hints.inputs %}
-        <span style="float:left">
-            {%- if input.conditional -%}
-            [{{ input.name }}]
-            {%- else -%}
-            {{ input.name }}
-            {%- endif -%}
-            {%- if 'type' in input -%}
-            : <i>{{ input.type }}</i>
-            {%- endif -%}
-        </span>
-        <br/>
-        {%- if input.description -%}
-        <p style='margin-left:2em'>
-            {{ input.description }}
-        </p>
-        {%- endif -%}
-        {%- endfor -%}
-    </div>
-    {%- endif -%}
-
     {%- if hints.parameters -%}
     <div>
         <h2 style="margin-bottom: 0.2em;">Parameters</h2>
@@ -63,6 +39,30 @@
         {%- endif -%}
         {%- endfor -%}
 
+    </div>
+    {%- endif -%}
+
+    {%- if hints.inputs -%}
+    <div>
+        <h2 style="margin-bottom: 0.2em;">Inputs</h2>
+        {% for input in hints.inputs %}
+        <span style="float:left">
+            {%- if input.conditional -%}
+            [{{ input.name }}]
+            {%- else -%}
+            {{ input.name }}
+            {%- endif -%}
+            {%- if 'type' in input -%}
+            : <i>{{ input.type }}</i>
+            {%- endif -%}
+        </span>
+        <br/>
+        {%- if input.description -%}
+        <p style='margin-left:2em'>
+            {{ input.description }}
+        </p>
+        {%- endif -%}
+        {%- endfor -%}
     </div>
     {%- endif -%}
 

@@ -22,17 +22,6 @@
                 "description": "Factorial result"
             }
         ],
-        "parameters": {
-            "dummy": {
-                "type": "str",
-                "description": "This dummy parameter has no effect.",
-                "default": "foobar"
-            },
-            "a_dummy": {
-                "type": "str",
-                "description": "This dummy parameter has no effect."
-            }
-        },
         "references": [
             {"url": "https://github.com/LiamBindle/zvm", "text": "ZVM, GitHub."},
             "Second reference"
@@ -51,7 +40,7 @@
         {"op": "if"},
 
             {"op": "dup"},
-            {"op": "reorder", "order": [1, 2, 0]},
+            {"op": "swap", "order": [0, 2, 1]},
             {"op": "*"},
             {"op": "swap"},
             1,

@@ -47,7 +47,7 @@ class ZVMHandler(BaseHandler):
 
     def collect(self, identifier: str, config: MutableMapping[str, Any]) -> CollectorItem:
         imports: list[str] = config.get('imports', [])
-        includes: dict[str, str] = config.get('includes', [])
+        includes: dict[str, str] = config.get('includes', {})
 
         for module in imports:
             importlib.import_module(module)
@@ -55,16 +55,12 @@ class ZVMHandler(BaseHandler):
         for routine, url in includes.items():
             vm._include(routine, url)
 
-        re_filters = config.get('filter', ['.*'])
-        if isinstance(re_filters, str):
-            re_filters = [re_filters]
-        ops = set()
-        for re_filter in re_filters:
-            re_filter = re.compile(re_filter)
-            ops.update(filter(re_filter.match, zvm.zvm._static_ops.keys()))
-        ops = sorted(ops)
+        ops = config.get('ops', [])
 
-        docs: dict = {}
+        docs: dict = {
+            'op_names': [],
+            'op_hints': []
+        }
         for op_name in ops:
             op = zvm.zvm._static_ops[op_name]
             if callable(op):
@@ -112,13 +108,14 @@ class ZVMHandler(BaseHandler):
                     if 'url' not in ref:
                         continue
                     hints['description'] = hints['description'].replace(f"[{i+1}]", f'<a href="{ref["url"]}" target="_blank">[{i+1}]</a>')
-
-            docs[op_name] = hints
+            docs['op_names'].append(op_name)
+            docs['op_hints'].append(hints)
         return docs
 
     def render(self, data: CollectorItem, config: Mapping[str, Any]) -> str:
+        self.env.filters['zip'] = zip
         template = self.env.get_template("ops.html")
-        return template.render(ops=data)
+        return template.render(op_names=data['op_names'], op_hints=data['op_hints'])
 
 
 # https://mkdocstrings.github.io/usage/handlers/#custom-handlers
