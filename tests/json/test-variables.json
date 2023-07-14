@@ -10,21 +10,21 @@
         },
         "nested_ops": {
             "run": [
-                {"op": "load", "uri": "locals:///x"},
+                {"op": "get", "uri": "locals:///x"},
                 2,
                 {"op": "eq"},
     
                 3,
-                {"op": "store", "uri": "locals:///x"},
-                {"op": "load", "uri": "locals:///x"},
+                {"op": "put", "uri": "locals:///x"},
+                {"op": "get", "uri": "locals:///x"},
                 3,
                 {"op": "eq"},
     
-                {"op": "delete", "uri": "locals:///y"},
+                {"op": "del", "uri": "locals:///y"},
     
                 4,
-                {"op": "store", "uri": "globals:///z"},
-                {"op": "load", "uri": "globals:///z"},
+                {"op": "put", "uri": "globals:///z"},
+                {"op": "get", "uri": "globals:///z"},
                 4,
                 {"op": "eq"}
             ]
@@ -38,25 +38,25 @@
         {"op": "check_local", "key": "bar", "value": "baz"},
 
         2,
-        {"op": "store", "uri": "locals:///x"},
+        {"op": "put", "uri": "locals:///x"},
         3,
-        {"op": "store", "uri": "locals:///y"},
+        {"op": "put", "uri": "locals:///y"},
 
             {"op": "nested_ops"},
 
-        {"op": "load", "uri": "locals:///x"},
+        {"op": "get", "uri": "locals:///x"},
         2,
         {"op": "eq"},
 
-        {"op": "load", "uri": "locals:///y"},
+        {"op": "get", "uri": "locals:///y"},
         3,
         {"op": "eq"},
 
-        {"op": "load", "uri": "globals:///z"},
+        {"op": "get", "uri": "globals:///z"},
         4,
         {"op": "eq"},
 
-        {"op": "delete", "uri": "globals:///z"}
+        {"op": "del", "uri": "globals:///z"}
     ],
     "set": {
         "foo": 1,

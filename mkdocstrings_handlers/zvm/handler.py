@@ -18,7 +18,10 @@ def add_hyperlinks_to_descriptions(hints):
     return hints
 
 
-def parse_docstring(docstring: str, hints: dict = {}) -> dict:
+def parse_docstring(docstring: str, hints: dict = None) -> dict:
+    if hints is None:
+        hints = {}
+
     def _docstring_description_regex(headers: list):
         return rf"\A(?P<base>[\s\S]+?)(?:\n\n|\Z)(?:{'|'.join(headers)})"
 
@@ -123,12 +126,12 @@ class ZVMHandler(BaseHandler):
                 scheme = data_spec
                 media_type = None
 
-            loader = zvm.zvm._static_loaders.get(scheme, {}).get(media_type, None)
-            storer = zvm.zvm._static_storers.get(scheme, {}).get(media_type, None)
+            getter = zvm.zvm._static_getters.get(scheme, {}).get(media_type, None)
+            putter = zvm.zvm._static_putters.get(scheme, {}).get(media_type, None)
             deleter = zvm.zvm._static_deleters.get(scheme, {}).get(media_type, None)
 
-            if loader is not None:
-                docs['extdata_op'].append("load")
+            if getter is not None:
+                docs['extdata_op'].append("get")
                 docs['extdata_scheme'].append(scheme)
                 docs['extdata_media_type'].append(media_type)
                 hints = {
@@ -143,11 +146,11 @@ class ZVMHandler(BaseHandler):
                         }
                     }
                 }
-                loader = inspect.getdoc(loader)
-                hints = parse_docstring(loader, hints)
+                getter = inspect.getdoc(getter)
+                hints = parse_docstring(getter, hints)
                 docs['extdata_hints'].append(hints)
-            if storer is not None:
-                docs['extdata_op'].append("store")
+            if putter is not None:
+                docs['extdata_op'].append("put")
                 docs['extdata_scheme'].append(scheme)
                 docs['extdata_media_type'].append(media_type)
                 hints = {
@@ -162,11 +165,11 @@ class ZVMHandler(BaseHandler):
                         }
                     }
                 }
-                storer = inspect.getdoc(storer)
-                hints = parse_docstring(loader, hints)
+                putter = inspect.getdoc(putter)
+                hints = parse_docstring(putter, hints)
                 docs['extdata_hints'].append(hints)
             if deleter is not None:
-                docs['extdata_op'].append("delete")
+                docs['extdata_op'].append("del")
                 docs['extdata_scheme'].append(scheme)
                 docs['extdata_media_type'].append(media_type)
                 hints = {
@@ -179,7 +182,7 @@ class ZVMHandler(BaseHandler):
                     }
                 }
                 deleter = inspect.getdoc(deleter)
-                hints = parse_docstring(loader, hints)
+                hints = parse_docstring(deleter, hints)
                 docs['extdata_hints'].append(hints)
 
         return docs

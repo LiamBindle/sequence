@@ -2,7 +2,7 @@
     "import": ["tests.imports"],
     "run": [
         {
-            "op": "load",
+            "op": "get",
             "uri": "file:./tests/json/data/load-sample.json", 
             "mediaType": "application/json"
         },
@@ -10,18 +10,18 @@
         {"op": "change_key_value", "key": "foo", "value": "baz"},
         {"op": "dup", "deep": true},
         {
-            "op": "store",
+            "op": "put",
             "uri": "file:./tests/json/data/temp-store-data.json", 
             "mediaType": "application/json"
         },
         {"op": "check_file_exists", "path": "./tests/json/data/temp-store-data.json"},
         {
-            "op": "load",
+            "op": "get",
             "uri": "file:./tests/json/data/temp-store-data.json", 
             "mediaType": "application/json"
         },
         {
-            "op": "delete",
+            "op": "del",
             "uri": "file:./tests/json/data/temp-store-data.json"
         },
         {"op": "check_file_exists", "path": "./tests/json/data/temp-store-data.json"}

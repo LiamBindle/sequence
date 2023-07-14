@@ -1,3 +1,3 @@
-# from .utils import op, loader, storer, deleter
+# from .utils import op, getter, putter, deleter
 # from .vm import run, run_test
-from .zvm import op, loader, storer, deleter, ZVM, State, test, copier
+from .zvm import op, getter, putter, deleter, ZVM, State, test, copier

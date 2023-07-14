@@ -15,11 +15,13 @@ import copy
 import string
 import pathlib
 
+# TODO: add linter with callbacks so procedures can be inspected
+
 
 # static variables for keeping track of user functions registered by imports
 _static_ops: dict[str, Union[dict, Callable]] = {}
-_static_loaders: dict[str, dict[str, Callable]] = {}
-_static_storers: dict[str, dict[str, Callable]] = {}
+_static_getters: dict[str, dict[str, Callable]] = {}
+_static_putters: dict[str, dict[str, Callable]] = {}
 _static_deleters: dict[str, dict[str, Callable]] = {}
 
 
@@ -178,7 +180,7 @@ class ZVM:
             print('here')
         if isinstance(url_or_op, str):
             url = urllib.parse.urlparse(url_or_op)
-            data = _static_loaders[url.scheme]['application/json'](self, url_or_op)
+            data = _static_getters[url.scheme]['application/json'](self, url_or_op)
         elif isinstance(url_or_op, dict):
             data = url_or_op
         else:
@@ -198,7 +200,7 @@ class ZVM:
         if line.startswith("import "):
             self._import([line.removeprefix("import ")])
         elif bool(url.scheme) and bool(url.path):
-            op = _static_loaders[url.scheme]['application/json'](self, line)
+            op = _static_getters[url.scheme]['application/json'](self, line)
             self.exec(op)
         else:
             op = ast.literal_eval(line)
@@ -254,36 +256,36 @@ def op(name):
     return inner
 
 
-def loader(*, schemes: Union[str, list[str]], media_type: str):
-    global _static_loaders
+def getter(*, schemes: Union[str, list[str]], media_type: str):
+    global _static_getters
     if isinstance(schemes, str):
         schemes = [schemes]
 
     def inner(func: Callable):
-        global _static_loaders
+        global _static_getters
         if func.__code__.co_argcount != 2:
             raise RuntimeError("function must take exactly two position arguments (state: zvm.State, url: str)")
         for scheme in schemes:
-            if scheme not in _static_loaders:
-                _static_loaders[scheme] = {}
-            _static_loaders[scheme][media_type] = func
+            if scheme not in _static_getters:
+                _static_getters[scheme] = {}
+            _static_getters[scheme][media_type] = func
         return func
     return inner
 
 
-def storer(*, schemes: Union[str, list[str]], media_type: str):
-    global _static_storers
+def putter(*, schemes: Union[str, list[str]], media_type: str):
+    global _static_putters
     if isinstance(schemes, str):
         schemes = [schemes]
 
     def inner(func: Callable):
-        global _static_storers
+        global _static_putters
         if func.__code__.co_argcount != 3:
             raise RuntimeError("function must take exactly three position argument (state: zvm.State, data: Any, url: str)")
         for scheme in schemes:
-            if scheme not in _static_storers:
-                _static_storers[scheme] = {}
-            _static_storers[scheme][media_type] = func
+            if scheme not in _static_putters:
+                _static_putters[scheme] = {}
+            _static_putters[scheme][media_type] = func
         return func
     return inner
 
@@ -938,7 +940,7 @@ def endif_(state: State):
 
 
 # state
-@op("load")
+@op("get")
 def load(state: State, *, uri: str, mediaType: str = None, **params):
     """
     Loads an resource from a URI and places it as the top of the stack.
@@ -950,20 +952,20 @@ def load(state: State, *, uri: str, mediaType: str = None, **params):
     [mediaType]: str
         The media type of the resource you want to load.
     [**params]:
-        Additional parameters are passed to the loader.
+        Additional parameters are passed to the getter.
 
     Outputs
     -------
     item: Any
         The loaded resource.
     """
-    global _static_loaders
+    global _static_getters
     parsed_uri = urllib.parse.urlparse(uri)
-    uri_media_loader = _static_loaders[parsed_uri.scheme][mediaType]
-    return uri_media_loader(state, uri, **params)
+    uri_media_getter = _static_getters[parsed_uri.scheme][mediaType]
+    return uri_media_getter(state, uri, **params)
 
 
-@op("store")
+@op("put")
 def store(state: State, *, uri: str, mediaType: str = None, **params):
     """
     Stores the item at the top of the stack.
@@ -975,21 +977,21 @@ def store(state: State, *, uri: str, mediaType: str = None, **params):
     [mediaType]: str
         The media type of the resource you want to store.
     [**params]:
-        Additional parameters are passed to the storer.
+        Additional parameters are passed to the putter.
 
     Inputs
     -------
     item: Any
         The item to be stored.
     """
-    global _static_storers
+    global _static_putters
     data = state.pop()
     parsed_uri = urllib.parse.urlparse(uri)
-    uri_media_storer = _static_storers[parsed_uri.scheme][mediaType]
-    uri_media_storer(state, data, uri, **params)
+    uri_media_putter = _static_putters[parsed_uri.scheme][mediaType]
+    uri_media_putter(state, data, uri, **params)
 
 
-@op("delete")
+@op("del")
 def delete(state: State, *, uri: str, mediaType: str = None, **params):
     """
     Deletes a resource.
@@ -1156,7 +1158,7 @@ def set_next_params(state: State):
     state._op_frame._next_params = params
 
 
-@loader(schemes=['http', 'https'], media_type='application/json')
+@getter(schemes=['http', 'https'], media_type='application/json')
 def fetch_json_http(state: State, url: str):
     """
     Loads a JSON file from a remote HTTP/HTTPS source.
@@ -1172,7 +1174,7 @@ def fetch_json_http(state: State, url: str):
     return json.loads(response.read())
 
 
-@loader(schemes=['file'], media_type='application/json')
+@getter(schemes=['file'], media_type='application/json')
 def fetch_json_file(state: State, url: str):
     """
     Loads a JSON file from a local file.
@@ -1189,7 +1191,7 @@ def fetch_json_file(state: State, url: str):
     return data
 
 
-@storer(schemes=['file'], media_type='application/json')
+@putter(schemes=['file'], media_type='application/json')
 def store_json_file(state: State, data, uri: str):
     """
     Loads a JSON file from a local file.
@@ -1215,7 +1217,7 @@ def delete_generic_file(state: State, uri: str, *, missing_ok: bool = False):
     pathlib.Path(path).unlink(missing_ok)
 
 
-@loader(schemes='locals', media_type=None)
+@getter(schemes='locals', media_type=None)
 def load_local_variable(state: State, key, *, default: Any = None):
     """
     Loads a local variable and places the result at the top of the stack.
@@ -1234,7 +1236,7 @@ def load_local_variable(state: State, key, *, default: Any = None):
     return state._op_frame._set.get(path, default)
 
 
-@storer(schemes='locals', media_type=None)
+@putter(schemes='locals', media_type=None)
 def store_local_variable(state: State, data, key):
     """
     Saves a local variable (procedure-scope).
@@ -1252,7 +1254,7 @@ def delete_local_variable(state: State, key):
     del state._op_frame._set[path]
 
 
-@loader(schemes='globals', media_type=None)
+@getter(schemes='globals', media_type=None)
 def load_global_variable(state: State, key, *, default: Any = None):
     """
     Loads a global variable and places the result at the top of the stack.
@@ -1271,7 +1273,7 @@ def load_global_variable(state: State, key, *, default: Any = None):
     return state._vm._globals.get(path, default)
 
 
-@storer(schemes='globals', media_type=None)
+@putter(schemes='globals', media_type=None)
 def store_global_variable(state: State, data, key):
     """
     Saves a global variable.

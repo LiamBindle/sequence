@@ -56,16 +56,16 @@
           - endif
 
 
-## Loading/Storing/Deleting
+## External data
 ::: zvm.zvm
     handler: zvm
     options:
         imports:
           - zvm.zvm
         ops:
-          - load
-          - store
-          - delete
+          - get
+          - put
+          - del
 
 
 ## Conversion
