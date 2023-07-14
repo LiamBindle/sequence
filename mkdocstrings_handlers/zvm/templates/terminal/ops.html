@@ -6,3 +6,16 @@
     </div>
 </details>
 {%- endfor -%}
+
+{%- for op, hints, scheme, media_type in extdata_op|zip(extdata_hints,extdata_scheme,extdata_media_type) -%}
+<details>
+    <summary><code>{ "op": "{{  op  }}",
+        {{'"media_type": "' + media_type + '",' if media_type}}
+        "uri": "{{ scheme }}://..."
+        {{ ', ...' if hints.parameters|length > 1}}
+    }</code></summary>
+    <div style="padding: 1em;">
+        {% include 'hints.html' %}
+    </div>
+</details>
+{%- endfor -%}

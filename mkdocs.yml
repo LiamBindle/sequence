@@ -4,3 +4,10 @@ theme:
   name: terminal
 plugins:
   - mkdocstrings
+nav:
+  - About: index.md
+  - Standard Library:
+    - std-methods.md
+    - std-data.md
+  - Developer Guide:
+    - api.md
