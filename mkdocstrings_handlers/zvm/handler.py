@@ -23,7 +23,7 @@ def parse_docstring(docstring: str, hints: dict = None) -> dict:
         hints = {}
 
     def _docstring_description_regex(headers: list):
-        return rf"\A(?P<base>[\s\S]+?)(?:\n\n|\Z)(?:{'|'.join(headers)})"
+        return rf"\A(?P<base>[\s\S]+?)(?:\n\n|\Z)(?:{'|'.join(headers)})?"
 
     def _docstring_section_regex(header: str, name: str):
         return rf"(?:^{header}[ \t]*\n-{{{len(header)}}}[ \t]*\n(?P<{name}>[\s\S]*?)(?:\n\n|\Z))"

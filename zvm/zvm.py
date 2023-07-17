@@ -15,6 +15,19 @@ import copy
 import string
 import pathlib
 
+try:
+    import json5
+    ENABLE_JSON5 = True
+except ImportError:
+    ENABLE_JSON5 = False
+
+try:
+    import hjson
+    ENABLE_HJSON = True
+except ImportError:
+    ENABLE_HJSON = False
+
+
 # TODO: add linter with callbacks so procedures can be inspected
 
 
@@ -180,7 +193,18 @@ class ZVM:
             print('here')
         if isinstance(url_or_op, str):
             url = urllib.parse.urlparse(url_or_op)
-            data = _static_getters[url.scheme]['application/json'](self, url_or_op)
+            if url.path.endswith(".json5"):
+                data = _static_getters[url.scheme]['application/json5'](self, url_or_op)
+            elif url.path.endswith(".hjson"):
+                data = _static_getters[url.scheme]['application/hjson'](self, url_or_op)
+            else:
+                data = _static_getters[url.scheme]['application/json'](self, url_or_op)
+            # TODO: add callback for translator so file uris can be replaced with s3 uris and
+            # files uploaded to s3 with appropriate key
+            # scheme_translation = url.scheme equals target scheme
+            #
+            # This could be accomplished with a basic callback at the end of _include.
+
         elif isinstance(url_or_op, dict):
             data = url_or_op
         else:
@@ -190,6 +214,9 @@ class ZVM:
         self._import(data.get("import", []))
         for name, url_or_op in data.get("include", {}).items():
             self._include(name, url_or_op)
+
+        # if scheme_translation:
+        #   scheme_translation_callback(scheme, url_or_op)  # url_or_op is url
 
     def _import(self, imports: list):
         for module in imports:
@@ -1205,6 +1232,116 @@ def store_json_file(state: State, data, uri: str):
     path = urllib.parse.unquote(path)
     with open(path, 'w') as f:
         json.dump(data, f)
+
+
+@getter(schemes=['http', 'https'], media_type='application/json5')
+def fetch_json5_http(state: State, url: str):
+    """
+    Loads a JSON5 file from a remote HTTP/HTTPS source.
+
+    Outputs
+    -------
+    json_data: key-value array
+        The json data as a key-value array.
+    """
+    if not ENABLE_JSON5:
+        raise RuntimeError("json5 support not enabled")
+    response = urllib.request.urlopen(url)
+    if response.code != 200:
+        raise RuntimeError(f"Error reading {url}")
+    return json5.loads(response.read())
+
+
+@getter(schemes=['file'], media_type='application/json5')
+def fetch_json5_file(state: State, url: str):
+    """
+    Loads a JSON5 file from a local file.
+
+    Outputs
+    -------
+    json_data: key-value array
+        The json data as a key-value array.
+    """
+    if not ENABLE_JSON5:
+        raise RuntimeError("json5 support not enabled")
+    path = urllib.parse.urlparse(url).path
+    path = urllib.parse.unquote(path)
+    with open(path, 'r') as f:
+        data = json5.load(f)
+    return data
+
+
+@putter(schemes=['file'], media_type='application/json5')
+def store_json5_file(state: State, data, uri: str):
+    """
+    Loads a JSON5 file from a local file.
+
+    Inputs
+    ------
+    data: key-value array
+        The key-value array to be saved.
+    """
+    if not ENABLE_JSON5:
+        raise RuntimeError("json5 support not enabled")
+    path = urllib.parse.urlparse(uri).path
+    path = urllib.parse.unquote(path)
+    with open(path, 'w') as f:
+        json5.dump(data, f)
+
+
+@getter(schemes=['http', 'https'], media_type='application/hjson')
+def fetch_hjson_http(state: State, url: str):
+    """
+    Loads a HJSON file from a remote HTTP/HTTPS source.
+
+    Outputs
+    -------
+    json_data: key-value array
+        The json data as a key-value array.
+    """
+    if not ENABLE_HJSON:
+        raise RuntimeError("hjson support not enabled")
+    response = urllib.request.urlopen(url)
+    if response.code != 200:
+        raise RuntimeError(f"Error reading {url}")
+    return hjson.loads(response.read())
+
+
+@getter(schemes=['file'], media_type='application/hjson')
+def fetch_hjson_file(state: State, url: str):
+    """
+    Loads a HJSON file from a local file.
+
+    Outputs
+    -------
+    json_data: key-value array
+        The json data as a key-value array.
+    """
+    if not ENABLE_HJSON:
+        raise RuntimeError("hjson support not enabled")
+    path = urllib.parse.urlparse(url).path
+    path = urllib.parse.unquote(path)
+    with open(path, 'r') as f:
+        data = hjson.load(f)
+    return data
+
+
+@putter(schemes=['file'], media_type='application/hjson')
+def store_hjson_file(state: State, data, uri: str):
+    """
+    Loads a HJSON file from a local file.
+
+    Inputs
+    ------
+    data: key-value array
+        The key-value array to be saved.
+    """
+    if not ENABLE_HJSON:
+        raise RuntimeError("hjson support not enabled")
+    path = urllib.parse.urlparse(uri).path
+    path = urllib.parse.unquote(path)
+    with open(path, 'w') as f:
+        hjson.dump(data, f)
 
 
 @deleter(schemes=['file'])

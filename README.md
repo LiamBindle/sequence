@@ -3,12 +3,12 @@
 ## Installation
 Run the following command for a minimal ZVM install.
 ```console
-liam:~$ pip install git+https://github.com/LiamBindle/ZVM.git
+liam:~$ pip install zvm
 ```
 
 If you are working on a ZVM extension, you might want the `develop` and `docs` extras.
 ```console
-liam:~$ pip install "git+https://github.com/LiamBindle/ZVM.git#egg=zvm[develop,docs]"
+liam:~$ pip install "zvm[develop,docs]"
 ```
 
 ## Documentation
