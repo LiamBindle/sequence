@@ -1,6 +1,6 @@
 # Standard Toolkit
 
-The standard toolkit are the basic collection of methods that are built into ZVM. This toolkit provides
+The standard toolkit is the collection of methods that are built into ZVM. The standard toolkit provides
 the methods for scripting logic such as branching (if-else-endif), looping (begin-while-repeat), and working
 with the stack, and data methods for loading/storing/deleting local variables, global variables, and JSON data.
 
