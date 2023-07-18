@@ -7,8 +7,6 @@ plugins:
   - mkdocstrings
 nav:
   - index.md
-  - Standard Library:
-    - std-methods.md
-    - std-data.md
+  - std.md
   - api.md
 extra_css: [extra.css]
