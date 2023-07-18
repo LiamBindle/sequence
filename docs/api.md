@@ -1,7 +1,5 @@
 # Writing a Toolkit
 
-The idea behind ZVM is you write your own toolkits that provide the methods and procedures that you need for your application.
-
 A toolkit is a Python package that provides methods and procedures. You should write your own toolkits to create
 the methods you need for your scripting. To load your toolkit, include it in the `import` list in your JSON scripts.
 
