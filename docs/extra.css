@@ -1,0 +1,16 @@
+h2 {
+    margin-top: 1em;
+    margin-bottom: 0.2em;
+}
+
+.zvm-op-preview {
+    display: inline;
+}
+
+:root {
+    --page-width: 80em;
+}
+
+pre {
+    border: 0;
+}

@@ -1,6 +1,6 @@
 {%- for op, hints in op_names|zip(op_hints) -%}
 <details>
-    <summary><code>{ "op": "{{  op  }}"{{ ', ...' if hints.parameters|length != 0}} }</code></summary>
+    <summary><code class="zvm-op-preview language-json">{ "op": "{{  op  }}"{{ ', ...' if hints.parameters|length != 0}} }</code></summary>
     <div style="padding: 1em;">
         {% include 'hints.html' %}
     </div>
@@ -9,7 +9,7 @@
 
 {%- for op, hints, scheme, media_type in extdata_op|zip(extdata_hints,extdata_scheme,extdata_media_type) -%}
 <details>
-    <summary><code>{ "op": "{{  op  }}",
+    <summary><code class="zvm-op-preview language-json">{ "op": "{{  op  }}",
         {{'"media_type": "' + media_type + '",' if media_type}}
         "uri": "{{ scheme }}://..."
         {{ ', ...' if hints.parameters|length > 1}}

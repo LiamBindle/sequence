@@ -90,6 +90,10 @@ def parse_docstring(docstring: str, hints: dict = None) -> dict:
 
 
 class ZVMHandler(BaseHandler):
+    def __init__(self, *args, **kwargs) -> None:
+        self.fallback_theme = 'terminal'
+        super().__init__(*args, **kwargs)
+
     def collect(self, identifier: str, config: MutableMapping[str, Any]) -> CollectorItem:
         includes: dict[str, str] = config.get('includes', {})
         imports: list[str] = config.get('imports', [])

@@ -2,12 +2,13 @@ site_name: ZVM
 site_url: https://zvm.run
 theme:
   name: terminal
+  custom_dir: docs/custom_theme/
 plugins:
   - mkdocstrings
 nav:
-  - About: index.md
+  - index.md
   - Standard Library:
     - std-methods.md
     - std-data.md
-  - Developer Guide:
-    - api.md
+  - api.md
+extra_css: [extra.css]
