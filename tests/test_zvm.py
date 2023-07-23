@@ -1,5 +1,5 @@
 import pytest
-import zvm
+import collagen.vm as cvm
 import json
 
 TEST_FILES = [
@@ -24,7 +24,7 @@ TEST_FILES = [
 def test_all(path):
     with open(path, 'r') as f:
         test: dict = json.load(f)
-    checks_passed = zvm.test(test)
+    checks_passed = cvm.test(test)
     assert checks_passed > 0, "Nothing checked"
 
 
@@ -33,5 +33,5 @@ def test_bench_routine():
     name = "std.if - iE-Ie-Ie"
     with open(path, 'r') as f:
         test: dict = json.load(f)
-    checks_passed = zvm.test(test, name)
+    checks_passed = cvm.test(test, name)
     assert checks_passed > 0, "Nothing checked"

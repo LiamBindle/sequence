@@ -23,7 +23,7 @@
             }
         ],
         "references": [
-            {"url": "https://github.com/LiamBindle/zvm", "text": "ZVM, GitHub."},
+            {"url": "https://github.com/LiamBindle/collagen", "text": "VirtualMachine, GitHub."},
             "Second reference"
         ]
     },

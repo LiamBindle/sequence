@@ -1,8 +1,8 @@
 import argparse
 import json
-import zvm
+import collagen
 
 
 if __name__ == '__main__':
-    vm = zvm.ZVM()
+    vm = collagen.VirtualMachine()
     vm.repl()

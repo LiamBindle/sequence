@@ -1,20 +1,20 @@
-# ZVM
+# Collagen
 
 ## Installation
-Run the following command for a minimal ZVM install.
+Run the following command for a minimal collagen install.
 ```console
-liam:~$ pip install zvm
+liam:~$ pip install collagen
 ```
 
-If you are working on a ZVM extension, you might want the `develop` and `docs` extras.
+If you are working on a collagen toolkit, you might want the `develop` and `docs` extras.
 ```console
-liam:~$ pip install "zvm[develop,docs]"
+liam:~$ pip install "collagen[develop,docs]"
 ```
 
 ## Documentation
 Do the following to generate the documentation (and open the live link):
 ```console
-liam:~$ cd ~/zvm
+liam:~$ cd ~/collagen
 liam:~$ mkdocs serve
 INFO     -  Building documentation...
 INFO     -  Cleaning site directory

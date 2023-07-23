@@ -53,7 +53,7 @@ def get_config() -> VersioneerConfig:
     cfg.style = "pep440"
     cfg.tag_prefix = ""
     cfg.parentdir_prefix = "None"
-    cfg.versionfile_source = "zvm/_version.py"
+    cfg.versionfile_source = "collagen/_version.py"
     cfg.verbose = False
     return cfg
 

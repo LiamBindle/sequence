@@ -5,7 +5,7 @@ import inspect
 
 import urllib.parse
 import importlib
-import zvm.zvm
+import collagen.vm
 import re
 
 
@@ -89,7 +89,7 @@ def parse_docstring(docstring: str, hints: dict = None) -> dict:
     return hints
 
 
-class ZVMHandler(BaseHandler):
+class CollagenHandler(BaseHandler):
     def __init__(self, *args, **kwargs) -> None:
         self.fallback_theme = 'terminal'
         super().__init__(*args, **kwargs)
@@ -100,7 +100,7 @@ class ZVMHandler(BaseHandler):
 
         for module in imports:
             importlib.import_module(module)
-        vm = zvm.zvm.ZVM()
+        vm = collagen.vm.VirtualMachine()
         for routine, url in includes.items():
             vm._include(routine, url)
 
@@ -109,7 +109,7 @@ class ZVMHandler(BaseHandler):
             'op_hints': []
         }
         for op_name in config.get('ops', []):
-            op = zvm.zvm._static_ops[op_name]
+            op = collagen.vm._static_ops[op_name]
             if callable(op):
                 docstring = inspect.getdoc(op)
                 hints = parse_docstring(docstring)
@@ -130,9 +130,9 @@ class ZVMHandler(BaseHandler):
                 scheme = data_spec
                 media_type = None
 
-            getter = zvm.zvm._static_getters.get(scheme, {}).get(media_type, None)
-            putter = zvm.zvm._static_putters.get(scheme, {}).get(media_type, None)
-            deleter = zvm.zvm._static_deleters.get(scheme, {}).get(media_type, None)
+            getter = collagen.vm._static_getters.get(scheme, {}).get(media_type, None)
+            putter = collagen.vm._static_putters.get(scheme, {}).get(media_type, None)
+            deleter = collagen.vm._static_deleters.get(scheme, {}).get(media_type, None)
 
             if getter is not None:
                 docs['extdata_op'].append("get")
@@ -203,7 +203,7 @@ class ZVMHandler(BaseHandler):
 def get_handler(
     **kwargs,
 ):
-    return ZVMHandler(
-        handler="zvm",
+    return CollagenHandler(
+        handler="collagen",
         **kwargs
     )

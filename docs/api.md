@@ -6,17 +6,17 @@ the methods you need for your scripting. To load your toolkit, include it in the
 <hr>
 
 ## Writing your own methods
-A method is a Python function that uses the `@zvm.op` decorator. The decorator takes one argument, which is the name of the method.
+A method is a Python function that uses the `@cvm.op` decorator. The decorator takes one argument, which is the name of the method.
 
-To create a method, write a Python function with one positional argument for the `zvm.State` which is the object you
-use to interact with ZVM for things like popping items from the stack. Any parameters for your method should
+To create a method, write a Python function with one positional argument for the `cvm.State` which is the object you
+use to interact with VirtualMachine for things like popping items from the stack. Any parameters for your method should
 be keyword-only arguments (i.e., after the `*` in the signature).
 
 ```python
-import zvm
+import collagen.vm as cvm
 
-@zvm.op("divide")
-def my_divide(state: zvm.State, *, reciprocal: bool = False):
+@cvm.op("divide")
+def my_divide(state: cvm.State, *, reciprocal: bool = False):
     y = state.pop()
     x = state.pop()
     if reciprocal:
@@ -30,12 +30,12 @@ Whatever your function returns is pushed to the stack, except for lists which ex
 
 <hr>
 
-## Using `zvm.State`
+## Using `cvm.State`
 
-The `zvm.State` is the object you use to interact with ZVM. It's a simple object and it's functions are listed below
+The `cvm.State` is the object you use to interact with VirtualMachine. It's a simple object and it's functions are listed below
 
 ```python
-state: zvm.State
+state: cvm.State
 
 # pop/push data
 x = state.pop()          # pops an item from the top-of-stack (TOS)
@@ -60,21 +60,21 @@ state.delete_global("x")        # deletes global variable "x"
 ## Writing data methods
 
 To extend `get`, `put`, and `del` to work with your own data types you write Python functions to load, store, or delete data and use
-the `@zvm.getter`, `@zvm.putter`, and `@zvm.deleter` wrappers.
+the `@cvm.getter`, `@cvm.putter`, and `@cvm.deleter` wrappers.
 
 The wrapper's take two arguments, `schemes` which is a list of URI schemes that the function works with (e.g., http, https), and
 `media_type` which is the type identifier for your data type.
 
 A getter function must have exactly two positional arguments, 
-the first is the `zvm.State`, and the second is a URI. 
+the first is the `cvm.State`, and the second is a URI. 
 Your getter can include required/optional parameters as keyword-only arguments.
 
 ```python
 import urllib.parse
 import pathlib
-import zvm
+import collagen
 
-@zvm.getter(schemes=['file'], media_type='application/json')
+@cvm.getter(schemes=['file'], media_type='application/json')
 def get_json_file(state: State, uri: str):
     path = urllib.parse.urlparse(uri).path
     path = urllib.parse.unquote(path)
@@ -84,11 +84,11 @@ def get_json_file(state: State, uri: str):
 ```
 
 A putter function must have exactly three positional arguments, 
-the first is the `zvm.State`, the second is the data object, and the third is a URI.
+the first is the `cvm.State`, the second is the data object, and the third is a URI.
 Your putter can include required/optional parameters as keyword-only arguments.
 
 ```python
-@zvm.putter(schemes=['file'], media_type='application/json')
+@cvm.putter(schemes=['file'], media_type='application/json')
 def store_json_file(state: State, data, uri: str):
     path = urllib.parse.urlparse(uri).path
     path = urllib.parse.unquote(path)
@@ -97,10 +97,10 @@ def store_json_file(state: State, data, uri: str):
 ```
 
 A deleter function must have exactly two positional arguments, 
-the first is the `zvm.State`, and the second is a URI.
+the first is the `cvm.State`, and the second is a URI.
 Your deleter can include required/optional parameters as keyword-only arguments.
 ```python
-@zvm.deleter(schemes=['file'], media_type='application/json')
+@cvm.deleter(schemes=['file'], media_type='application/json')
 def delete_json_file(state: State, uri: str, *, missing_ok: bool = False):
     path = urllib.parse.urlparse(uri).path
     path = urllib.parse.unquote(path)
@@ -116,8 +116,8 @@ Note that you can set `media_type=None` to match any media types.
 Method docstrings can specify the following sections: Parameters, Inputs, Outputs, and References. Docstrings should follow numpy-style.
 
 ```python
-@zvm.op("divide")
-def my_divide(state: zvm.State, *, reciprocal: bool = False):
+@cvm.op("divide")
+def my_divide(state: cvm.State, *, reciprocal: bool = False):
     """
     Divides two numbers [1].
 
@@ -149,11 +149,11 @@ def my_divide(state: zvm.State, *, reciprocal: bool = False):
 ```
 
 You can generate documentation for your package using [MkDocs](https://www.mkdocs.org/) with the 
-[mkdocstrings](https://mkdocstrings.github.io/) plugin. ZVM automatically provides the `zvm` handler for mkdocstrings, which parses method docstrings. Package imports are specified by `options.imports` and procedures are included by `options.includes`. Data methods are included via `options.data` and methods/procedures are included via `options.ops`.
+[mkdocstrings](https://mkdocstrings.github.io/) plugin. VirtualMachine automatically provides the `collagen` handler for mkdocstrings, which parses method docstrings. Package imports are specified by `options.imports` and procedures are included by `options.includes`. Data methods are included via `options.data` and methods/procedures are included via `options.ops`.
 
 ```
 ::: my_toolkit
-    handler: zvm
+    handler: collagen
     options:
         imports:
           - my_toolkit

@@ -1,5 +1,5 @@
-site_name: ZVM
-site_url: https://zvm.run
+site_name: Collagen
+site_url: https://collagen.dev
 theme:
   name: terminal
   custom_dir: docs/custom_theme/
