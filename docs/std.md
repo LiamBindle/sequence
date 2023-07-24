@@ -1,13 +1,13 @@
 # Standard Toolkit
 
-The standard toolkit is the collection of methods that are built into VirtualMachine. The standard toolkit provides
+The standard toolkit is the collection of methods that are built into Collagen. The standard toolkit provides
 the methods for scripting logic such as branching (if-else-endif), looping (begin-while-repeat), and working
 with the stack, and data methods for loading/storing/deleting local variables, global variables, and JSON data.
 
 ## Stack Manipulation
 These methods are used to perform actions on the stack. They include operations such as duplicating items, reordering items, droping items, etc.
 
-::: collagen.standard
+::: collagen
     handler: collagen
     options:
         imports:
@@ -25,7 +25,7 @@ These methods are used to perform actions on the stack. They include operations 
 These methods are used to compare items on the stack. These are useful as conditional leading before an if or while
 statement.
 
-::: collagen.standard
+::: collagen
     handler: collagen
     options:
         imports:
@@ -43,7 +43,7 @@ statement.
 These methods facilitate looping and recursion. Loops start with `begin` and end with `repeat`. Loops are terminated by `break`. 
 The `while` method is provided for convenience, and effectively guards a `break` in an if-block.
 
-::: collagen.standard
+::: collagen
     handler: collagen
     options:
         imports:
@@ -59,7 +59,7 @@ The `while` method is provided for convenience, and effectively guards a `break`
 ## Branching
 These methods facilitate conditional branching.
 
-::: collagen.standard
+::: collagen
     handler: collagen
     options:
         imports:
@@ -73,7 +73,7 @@ These methods facilitate conditional branching.
 ## Conversion
 These methods are used to coerce the item at the top of the stack to a specific data type.
 
-::: collagen.standard
+::: collagen
     handler: collagen
     options:
         imports:
@@ -87,7 +87,7 @@ These methods are used to coerce the item at the top of the stack to a specific 
 ## Arithmetic
 These methods are used to perform arithmetic.
 
-::: collagen.standard
+::: collagen
     handler: collagen
     options:
         imports:
@@ -103,7 +103,7 @@ These methods are used to perform arithmetic.
 ## Miscellaneous
 These methods don't fit into the other categories, but they are useful.
 
-::: collagen.standard
+::: collagen
     handler: collagen
     options:
         imports:
@@ -123,7 +123,7 @@ JSON data.
 
 ## Variables
 These methods are used to store, load, and delete local and global variables. Local variables are procedure-scoped.
-::: collagen.standard
+::: collagen
     handler: collagen
     options:
         imports:
@@ -135,7 +135,7 @@ These methods are used to store, load, and delete local and global variables. Lo
 
 ## JSON
 These methods are used to store, load, and delete JSON files.
-::: collagen.standard
+::: collagen
     handler: collagen
     options:
         imports:
@@ -147,10 +147,10 @@ These methods are used to store, load, and delete JSON files.
 
 
 ### JSON5
-JSON5 is an extension of JSON that adds functionality such as comments, multiline strings, trailing commas, and unquoted strings. You can read more about JSON5 [here](https://json5.org/). These methods require that VirtualMachine was installed with
+JSON5 is an extension of JSON that adds functionality such as comments, multiline strings, trailing commas, and unquoted strings. You can read more about JSON5 [here](https://json5.org/). These methods require that Collagen was installed with
 JSON5 support (i.e., `pip install 'collagen[json5]'`).
 
-::: collagen.standard
+::: collagen
     handler: collagen
     options:
         imports:
@@ -162,8 +162,8 @@ JSON5 support (i.e., `pip install 'collagen[json5]'`).
 
 ### HJSON
 HJSON is an extension of JSON that is less prone to syntax errors and adds functionality such as comments, multiline strings, trailing commas, and unquoted strings. You can read more about HJSON [here](https://hjson.github.io/).
-These methods require that VirtualMachine was installed with HJSON support (i.e., `pip install 'collagen[hjson]'`).
-::: collagen.standard
+These methods require that Collagen was installed with HJSON support (i.e., `pip install 'collagen[hjson]'`).
+::: collagen
     handler: collagen
     options:
         imports:

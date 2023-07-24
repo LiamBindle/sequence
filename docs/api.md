@@ -9,7 +9,7 @@ the methods you need for your scripting. To load your toolkit, include it in the
 A method is a Python function that uses the `@cvm.op` decorator. The decorator takes one argument, which is the name of the method.
 
 To create a method, write a Python function with one positional argument for the `cvm.State` which is the object you
-use to interact with VirtualMachine for things like popping items from the stack. Any parameters for your method should
+use to interact with the Collagen Virtual Machine (CVM) for things like popping items from the stack. Any parameters for your method should
 be keyword-only arguments (i.e., after the `*` in the signature).
 
 ```python
@@ -32,7 +32,7 @@ Whatever your function returns is pushed to the stack, except for lists which ex
 
 ## Using `cvm.State`
 
-The `cvm.State` is the object you use to interact with VirtualMachine. It's a simple object and it's functions are listed below
+The `cvm.State` is the object you use to interact with the Collagen Virtual Machine (CVM). It's a simple object and it's functions are listed below
 
 ```python
 state: cvm.State
@@ -149,7 +149,7 @@ def my_divide(state: cvm.State, *, reciprocal: bool = False):
 ```
 
 You can generate documentation for your package using [MkDocs](https://www.mkdocs.org/) with the 
-[mkdocstrings](https://mkdocstrings.github.io/) plugin. VirtualMachine automatically provides the `collagen` handler for mkdocstrings, which parses method docstrings. Package imports are specified by `options.imports` and procedures are included by `options.includes`. Data methods are included via `options.data` and methods/procedures are included via `options.ops`.
+[mkdocstrings](https://mkdocstrings.github.io/) plugin. Collagen automatically provides the `collagen` handler for mkdocstrings, which parses method docstrings. Package imports are specified by `options.imports` and procedures are included by `options.includes`. Data methods are included via `options.data` and methods/procedures are included via `options.ops`.
 
 ```
 ::: my_toolkit
