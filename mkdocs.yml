@@ -6,7 +6,7 @@ theme:
 plugins:
   - mkdocstrings
 nav:
-  - index.md
+  - About: README.md
   - std.md
   - api.md
 extra_css: [extra.css]

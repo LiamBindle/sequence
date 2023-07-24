@@ -1,24 +1,29 @@
 # Collagen
 
+*Note: This documentation is a work in progress.*
+
+Collagen is a virtual stack machine that lets you write procedures in configuration files, like JSON or YAML, that generate outputs like data,
+images, or documents. 
+A procedure defines a sequence of operations that run in the Python environment, and the operations in a procedure pass data to each other by pushing, popping, and swapping data on the stack.
+The standard toolkit (built-in) defines a turning complete set of operations that provide the backbone for scripting logic in your procedures.
+You can add methods with new functionality by adding toolkits, which add methods by implementing Python functions with the new functionality and using the `@cvm.method` decorator.
+
 ## Installation
-Run the following command for a minimal collagen install.
+You can install collagen via `pip`. Note that the basic installation only supports JSON procedures.
+
 ```console
-liam:~$ pip install collagen
+pip install collagen
 ```
 
-If you are working on a collagen toolkit, you might want the `develop` and `docs` extras.
+Procedures written in JSON5, HSON, or YAML can have comments and multi-line strings. You can install support for additional configuration file formats via extra requirements.
+
 ```console
-liam:~$ pip install "collagen[develop,docs]"
+pip install collagen[json5,hson]
 ```
 
-## Documentation
-Do the following to generate the documentation (and open the live link):
+If you're developing a collagen toolkit, include the `dev` and `docs` extra
+requirements.
+
 ```console
-liam:~$ cd ~/collagen
-liam:~$ mkdocs serve
-INFO     -  Building documentation...
-INFO     -  Cleaning site directory
-INFO     -  Documentation built in 0.08 seconds
-INFO     -  [09:05:15] Watching paths for changes: 'docs', 'mkdocs.yml'
-INFO     -  [09:05:15] Serving on http://127.0.0.1:8000/
+pip install "collagen[dev,docs]"
 ```
