@@ -38,37 +38,37 @@ class State:
             raise RuntimeError("Cannot pop from empty stack")
         return [self._stack.pop() for _ in range(n)][::-1]
 
-    def set(self, key: str, value: Any):
-        self._set[key] = value
+    def set(self, key: str, value: Any, global_var: bool = False):
+        if global_var:
+            self._vm._globals[key] = value
+        else:
+            self._set[key] = value
 
-    def has(self, key) -> bool:
-        return key in self._set
+    def has(self, key, global_var: bool = False) -> bool:
+        if global_var:
+            return key in self._vm._globals
+        else:
+            return key in self._set
 
-    def get(self, key: str) -> Any:
-        if key not in self._set:
-            raise RuntimeError(f"Global variable has not been set: {key}")
-        return self._set[key]
+    def get(self, key: str, global_var: bool = False) -> Any:
+        if global_var:
+            if key not in self._vm._globals:
+                raise RuntimeError(f"Global variable has not been set: {key}")
+            return self._vm._globals[key]
+        else:
+            if key not in self._set:
+                raise RuntimeError(f"Global variable has not been set: {key}")
+            return self._set[key]
 
-    def delete(self, key):
-        del self._set[key]
+    def delete(self, key, global_var: bool = False):
+        if global_var:
+            del self._vm._globals[key]
+        else:
+            del self._set[key]
 
     @staticmethod
     def op(name) -> Union[dict, Callable]:
         return _static_ops[name]
-
-    def set_global(self, key: str, value: Any):
-        self._vm._globals[key] = value
-
-    def has_global(self, key) -> bool:
-        return key in self._vm._globals
-
-    def get_global(self, key: str) -> Any:
-        if key not in self._vm._globals:
-            raise RuntimeError(f"Global variable has not been set: {key}")
-        return self._vm._globals[key]
-
-    def delete_global(self, key):
-        del self._vm._globals[key]
 
 
 def calc_depth(state: State) -> int:

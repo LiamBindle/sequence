@@ -42,17 +42,11 @@ x = state.pop()          # pops an item from the top-of-stack (TOS)
 z, y, x = state.popn(3)  # pops N items from the stack (last was the TOS)
 state.push(x)            # pushes an item to the TOS
 
-# local variables
-state.set("x", x)        # sets local variable "x"
-exists = state.has("x")  # checks if local variable "x" exists
-x = state.get("x")       # retrieves local varible "x"
-state.delete("x")        # deletes local variable "x"
-
-# global variables
-state.set_global("x", x)        # sets global variable "x"
-exists = state.has_global("x")  # checks if global variable "x" exists
-x = state.get_global("x")       # retrieves global varible "x"
-state.delete_global("x")        # deletes global variable "x"
+# local/global variables
+x = state.get("x", global_var=False)       # retrieves varible "x"
+state.set("x", x, global_var=False)        # sets variable "x"
+state.delete("x", global_var=False)        # deletes variable "x"
+exists = state.has("x", global_var=False)  # checks if variable "x" exists
 ```
 
 <hr>
