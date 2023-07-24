@@ -9,18 +9,18 @@ import collagen.vm
 import re
 
 
-def add_hyperlinks_to_descriptions(hints):
-    if 'description' in hints and 'references' in hints:
-        for i, ref in enumerate(hints['references']):
+def add_hyperlinks_to_descriptions(metadata):
+    if 'description' in metadata and 'references' in metadata:
+        for i, ref in enumerate(metadata['references']):
             if 'url' not in ref:
                 continue
-            hints['description'] = hints['description'].replace(f"[{i+1}]", f'<a href="{ref["url"]}" target="_blank">[{i+1}]</a>')
-    return hints
+            metadata['description'] = metadata['description'].replace(f"[{i+1}]", f'<a href="{ref["url"]}" target="_blank">[{i+1}]</a>')
+    return metadata
 
 
-def parse_docstring(docstring: str, hints: dict = None) -> dict:
-    if hints is None:
-        hints = {}
+def parse_docstring(docstring: str, metadata: dict = None) -> dict:
+    if metadata is None:
+        metadata = {}
 
     def _docstring_description_regex(headers: list):
         return rf"\A(?P<base>[\s\S]+?)(?:\n\n|\Z)(?:{'|'.join(headers)})?"
@@ -30,7 +30,7 @@ def parse_docstring(docstring: str, hints: dict = None) -> dict:
 
     def _docstrings_parse_args(text: str, optional_key: str):
         pattern = r"(?P<name>^\S[^:\n]*)(?P<type>:[^\(\n]*)?(?P<default>\(default:[ \t]*[^\)]*\))?[ \t]*(?P<description>(?:\n[  \t]+[\S \t]+)+)?"
-        hints = []
+        metadata = []
         for match in re.findall(pattern, text, re.MULTILINE):
             arg = {}
             name = match[0]
@@ -41,21 +41,21 @@ def parse_docstring(docstring: str, hints: dict = None) -> dict:
             arg['description'] = match[3].strip()
             arg[optional_key] = optional or arg['default'] != ''
             arg = {k: v for k, v in arg.items() if v != ''}
-            hints.append(arg)
-        return hints
+            metadata.append(arg)
+        return metadata
 
     def _docstring_reference():
         return r"^\d+\.[ \t]*((?:(?:\n[ \t]+)?[^\n\(]+)+)(\([^\)]+\))?(?!\d)"
 
     SECTIONS = ['Inputs', 'Parameters', 'Outputs', 'References']
     if matches := re.match(_docstring_description_regex(SECTIONS), docstring):
-        hints['description'] = matches.group(1)
+        metadata['description'] = matches.group(1)
 
     if matches := re.search(_docstring_section_regex('Inputs', 'inputs'), docstring, re.MULTILINE):
         text = matches.group('inputs')
         inputs = _docstrings_parse_args(text, 'conditional')
         if inputs:
-            hints['inputs'] = inputs
+            metadata['inputs'] = inputs
 
     if matches := re.search(_docstring_section_regex('Parameters', 'params'), docstring, re.MULTILINE):
         text = matches.group('params')
@@ -63,15 +63,15 @@ def parse_docstring(docstring: str, hints: dict = None) -> dict:
         params_dict = {}
         for param in params:
             params_dict[param.pop("name")] = param
-        if 'parameters' not in hints:
-            hints['parameters'] = {}
-        hints['parameters'].update(params_dict)
+        if 'parameters' not in metadata:
+            metadata['parameters'] = {}
+        metadata['parameters'].update(params_dict)
 
     if matches := re.search(_docstring_section_regex('Outputs', 'outputs'), docstring, re.MULTILINE):
         text = matches.group('outputs')
         outputs = _docstrings_parse_args(text, 'conditional')
         if outputs:
-            hints['outputs'] = outputs
+            metadata['outputs'] = outputs
 
     if matches := re.search(_docstring_section_regex('References', 'references'), docstring, re.MULTILINE):
         text = matches.group('references')
@@ -85,8 +85,8 @@ def parse_docstring(docstring: str, hints: dict = None) -> dict:
             ref = {k: v for k, v in ref.items() if v != ''}
             refs.append(ref)
         if len(refs):
-            hints['references'] = refs
-    return hints
+            metadata['references'] = refs
+    return metadata
 
 
 class CollagenHandler(BaseHandler):
@@ -106,23 +106,23 @@ class CollagenHandler(BaseHandler):
 
         docs: dict = {
             'op_names': [],
-            'op_hints': []
+            'op_metadata': []
         }
         for op_name in config.get('ops', []):
             op = collagen.vm._static_ops[op_name]
             if callable(op):
                 docstring = inspect.getdoc(op)
-                hints = parse_docstring(docstring)
+                metadata = parse_docstring(docstring)
             else:
-                hints: dict = op.get('hints', {})
-            hints = add_hyperlinks_to_descriptions(hints)
+                metadata: dict = op.get('metadata', {})
+            metadata = add_hyperlinks_to_descriptions(metadata)
             docs['op_names'].append(op_name)
-            docs['op_hints'].append(hints)
+            docs['op_metadata'].append(metadata)
 
         docs['extdata_op'] = []
         docs['extdata_scheme'] = []
         docs['extdata_media_type'] = []
-        docs['extdata_hints'] = []
+        docs['extdata_metadata'] = []
         for data_spec in config.get("data", []):
             if ":" in data_spec:
                 scheme, media_type = data_spec.split(":")
@@ -138,7 +138,7 @@ class CollagenHandler(BaseHandler):
                 docs['extdata_op'].append("get")
                 docs['extdata_scheme'].append(scheme)
                 docs['extdata_media_type'].append(media_type)
-                hints = {
+                metadata = {
                     'outputs': [
                         {'name': 'data', 'description': 'The loaded resource', 'conditional': False}
                     ],
@@ -151,13 +151,13 @@ class CollagenHandler(BaseHandler):
                     }
                 }
                 getter = inspect.getdoc(getter)
-                hints = parse_docstring(getter, hints)
-                docs['extdata_hints'].append(hints)
+                metadata = parse_docstring(getter, metadata)
+                docs['extdata_metadata'].append(metadata)
             if putter is not None:
                 docs['extdata_op'].append("put")
                 docs['extdata_scheme'].append(scheme)
                 docs['extdata_media_type'].append(media_type)
-                hints = {
+                metadata = {
                     'inputs': [
                         {'name': 'data', 'description': 'The resource to save', 'conditional': False}
                     ],
@@ -170,13 +170,13 @@ class CollagenHandler(BaseHandler):
                     }
                 }
                 putter = inspect.getdoc(putter)
-                hints = parse_docstring(putter, hints)
-                docs['extdata_hints'].append(hints)
+                metadata = parse_docstring(putter, metadata)
+                docs['extdata_metadata'].append(metadata)
             if deleter is not None:
                 docs['extdata_op'].append("del")
                 docs['extdata_scheme'].append(scheme)
                 docs['extdata_media_type'].append(media_type)
-                hints = {
+                metadata = {
                     'parameters': {
                         'uri': {
                             'type': 'str',
@@ -186,8 +186,8 @@ class CollagenHandler(BaseHandler):
                     }
                 }
                 deleter = inspect.getdoc(deleter)
-                hints = parse_docstring(deleter, hints)
-                docs['extdata_hints'].append(hints)
+                metadata = parse_docstring(deleter, metadata)
+                docs['extdata_metadata'].append(metadata)
 
         return docs
 

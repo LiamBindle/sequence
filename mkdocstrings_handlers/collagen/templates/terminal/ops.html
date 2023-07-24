@@ -1,21 +1,21 @@
-{%- for op, hints in op_names|zip(op_hints) -%}
+{%- for op, metadata in op_names|zip(op_metadata) -%}
 <details>
-    <summary><code class="collagen-op-preview language-json">{ "op": "{{  op  }}"{{ ', ...' if hints.parameters|length != 0}} }</code></summary>
+    <summary><code class="collagen-op-preview language-json">{ "op": "{{  op  }}"{{ ', ...' if metadata.parameters|length != 0}} }</code></summary>
     <div style="padding: 1em;">
-        {% include 'hints.html' %}
+        {% include 'metadata.html' %}
     </div>
 </details>
 {%- endfor -%}
 
-{%- for op, hints, scheme, media_type in extdata_op|zip(extdata_hints,extdata_scheme,extdata_media_type) -%}
+{%- for op, metadata, scheme, media_type in extdata_op|zip(extdata_metadata,extdata_scheme,extdata_media_type) -%}
 <details>
     <summary><code class="collagen-op-preview language-json">{ "op": "{{  op  }}",
         {{'"media_type": "' + media_type + '",' if media_type}}
         "uri": "{{ scheme }}://..."
-        {{ ', ...' if hints.parameters|length > 1}}
+        {{ ', ...' if metadata.parameters|length > 1}}
     }</code></summary>
     <div style="padding: 1em;">
-        {% include 'hints.html' %}
+        {% include 'metadata.html' %}
     </div>
 </details>
 {%- endfor -%}

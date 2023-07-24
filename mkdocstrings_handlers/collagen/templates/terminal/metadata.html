@@ -1,40 +1,40 @@
-    {%- if hints.description -%}
-    <p>{{ hints.description|safe }}</p>
+    {%- if metadata.description -%}
+    <p>{{ metadata.description|safe }}</p>
     {%- endif -%}
 
-    {%- if hints.parameters -%}
+    {%- if metadata.parameters -%}
     <div>
         <h2 style="margin-bottom: 0.2em;">Parameters</h2>
-        {%- for param_name, param_hints in hints.parameters.items() if param_hints.optional == false  -%}
+        {%- for param_name, param_metadata in metadata.parameters.items() if param_metadata.optional == false  -%}
         <span style="float:left">
             {{ param_name }}*
-            {%- if 'type' in param_hints -%}
-            : <i>{{ param_hints.type }}</i>
+            {%- if 'type' in param_metadata -%}
+            : <i>{{ param_metadata.type }}</i>
             {%- endif -%}
         </span>
         <span style="float: right">(*required)</span>
         <br/>
-        {%- if 'description' in param_hints -%}
+        {%- if 'description' in param_metadata -%}
         <p style='margin-left:2em'>
-            {{ param_hints.description }}
+            {{ param_metadata.description }}
         </p>
         {%- endif -%}
         {%- endfor -%}
 
-        {%- for param_name, param_hints in hints.parameters.items() if (param_hints.optional == true) or (param_hints.optional is undefined) -%}
+        {%- for param_name, param_metadata in metadata.parameters.items() if (param_metadata.optional == true) or (param_metadata.optional is undefined) -%}
         <span style="float: left">
             {{ param_name }}
-            {%- if 'type' in param_hints -%}
-            : <i>{{ param_hints.type }}</i>
+            {%- if 'type' in param_metadata -%}
+            : <i>{{ param_metadata.type }}</i>
             {%- endif -%}
         </span>
-        {%- if 'default' in param_hints -%}
-        <span style="float: right">(default: {{ param_hints.default }})</span>
+        {%- if 'default' in param_metadata -%}
+        <span style="float: right">(default: {{ param_metadata.default }})</span>
         {%- endif -%}
         <br/>
-        {%- if 'description' in param_hints -%}
+        {%- if 'description' in param_metadata -%}
         <p style='margin-left:2em'>
-            {{ param_hints.description }}
+            {{ param_metadata.description }}
         </p>
         {%- endif -%}
         {%- endfor -%}
@@ -42,10 +42,10 @@
     </div>
     {%- endif -%}
 
-    {%- if hints.inputs -%}
+    {%- if metadata.inputs -%}
     <div>
         <h2 style="margin-bottom: 0.2em;">Inputs</h2>
-        {% for input in hints.inputs %}
+        {% for input in metadata.inputs %}
         <span style="float:left">
             {%- if input.conditional -%}
             [{{ input.name }}]
@@ -66,10 +66,10 @@
     </div>
     {%- endif -%}
 
-    {%- if hints.outputs -%}
+    {%- if metadata.outputs -%}
     <div>
         <h2 style="margin-bottom: 0.2em;">Outputs</h2>
-        {% for output in hints.outputs %}
+        {% for output in metadata.outputs %}
         <span style="float:left">
             {%- if output.conditional -%}
             [{{ output.name }}]
@@ -89,9 +89,9 @@
     </div>
     {%- endif -%}
 
-    {%- if hints.references -%}
+    {%- if metadata.references -%}
     <p><strong>References</strong><br>
-        {% for reference in hints.references %}
+        {% for reference in metadata.references %}
         <span>[{{ loop.index }}]</span>
         <span style="margin-left: 1em">
             {%- if reference is string -%}

@@ -253,7 +253,6 @@ def test(op: dict, tests_matching_re: str = None):
 
 
 def method(name):
-    # todo: add hints for pop order + type
     global _static_ops
     def inner(func: Callable):
         global _static_ops

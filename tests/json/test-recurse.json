@@ -1,5 +1,5 @@
 {
-    "hints": {
+    "metadata": {
         "description": "Calculates the factorial of a number",
         "inputs": [
             {
