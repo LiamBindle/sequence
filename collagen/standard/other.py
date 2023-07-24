@@ -3,7 +3,7 @@ import collagen.vm as cvm
 
 
 # misc
-@cvm.op("fstring")
+@cvm.method("fstring")
 def format_string(state: cvm.State, *, fmt: str, **params):
     """
     Formats a string.
@@ -43,7 +43,7 @@ def format_string(state: cvm.State, *, fmt: str, **params):
     return fmt.format(*args, **params)
 
 
-@cvm.op("assert")
+@cvm.method("assert")
 def assert_(state: cvm.State, *, error: str = '', negate: bool = False):
     """
     Asserts that the item at the top of the stack is true. Terminates
@@ -69,7 +69,7 @@ def assert_(state: cvm.State, *, error: str = '', negate: bool = False):
         assert x, error
 
 
-@cvm.op("set_next_params")
+@cvm.method("set_next_params")
 def set_next_params(state: cvm.State):
     """
     Initializes the next op's parameters to the key-value array at the top-of-the-stack.

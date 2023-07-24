@@ -5,7 +5,7 @@ from ...vm import _static_getters, _static_deleters, _static_putters
 
 
 # state
-@cvm.op("get")
+@cvm.method("get")
 def load(state: cvm.State, *, uri: str, mediaType: str = None, **params):
     """
     Loads an resource from a URI and places it as the top of the stack.
@@ -30,7 +30,7 @@ def load(state: cvm.State, *, uri: str, mediaType: str = None, **params):
     return uri_media_getter(state, uri, **params)
 
 
-@cvm.op("put")
+@cvm.method("put")
 def store(state: cvm.State, *, uri: str, mediaType: str = None, **params):
     """
     Stores the item at the top of the stack.
@@ -56,7 +56,7 @@ def store(state: cvm.State, *, uri: str, mediaType: str = None, **params):
     uri_media_putter(state, data, uri, **params)
 
 
-@cvm.op("del")
+@cvm.method("del")
 def delete(state: cvm.State, *, uri: str, mediaType: str = None, **params):
     """
     Deletes a resource.

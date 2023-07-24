@@ -2,7 +2,7 @@ import collagen.vm as cvm
 
 
 # looping
-@cvm.op("begin")
+@cvm.method("begin")
 def begin_(state: cvm.State):
     """
     Marks the beginning of a loop.
@@ -10,7 +10,7 @@ def begin_(state: cvm.State):
     state._op_frame._begins.append(state._op_frame._pc)
 
 
-@cvm.op("repeat")
+@cvm.method("repeat")
 def repeat_(state: cvm.State):
     """
     Marks the end of a loop.
@@ -18,7 +18,7 @@ def repeat_(state: cvm.State):
     state._op_frame._pc = state._op_frame._begins[-1]
 
 
-@cvm.op("break")
+@cvm.method("break")
 def break_(state: cvm.State):
     """
     Breaks out of a loop (terminates the loop).
@@ -47,7 +47,7 @@ def break_(state: cvm.State):
     raise RuntimeError("Unterminated begin statement")
 
 
-@cvm.op("recurse")
+@cvm.method("recurse")
 def recurse(state: cvm.State):
     """
     Restarts the current procedure.
@@ -55,7 +55,7 @@ def recurse(state: cvm.State):
     state._op_frame._pc = -1
 
 
-@cvm.op("while")
+@cvm.method("while")
 def while_(state: cvm.State):
     """
     Continues the loop if the item at the top of the stack is true. If the

@@ -1,7 +1,7 @@
 import collagen.vm as cvm
 
 
-@cvm.op("if")
+@cvm.method("if")
 def if_(state: cvm.State):
     """
     Marks the beginning of an if-block. An if statment MUST be terminated by `{"op": "endif"}`.
@@ -37,7 +37,7 @@ def if_(state: cvm.State):
     raise RuntimeError("Unterminated if statement")
 
 
-@cvm.op("else")
+@cvm.method("else")
 def else_(state: cvm.State):
     """
     Marks the beginning of an else-block. This method MUST be placed between
@@ -67,7 +67,7 @@ def else_(state: cvm.State):
     raise RuntimeError("Unterminated if statement")
 
 
-@cvm.op("endif")
+@cvm.method("endif")
 def endif_(state: cvm.State):
     """
     Marks the end of an if statement.

@@ -6,7 +6,7 @@ the methods you need for your scripting. To load your toolkit, include it in the
 <hr>
 
 ## Writing your own methods
-A method is a Python function that uses the `@cvm.op` decorator. The decorator takes one argument, which is the name of the method.
+A method is a Python function that uses the `@cvm.method` decorator. The decorator takes one argument, which is the name of the method.
 
 To create a method, write a Python function with one positional argument for the `cvm.State` which is the object you
 use to interact with the Collagen Virtual Machine (CVM) for things like popping items from the stack. Any parameters for your method should
@@ -15,7 +15,7 @@ be keyword-only arguments (i.e., after the `*` in the signature).
 ```python
 import collagen.vm as cvm
 
-@cvm.op("divide")
+@cvm.method("divide")
 def my_divide(state: cvm.State, *, reciprocal: bool = False):
     y = state.pop()
     x = state.pop()
@@ -110,7 +110,7 @@ Note that you can set `media_type=None` to match any media types.
 Method docstrings can specify the following sections: Parameters, Inputs, Outputs, and References. Docstrings should follow numpy-style.
 
 ```python
-@cvm.op("divide")
+@cvm.method("divide")
 def my_divide(state: cvm.State, *, reciprocal: bool = False):
     """
     Divides two numbers [1].

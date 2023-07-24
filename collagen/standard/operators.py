@@ -2,7 +2,7 @@ import collagen.vm as cvm
 
 
 # comparison
-@cvm.op("eq")
+@cvm.method("eq")
 def equal(state: cvm.State):
     """
     Checks if x == y.
@@ -23,7 +23,7 @@ def equal(state: cvm.State):
     return x == y
 
 
-@cvm.op("neq")
+@cvm.method("neq")
 def not_equal(state: cvm.State):
     """
     Checks if x is not equal to y.
@@ -44,7 +44,7 @@ def not_equal(state: cvm.State):
     return x != y
 
 
-@cvm.op("gt")
+@cvm.method("gt")
 def greater_than(state: cvm.State):
     """
     Checks if x is greater than y.
@@ -65,7 +65,7 @@ def greater_than(state: cvm.State):
     return x > y
 
 
-@cvm.op("ge")
+@cvm.method("ge")
 def greater_than_or_equal_to(state: cvm.State):
     """
     Checks if x is greater than or equal to y.
@@ -86,7 +86,7 @@ def greater_than_or_equal_to(state: cvm.State):
     return x >= y
 
 
-@cvm.op("lt")
+@cvm.method("lt")
 def less_than(state: cvm.State):
     """
     Checks if x is less than y.
@@ -107,7 +107,7 @@ def less_than(state: cvm.State):
     return x < y
 
 
-@cvm.op("le")
+@cvm.method("le")
 def less_than_or_equal_to(state: cvm.State):
     """
     Checks if x is less than or equal to y.
@@ -128,7 +128,7 @@ def less_than_or_equal_to(state: cvm.State):
     return x <= y
 
 
-@cvm.op("/")
+@cvm.method("/")
 def divide(state: cvm.State):
     """
     Divides the two numbers at the top of the stack. If the items at the top
@@ -151,7 +151,7 @@ def divide(state: cvm.State):
     return x / y
 
 
-@cvm.op("*")
+@cvm.method("*")
 def multiply(state: cvm.State):
     """
     Multiplies the two numbers at the top of the stack. If the items at the top
@@ -174,7 +174,7 @@ def multiply(state: cvm.State):
     return x * y
 
 
-@cvm.op("-")
+@cvm.method("-")
 def minus(state: cvm.State):
     """
     Subtracts the two numbers at the top of the stack. If the items at the top
@@ -197,7 +197,7 @@ def minus(state: cvm.State):
     return x - y
 
 
-@cvm.op("+")
+@cvm.method("+")
 def plus(state: cvm.State):
     """
     Adds the two numbers at the top of the stack. If the items at the top
@@ -220,7 +220,7 @@ def plus(state: cvm.State):
     return x + y
 
 
-@cvm.op("%")
+@cvm.method("%")
 def mod(state: cvm.State):
     """
     Returns the modulous the two numbers at the top of the stack. If the items at the top
@@ -243,7 +243,7 @@ def mod(state: cvm.State):
     return x % y
 
 
-@cvm.op("not")
+@cvm.method("not")
 def not_(state: cvm.State):
     """
     Inverts the True/False value at the top of the stack. If the item at the
@@ -264,7 +264,7 @@ def not_(state: cvm.State):
     return not x
 
 
-@cvm.op("and")
+@cvm.method("and")
 def and_(state: cvm.State):
     """
     Logical AND of the two boolean values at the top of the stack.
@@ -287,7 +287,7 @@ def and_(state: cvm.State):
     return x and y
 
 
-@cvm.op("or")
+@cvm.method("or")
 def or_(state: cvm.State):
     """
     Logical OR of the two boolean values at the top of the stack.
@@ -310,7 +310,7 @@ def or_(state: cvm.State):
     return x or y
 
 
-@cvm.op("xor")
+@cvm.method("xor")
 def xor_(state: cvm.State):
     """
     Logical XOR of the two boolean values at the top of the stack.

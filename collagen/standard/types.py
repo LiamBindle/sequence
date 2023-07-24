@@ -1,7 +1,7 @@
 import collagen.vm as cvm
 
 
-@cvm.op("asbool")
+@cvm.method("asbool")
 def asbool_(state: cvm.State):
     """
     Coerces the item at the top of the stack to a boolean value.
@@ -20,7 +20,7 @@ def asbool_(state: cvm.State):
     return bool(x)
 
 
-@cvm.op("asint")
+@cvm.method("asint")
 def asint_(state: cvm.State):
     """
     Coerces the item at the top of the stack to an integer.
@@ -39,7 +39,7 @@ def asint_(state: cvm.State):
     return int(x)
 
 
-@cvm.op("asfloat")
+@cvm.method("asfloat")
 def asfloat_(state: cvm.State):
     """
     Coerces the item at the top of the stack to a float.

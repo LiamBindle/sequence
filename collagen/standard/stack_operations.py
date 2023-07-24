@@ -5,7 +5,7 @@ from ..vm import _static_copiers
 
 
 # stack ops
-@cvm.op("dup")
+@cvm.method("dup")
 def duplicate(state: cvm.State, *, deep: bool = False, offset: int = 0):
     """
     Duplicates the item at the top of the stack. There are parameters
@@ -37,7 +37,7 @@ def duplicate(state: cvm.State, *, deep: bool = False, offset: int = 0):
             return copy.copy(item)
 
 
-@cvm.op("swap")
+@cvm.method("swap")
 def swap(state: cvm.State, *, order: list = [1, 0]):
     """
     Swaps the order of the items at the top of the stack.
@@ -55,7 +55,7 @@ def swap(state: cvm.State, *, order: list = [1, 0]):
     return new_items
 
 
-@cvm.op("drop")
+@cvm.method("drop")
 def drop(state: cvm.State):
     """
     Drops the item at the top of the stack.
@@ -63,7 +63,7 @@ def drop(state: cvm.State):
     state.pop()
 
 
-@cvm.op("size")
+@cvm.method("size")
 def stack_size(state: cvm.State):
     """
     Returns the current size (depth) of the stack.
@@ -76,7 +76,7 @@ def stack_size(state: cvm.State):
     return len(state._stack)
 
 
-@cvm.op("pack")
+@cvm.method("pack")
 def pack_(state: cvm.State, *, n: int, forward: bool = True, keys: List[str] = None):
     """
     Packs N items from the top of the stack into a single array at the top of
@@ -112,7 +112,7 @@ def pack_(state: cvm.State, *, n: int, forward: bool = True, keys: List[str] = N
     return items
 
 
-@cvm.op("unpack")
+@cvm.method("unpack")
 def unpack_(state: cvm.State, *, keys: List[str] = None):
     """
     Packs N items from the top of the stack into a single array at the top of
