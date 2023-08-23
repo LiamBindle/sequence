@@ -128,7 +128,7 @@ class OpFrame:
                 if isinstance(op, dict):
                     # op is an op
                     child = OpFrame(
-                        _set=copy.copy(self._set),
+                        _set=copy.copy(self._set), # TODO: add parameters as locals
                         _name=name,
                         _parent=self,
                     )
@@ -168,7 +168,7 @@ class VirtualMachine:
     def stack(self) -> List[Any]:
         return self._stack
 
-    def _include(self, name: str, url_or_op: Union[str, dict]):
+    def _include(self, name: str, url_or_op: Union[str, dict], hook_breadth_first: Callable = None, hook_depth_first: Callable = None):
         global _static_ops
         if callable(url_or_op):
             print('here')
@@ -180,11 +180,10 @@ class VirtualMachine:
                 data = _static_getters[url.scheme]['application/hjson'](self, url_or_op)
             else:
                 data = _static_getters[url.scheme]['application/json'](self, url_or_op)
-            # TODO: add callback for translator so file uris can be replaced with s3 uris and
-            # files uploaded to s3 with appropriate key
-            # scheme_translation = url.scheme equals target scheme
-            #
-            # This could be accomplished with a basic callback at the end of _include.
+
+            # breadth-first callback
+            if hook_breadth_first:
+                hook_breadth_first(url_or_op)
 
         elif isinstance(url_or_op, dict):
             data = url_or_op
@@ -196,8 +195,9 @@ class VirtualMachine:
         for name, url_or_op in data.get("include", {}).items():
             self._include(name, url_or_op)
 
-        # if scheme_translation:
-        #   scheme_translation_callback(scheme, url_or_op)  # url_or_op is url
+        # depth-first callback
+        if hook_depth_first:
+            hook_depth_first(url_or_op)
 
     def _import(self, imports: list):
         for module in imports:
