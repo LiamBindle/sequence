@@ -1,0 +1,48 @@
+{
+    "include": {
+        "test-parameters": {
+            "metadata": {
+                "parameters": {
+                    "v1": {
+                        "type": "int",
+                        "description": "tos value"
+                    },
+                    "v2": {
+                        "type": "int",
+                        "description": "tos+1 value",
+                        "default": 0
+                    }
+                }
+            },
+            "run": [
+                {"op": "get", "uri": "parameters:v1"},
+                {"op": "get", "uri": "parameters:v2"}
+            ]
+        }
+    },
+    "run": [
+        {"v1": 1, "v2": 2},
+        {"op": "set_next_params"},
+        {"op": "test-parameters"},
+
+        {"v1": 3},
+        {"op": "set_next_params"},
+        {"op": "test-parameters"},
+
+        {"op": "test-parameters", "v1": 4, "v2": 5},
+
+        {"op": "test-parameters", "v1": 6}
+    ],
+    "tests": [
+        {
+            "name": "test procedure parameters and nested procedures",
+            "checks": [
+                {
+                    "answer": [
+                        1, 2, 3, 0, 4, 5, 6, 0
+                    ]
+                }
+            ]
+        }
+    ]
+}

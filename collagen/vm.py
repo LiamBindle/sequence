@@ -110,6 +110,7 @@ class OpFrame:
     _pc: int = None
     _begins: List[int] = field(default_factory=list)
     _next_params: dict = field(default_factory=dict)
+    _parameters: dict = field(default_factory=dict)
 
     def run(self, vm: 'VirtualMachine', _run: List[Union[str, dict]]):
         self._run = _run
@@ -126,11 +127,29 @@ class OpFrame:
                 print_console_update(state, name)
 
                 if isinstance(op, dict):
+                    parameters = self._next_params
+                    missing_parameters = []
+                    for param_name, param_def in op.get("metadata", {}).get("parameters", {}).items():
+                        required_param = param_def.get("optional", False) or ("default" not in param_def)
+                        if required_param and param_name not in ex and param_name not in parameters:
+                            missing_parameters.append(param_name)
+                        if param_name in ex:
+                            parameters[param_name] = ex[param_name]
+                        elif param_name in parameters:
+                            # e.g., set by _next_params
+                            pass
+                        elif "default" in param_def:
+                            parameters[param_name] = param_def["default"]
+                    if missing_parameters:
+                        raise TypeError(f'procedure "{name}" missing {len(missing_parameters)} required keyword-only argument: {", ".join([f"{p}" for p in param_name])}')
+                    self._next_params = {}
+
                     # op is an op
                     child = OpFrame(
-                        _set=copy.copy(self._set), # TODO: add parameters as locals
+                        _set=copy.copy(self._set),
                         _name=name,
                         _parent=self,
+                        _parameters=parameters,
                     )
                     op_set = copy.copy(op.get("set", {}))
                     child._set.update(op_set)
@@ -168,7 +187,7 @@ class VirtualMachine:
     def stack(self) -> List[Any]:
         return self._stack
 
-    def _include(self, name: str, url_or_op: Union[str, dict], hook_breadth_first: Callable = None, hook_depth_first: Callable = None):
+    def _include(self, name: str, url_or_op: Union[str, dict], breadth_first_callback: Callable = None, depth_first_callback: Callable = None):
         global _static_ops
         if callable(url_or_op):
             print('here')
@@ -182,8 +201,8 @@ class VirtualMachine:
                 data = _static_getters[url.scheme]['application/json'](self, url_or_op)
 
             # breadth-first callback
-            if hook_breadth_first:
-                hook_breadth_first(url_or_op)
+            if breadth_first_callback:
+                breadth_first_callback(url_or_op)
 
         elif isinstance(url_or_op, dict):
             data = url_or_op
@@ -193,11 +212,11 @@ class VirtualMachine:
 
         self._import(data.get("import", []))
         for name, url_or_op in data.get("include", {}).items():
-            self._include(name, url_or_op)
+            self._include(name, url_or_op, breadth_first_callback, depth_first_callback)
 
         # depth-first callback
-        if hook_depth_first:
-            hook_depth_first(url_or_op)
+        if depth_first_callback:
+            depth_first_callback(url_or_op)
 
     def _import(self, imports: list):
         for module in imports:
