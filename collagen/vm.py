@@ -208,7 +208,7 @@ class VirtualMachine:
     def stack(self) -> List[Any]:
         return self._stack
 
-    def _include(self, name: str, url_or_op: Union[str, dict], parameters: dict = None, breadth_first_callback: Callable = None, depth_first_callback: Callable = None):
+    def _include(self, name: str, url_or_op: Union[str, dict], *, parameters: dict = None, breadth_first_callback: Callable = None, depth_first_callback: Callable = None):
         global _static_ops
         if parameters:
             self._root_frame._parameters = parameters
@@ -236,7 +236,7 @@ class VirtualMachine:
 
         self._import(data.get("import", []))
         for name, url_or_op in data.get("include", {}).items():
-            self._include(name, url_or_op, breadth_first_callback, depth_first_callback)
+            self._include(name, url_or_op, breadth_first_callback=breadth_first_callback, depth_first_callback=depth_first_callback)
 
         # depth-first callback
         if depth_first_callback:
