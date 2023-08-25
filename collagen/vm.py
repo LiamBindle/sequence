@@ -215,6 +215,7 @@ class VirtualMachine:
         state = State(self, self._root_frame)
         if isinstance(url_or_op, str):
             url_or_op = state._dereference(url_or_op)
+        if isinstance(url_or_op, str):
             url = urllib.parse.urlparse(url_or_op)
             if url.path.endswith(".json5"):
                 data = _static_getters[url.scheme]['application/json5'](state, url_or_op)
