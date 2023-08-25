@@ -187,18 +187,24 @@ class VirtualMachine:
     def stack(self) -> List[Any]:
         return self._stack
 
-    def _include(self, name: str, url_or_op: Union[str, dict], breadth_first_callback: Callable = None, depth_first_callback: Callable = None):
+    def _include(self, name: str, url_or_op: Union[str, dict], parameters: dict = None, breadth_first_callback: Callable = None, depth_first_callback: Callable = None):
         global _static_ops
-        if callable(url_or_op):
-            print('here')
+        if parameters:
+            self._root_frame._parameters = parameters
+        state = State(self, self._root_frame)
         if isinstance(url_or_op, str):
             url = urllib.parse.urlparse(url_or_op)
+            if url.scheme == 'parameters':
+                url_or_op = _static_getters['parameters'][None](state, url.path)
+                url = urllib.parse.urlparse(url_or_op)
+
+        if isinstance(url_or_op, str):
             if url.path.endswith(".json5"):
-                data = _static_getters[url.scheme]['application/json5'](self, url_or_op)
+                data = _static_getters[url.scheme]['application/json5'](state, url_or_op)
             elif url.path.endswith(".hjson"):
-                data = _static_getters[url.scheme]['application/hjson'](self, url_or_op)
+                data = _static_getters[url.scheme]['application/hjson'](state, url_or_op)
             else:
-                data = _static_getters[url.scheme]['application/json'](self, url_or_op)
+                data = _static_getters[url.scheme]['application/json'](state, url_or_op)
 
             # breadth-first callback
             if breadth_first_callback:
@@ -222,18 +228,26 @@ class VirtualMachine:
         for module in imports:
             importlib.import_module(module)
 
-    def eval(self, line: str):
+    def eval(self, line: str, parameters: dict = None):
         url = urllib.parse.urlparse(line)
         if line.startswith("import "):
             self._import([line.removeprefix("import ")])
         elif bool(url.scheme) and bool(url.path):
-            op = _static_getters[url.scheme]['application/json'](self, line)
-            self.exec(op)
+            state = State(self, self._root_frame)
+            if url.path.endswith(".json5"):
+                op = _static_getters[url.scheme]['application/json5'](state, line)
+            elif url.path.endswith(".hjson"):
+                op = _static_getters[url.scheme]['application/hjson'](state, line)
+            else:
+                op = _static_getters[url.scheme]['application/json'](state, line)
+            self.exec(op, parameters=parameters)
         else:
             op = ast.literal_eval(line)
             self._root_frame.run(self, [op])
 
-    def exec(self, op: dict[str, Any]):
+    def exec(self, op: dict[str, Any], parameters: dict = None):
+        if parameters:
+            self._root_frame._parameters.update(parameters)
         self._import(op.get("import", []))
         for name, url_or_op in op.get("include", {}).items():
             self._include(name, url_or_op)

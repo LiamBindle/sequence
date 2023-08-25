@@ -2,7 +2,7 @@
     "run": [
         "bar",
         "foo",
-        {"op": "pack", "n": 2, "keys": ["k1", "k2"]},
+        {"op": "pack", "n": 2, "keys": ["k2", "k1"]},
         {"op": "dup"},
         {"op": "set_next_params"},
         {"op": "fstring", "fmt": "{k1}{k2}"},
