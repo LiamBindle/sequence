@@ -70,6 +70,25 @@ class State:
     def op(name) -> Union[dict, Callable]:
         return _static_ops[name]
 
+    def _dereference(self, data: Union[str, list, dict]):
+        if isinstance(data, str):
+            if ref := re.match(r"^\$\{([a-zA-Z0-9\+\-\.]+):([^}]+)\}$", data):
+                scheme = ref.group(1)
+                uri = f'{scheme}:{ref.group(2)}'
+                return _static_getters[scheme][None](self, uri)
+            else:
+                return data
+        elif isinstance(data, list):
+            for i, v in enumerate(data):
+                data[i] = self._dereference(v)
+            return data
+        elif isinstance(data, dict):
+            for k, v in data.items():
+                data[k] = self._dereference(v)
+            return data
+        else:
+            return data
+
 
 def calc_depth(state: State) -> int:
     depth = 0
@@ -127,29 +146,30 @@ class OpFrame:
                 print_console_update(state, name)
 
                 if isinstance(op, dict):
-                    parameters = self._next_params
+                    params = self._next_params
                     missing_parameters = []
                     for param_name, param_def in op.get("metadata", {}).get("parameters", {}).items():
                         required_param = param_def.get("optional", False) or ("default" not in param_def)
-                        if required_param and param_name not in ex and param_name not in parameters:
+                        if required_param and param_name not in ex and param_name not in params:
                             missing_parameters.append(param_name)
                         if param_name in ex:
-                            parameters[param_name] = ex[param_name]
-                        elif param_name in parameters:
+                            params[param_name] = ex[param_name]
+                        elif param_name in params:
                             # e.g., set by _next_params
                             pass
                         elif "default" in param_def:
-                            parameters[param_name] = param_def["default"]
+                            params[param_name] = param_def["default"]
                     if missing_parameters:
                         raise TypeError(f'procedure "{name}" missing {len(missing_parameters)} required keyword-only argument: {", ".join([f"{p}" for p in param_name])}')
                     self._next_params = {}
+                    params = state._dereference(params)
 
                     # op is an op
                     child = OpFrame(
                         _set=copy.copy(self._set),
                         _name=name,
                         _parent=self,
-                        _parameters=parameters,
+                        _parameters=params,
                     )
                     op_set = copy.copy(op.get("set", {}))
                     child._set.update(op_set)
@@ -160,6 +180,7 @@ class OpFrame:
                     # op is a function
                     params = self._next_params
                     params.update({k: v for k, v in ex.items() if k != "op"})
+                    params = state._dereference(params)
                     self._next_params = {}
                     result = op(state, **params)
             else:
@@ -193,12 +214,8 @@ class VirtualMachine:
             self._root_frame._parameters = parameters
         state = State(self, self._root_frame)
         if isinstance(url_or_op, str):
+            url_or_op = state._dereference(url_or_op)
             url = urllib.parse.urlparse(url_or_op)
-            if url.scheme == 'parameters':
-                url_or_op = _static_getters['parameters'][None](state, url.path)
-                url = urllib.parse.urlparse(url_or_op)
-
-        if isinstance(url_or_op, str):
             if url.path.endswith(".json5"):
                 data = _static_getters[url.scheme]['application/json5'](state, url_or_op)
             elif url.path.endswith(".hjson"):
