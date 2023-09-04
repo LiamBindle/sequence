@@ -90,9 +90,9 @@ def parse_docstring(docstring: str, metadata: dict = None) -> dict:
 
 
 class SequenceHandler(BaseHandler):
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, handler, theme, custom_templates) -> None:
         self.fallback_theme = 'terminal'
-        super().__init__(*args, **kwargs)
+        super().__init__(handler, theme, custom_templates)
 
     def collect(self, identifier: str, config: MutableMapping[str, Any]) -> CollectorItem:
         includes: dict[str, str] = config.get('includes', {})
@@ -205,5 +205,6 @@ def get_handler(
 ):
     return SequenceHandler(
         handler="sequence",
-        **kwargs
+        theme=kwargs.get('theme'),
+        custom_templates=kwargs.get('custom_templates')
     )
