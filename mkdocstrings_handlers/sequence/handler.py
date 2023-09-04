@@ -1,5 +1,5 @@
 from typing import Any, Mapping, MutableMapping, Optional, List
-from mkdocstrings.handlers.base import BaseCollector, BaseHandler, BaseRenderer, CollectorItem
+from mkdocstrings.handlers.base import BaseHandler, CollectorItem
 import fnmatch
 import inspect
 
