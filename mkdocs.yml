@@ -1,7 +1,8 @@
-site_name: Collagen
-site_url: https://collagen.dev
+site_name: Sequence
+site_url: https://sequence.dev
 theme:
   name: terminal
+  logo: docs/img/sequence.png
   custom_dir: docs/custom_theme/
 plugins:
   - mkdocstrings

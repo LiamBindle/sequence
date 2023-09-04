@@ -17,9 +17,9 @@ jobs:
       - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV 
       - uses: actions/cache@v3
         with:
-          key: mkdocs-collagen-${{ env.cache_id }}
+          key: mkdocs-sequence-${{ env.cache_id }}
           path: .cache
           restore-keys: |
-            mkdocs-collagen-
+            mkdocs-sequence-
       - run: pip install '.[docs]'
       - run: mkdocs gh-deploy --force

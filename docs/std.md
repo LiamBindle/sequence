@@ -1,17 +1,17 @@
 # Standard Toolkit
 
-The standard toolkit is the collection of methods that are built into Collagen. The standard toolkit provides
+The standard toolkit is the collection of methods that are built into Sequence. The standard toolkit provides
 the methods for scripting logic such as branching (if-else-endif), looping (begin-while-repeat), and working
 with the stack, and data methods for loading/storing/deleting local variables, global variables, and JSON data.
 
 ## Stack Manipulation
 These methods are used to perform actions on the stack. They include operations such as duplicating items, reordering items, droping items, etc.
 
-::: collagen
-    handler: collagen
+::: sequence
+    handler: sequence
     options:
         imports:
-          - collagen.standard
+          - sequence.standard
         ops:
           - dup
           - swap
@@ -25,11 +25,11 @@ These methods are used to perform actions on the stack. They include operations 
 These methods are used to compare items on the stack. These are useful as conditional leading before an if or while
 statement.
 
-::: collagen
-    handler: collagen
+::: sequence
+    handler: sequence
     options:
         imports:
-          - collagen.standard
+          - sequence.standard
         ops:
           - eq
           - neq
@@ -43,11 +43,11 @@ statement.
 These methods facilitate looping and recursion. Loops start with `begin` and end with `repeat`. Loops are terminated by `break`. 
 The `while` method is provided for convenience, and effectively guards a `break` in an if-block.
 
-::: collagen
-    handler: collagen
+::: sequence
+    handler: sequence
     options:
         imports:
-          - collagen.standard
+          - sequence.standard
         ops:
           - begin
           - while
@@ -59,11 +59,11 @@ The `while` method is provided for convenience, and effectively guards a `break`
 ## Branching
 These methods facilitate conditional branching.
 
-::: collagen
-    handler: collagen
+::: sequence
+    handler: sequence
     options:
         imports:
-          - collagen.standard
+          - sequence.standard
         ops:
           - if
           - else
@@ -73,11 +73,11 @@ These methods facilitate conditional branching.
 ## Conversion
 These methods are used to coerce the item at the top of the stack to a specific data type.
 
-::: collagen
-    handler: collagen
+::: sequence
+    handler: sequence
     options:
         imports:
-          - collagen.standard
+          - sequence.standard
         ops:
           - asbool
           - asint
@@ -87,11 +87,11 @@ These methods are used to coerce the item at the top of the stack to a specific 
 ## Arithmetic
 These methods are used to perform arithmetic.
 
-::: collagen
-    handler: collagen
+::: sequence
+    handler: sequence
     options:
         imports:
-          - collagen.standard
+          - sequence.standard
         ops:
           - "/"
           - "*"
@@ -103,11 +103,11 @@ These methods are used to perform arithmetic.
 ## Miscellaneous
 These methods don't fit into the other categories, but they are useful.
 
-::: collagen
-    handler: collagen
+::: sequence
+    handler: sequence
     options:
         imports:
-          - collagen.standard
+          - sequence.standard
         ops:
           - fstring
           - assert
@@ -123,11 +123,11 @@ JSON data.
 
 ## Variables
 These methods are used to store, load, and delete local and global variables. Local variables are procedure-scoped.
-::: collagen
-    handler: collagen
+::: sequence
+    handler: sequence
     options:
         imports:
-          - collagen.standard
+          - sequence.standard
         data:
           - locals
           - globals
@@ -135,11 +135,11 @@ These methods are used to store, load, and delete local and global variables. Lo
 
 ## JSON
 These methods are used to store, load, and delete JSON files.
-::: collagen
-    handler: collagen
+::: sequence
+    handler: sequence
     options:
         imports:
-          - collagen.standard
+          - sequence.standard
         data:
           - http:application/json
           - https:application/json
@@ -147,14 +147,14 @@ These methods are used to store, load, and delete JSON files.
 
 
 ### JSON5
-JSON5 is an extension of JSON that adds functionality such as comments, multiline strings, trailing commas, and unquoted strings. You can read more about JSON5 [here](https://json5.org/). These methods require that Collagen was installed with
-JSON5 support (i.e., `pip install 'collagen[json5]'`).
+JSON5 is an extension of JSON that adds functionality such as comments, multiline strings, trailing commas, and unquoted strings. You can read more about JSON5 [here](https://json5.org/). These methods require that Sequence was installed with
+JSON5 support (i.e., `pip install 'sequence[json5]'`).
 
-::: collagen
-    handler: collagen
+::: sequence
+    handler: sequence
     options:
         imports:
-          - collagen.standard
+          - sequence.standard
         data:
           - http:application/json5
           - https:application/json5
@@ -162,12 +162,12 @@ JSON5 support (i.e., `pip install 'collagen[json5]'`).
 
 ### HJSON
 HJSON is an extension of JSON that is less prone to syntax errors and adds functionality such as comments, multiline strings, trailing commas, and unquoted strings. You can read more about HJSON [here](https://hjson.github.io/).
-These methods require that Collagen was installed with HJSON support (i.e., `pip install 'collagen[hjson]'`).
-::: collagen
-    handler: collagen
+These methods require that Sequence was installed with HJSON support (i.e., `pip install 'sequence[hjson]'`).
+::: sequence
+    handler: sequence
     options:
         imports:
-          - collagen.standard
+          - sequence.standard
         data:
           - http:application/hjson
           - https:application/hjson

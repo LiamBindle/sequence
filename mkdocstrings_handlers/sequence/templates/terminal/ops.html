@@ -1,0 +1,21 @@
+{%- for op, metadata in op_names|zip(op_metadata) -%}
+<details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "{{  op  }}"{{ ', ...' if metadata.parameters|length != 0}} }</code></summary>
+    <div style="padding: 1em;">
+        {% include 'metadata.html' %}
+    </div>
+</details>
+{%- endfor -%}
+
+{%- for op, metadata, scheme, media_type in extdata_op|zip(extdata_metadata,extdata_scheme,extdata_media_type) -%}
+<details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "{{  op  }}",
+        {{'"media_type": "' + media_type + '",' if media_type}}
+        "uri": "{{ scheme }}://..."
+        {{ ', ...' if metadata.parameters|length > 1}}
+    }</code></summary>
+    <div style="padding: 1em;">
+        {% include 'metadata.html' %}
+    </div>
+</details>
+{%- endfor -%}
