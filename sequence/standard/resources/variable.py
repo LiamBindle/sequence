@@ -78,8 +78,8 @@ def delete_global_variable(state: svm.State, key):
     del state._vm._globals[path]
 
 
-@cvm.getter(schemes='parameters', media_type=None)
-def load_parameter(state: cvm.State, key, *, default: Any = None):
+@svm.getter(schemes='parameters', media_type=None)
+def load_parameter(state: svm.State, key, *, default: Any = None):
     """
     Loads a parameter and places the result at the top of the stack.
 
