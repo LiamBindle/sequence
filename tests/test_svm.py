@@ -17,6 +17,8 @@ TEST_FILES = [
     "./tests/json/test-std-fstring.json",
     "./tests/json/test-std-pack-kwargs.json",
     "./tests/json/test-std-load-store-delete.json",
+    "./tests/json/test-parameters.json",
+    "./tests/json/test-dereference.json",
 ]
 
 

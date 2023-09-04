@@ -89,7 +89,7 @@ def pack_(state: svm.State, *, n: int, forward: bool = True, keys: List[str] = N
     [forward]: bool (default: true)
         If false, the items are packed in reverse order.
     [keys]: list
-        If provided, the items are packed as key-value pairs. The first key
+        If provided, the items are packed as key-value pairs. The last key
         applies to the TOS item.
 
     Inputs
@@ -106,7 +106,7 @@ def pack_(state: svm.State, *, n: int, forward: bool = True, keys: List[str] = N
     if not forward:
         items.reverse()
     if keys is not None:
-        items = {k: v for k, v in zip(reversed(keys), items)}
+        items = {k: v for k, v in zip(keys, items)}
     else:
         items = tuple(items)
     return items
@@ -121,7 +121,7 @@ def unpack_(state: svm.State, *, keys: List[str] = None):
     Parameters
     ----------
     [keys]: list
-        Required to unpack a list of key-value pairs. The first key refers to the
+        Required to unpack a list of key-value pairs. The last key refers to the
         new TOS item.
 
     Outputs

@@ -45,7 +45,7 @@ def parse_docstring(docstring: str, metadata: dict = None) -> dict:
         return metadata
 
     def _docstring_reference():
-        return r"^\d+\.[ \t]*((?:(?:\n[ \t]+)?[^\n\(]+)+)(\([^\)]+\))?(?!\d)"
+        return r"^\d+\.[ \t]*((?:(?:\n[ \t]+)?[^\n\[]+)+)(\[[^\]]+\])?(?!\d)"
 
     SECTIONS = ['Inputs', 'Parameters', 'Outputs', 'References']
     if matches := re.match(_docstring_description_regex(SECTIONS), docstring):
@@ -80,7 +80,7 @@ def parse_docstring(docstring: str, metadata: dict = None) -> dict:
         for ref in references:
             ref = {
                 'text': ref[0].strip(),
-                'url': ref[1].strip(" \t()")
+                'url': ref[1].strip(" \t[]")
             }
             ref = {k: v for k, v in ref.items() if v != ''}
             refs.append(ref)

@@ -70,6 +70,25 @@ class State:
     def op(name) -> Union[dict, Callable]:
         return _static_ops[name]
 
+    def _dereference(self, data: Union[str, list, dict]):
+        if isinstance(data, str):
+            if ref := re.match(r"^\$\{([a-zA-Z0-9\+\-\.]+):([^}]+)\}$", data):
+                scheme = ref.group(1)
+                uri = f'{scheme}:{ref.group(2)}'
+                return _static_getters[scheme][None](self, uri)
+            else:
+                return data
+        elif isinstance(data, list):
+            for i, v in enumerate(data):
+                data[i] = self._dereference(v)
+            return data
+        elif isinstance(data, dict):
+            for k, v in data.items():
+                data[k] = self._dereference(v)
+            return data
+        else:
+            return data
+
 
 def calc_depth(state: State) -> int:
     depth = 0
@@ -110,6 +129,7 @@ class OpFrame:
     _pc: int = None
     _begins: List[int] = field(default_factory=list)
     _next_params: dict = field(default_factory=dict)
+    _parameters: dict = field(default_factory=dict)
 
     def run(self, vm: 'VirtualMachine', _run: List[Union[str, dict]]):
         self._run = _run
@@ -126,11 +146,30 @@ class OpFrame:
                 print_console_update(state, name)
 
                 if isinstance(op, dict):
+                    params = self._next_params
+                    missing_parameters = []
+                    for param_name, param_def in op.get("metadata", {}).get("parameters", {}).items():
+                        required_param = param_def.get("optional", False) or ("default" not in param_def)
+                        if required_param and param_name not in ex and param_name not in params:
+                            missing_parameters.append(param_name)
+                        if param_name in ex:
+                            params[param_name] = ex[param_name]
+                        elif param_name in params:
+                            # e.g., set by _next_params
+                            pass
+                        elif "default" in param_def:
+                            params[param_name] = param_def["default"]
+                    if missing_parameters:
+                        raise TypeError(f'procedure "{name}" missing {len(missing_parameters)} required keyword-only argument: {", ".join([f"{p}" for p in param_name])}')
+                    self._next_params = {}
+                    params = state._dereference(params)
+
                     # op is an op
                     child = OpFrame(
                         _set=copy.copy(self._set),
                         _name=name,
                         _parent=self,
+                        _parameters=params,
                     )
                     op_set = copy.copy(op.get("set", {}))
                     child._set.update(op_set)
@@ -141,6 +180,7 @@ class OpFrame:
                     # op is a function
                     params = self._next_params
                     params.update({k: v for k, v in ex.items() if k != "op"})
+                    params = state._dereference(params)
                     self._next_params = {}
                     result = op(state, **params)
             else:
@@ -168,23 +208,25 @@ class VirtualMachine:
     def stack(self) -> List[Any]:
         return self._stack
 
-    def _include(self, name: str, url_or_op: Union[str, dict]):
+    def _include(self, name: str, url_or_op: Union[str, dict], *, parameters: dict = None, breadth_first_callback: Callable = None, depth_first_callback: Callable = None):
         global _static_ops
-        if callable(url_or_op):
-            print('here')
+        if parameters:
+            self._root_frame._parameters = parameters
+        state = State(self, self._root_frame)
+        if isinstance(url_or_op, str):
+            url_or_op = state._dereference(url_or_op)
         if isinstance(url_or_op, str):
             url = urllib.parse.urlparse(url_or_op)
             if url.path.endswith(".json5"):
-                data = _static_getters[url.scheme]['application/json5'](self, url_or_op)
+                data = _static_getters[url.scheme]['application/json5'](state, url_or_op)
             elif url.path.endswith(".hjson"):
-                data = _static_getters[url.scheme]['application/hjson'](self, url_or_op)
+                data = _static_getters[url.scheme]['application/hjson'](state, url_or_op)
             else:
-                data = _static_getters[url.scheme]['application/json'](self, url_or_op)
-            # TODO: add callback for translator so file uris can be replaced with s3 uris and
-            # files uploaded to s3 with appropriate key
-            # scheme_translation = url.scheme equals target scheme
-            #
-            # This could be accomplished with a basic callback at the end of _include.
+                data = _static_getters[url.scheme]['application/json'](state, url_or_op)
+
+            # breadth-first callback
+            if breadth_first_callback:
+                breadth_first_callback(url_or_op)
 
         elif isinstance(url_or_op, dict):
             data = url_or_op
@@ -194,27 +236,36 @@ class VirtualMachine:
 
         self._import(data.get("import", []))
         for name, url_or_op in data.get("include", {}).items():
-            self._include(name, url_or_op)
+            self._include(name, url_or_op, breadth_first_callback=breadth_first_callback, depth_first_callback=depth_first_callback)
 
-        # if scheme_translation:
-        #   scheme_translation_callback(scheme, url_or_op)  # url_or_op is url
+        # depth-first callback
+        if depth_first_callback:
+            depth_first_callback(url_or_op)
 
     def _import(self, imports: list):
         for module in imports:
             importlib.import_module(module)
 
-    def eval(self, line: str):
+    def eval(self, line: str, parameters: dict = None):
         url = urllib.parse.urlparse(line)
         if line.startswith("import "):
             self._import([line.removeprefix("import ")])
         elif bool(url.scheme) and bool(url.path):
-            op = _static_getters[url.scheme]['application/json'](self, line)
-            self.exec(op)
+            state = State(self, self._root_frame)
+            if url.path.endswith(".json5"):
+                op = _static_getters[url.scheme]['application/json5'](state, line)
+            elif url.path.endswith(".hjson"):
+                op = _static_getters[url.scheme]['application/hjson'](state, line)
+            else:
+                op = _static_getters[url.scheme]['application/json'](state, line)
+            self.exec(op, parameters=parameters)
         else:
             op = ast.literal_eval(line)
             self._root_frame.run(self, [op])
 
-    def exec(self, op: dict[str, Any]):
+    def exec(self, op: dict[str, Any], parameters: dict = None):
+        if parameters:
+            self._root_frame._parameters.update(parameters)
         self._import(op.get("import", []))
         for name, url_or_op in op.get("include", {}).items():
             self._include(name, url_or_op)

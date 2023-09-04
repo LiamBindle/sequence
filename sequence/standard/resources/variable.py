@@ -76,3 +76,22 @@ def delete_global_variable(state: svm.State, key):
     """
     path = urllib.parse.urlparse(key).path
     del state._vm._globals[path]
+
+
+@cvm.getter(schemes='parameters', media_type=None)
+def load_parameter(state: cvm.State, key, *, default: Any = None):
+    """
+    Loads a parameter and places the result at the top of the stack.
+
+    Parameters
+    ----------
+    [default]: Any (default: None)
+        The default value if the parameter doesn't exist.
+
+    Outputs
+    -------
+    data: Any
+        The parameter.
+    """
+    path = urllib.parse.urlparse(key).path
+    return state._op_frame._parameters.get(path, default)
