@@ -9,10 +9,12 @@ import ast
 import sys
 import urllib.request
 import urllib.parse
+import pathlib
 
 
 _static_ops: dict[str, Union[dict, Callable]] = {}
 _static_getters: dict[str, dict[str, Callable]] = {}
+_static_ext_getter: dict[str, dict[str, Callable]] = {}
 _static_putters: dict[str, dict[str, Callable]] = {}
 _static_deleters: dict[str, dict[str, Callable]] = {}
 _static_copiers = {}
@@ -202,12 +204,8 @@ class VirtualMachine:
             url_or_op = state._dereference(url_or_op)
         if isinstance(url_or_op, str):
             url = urllib.parse.urlparse(url_or_op)
-            if url.path.endswith(".json5"):
-                data = _static_getters[url.scheme]['application/json5'](state, url_or_op)
-            elif url.path.endswith(".hjson"):
-                data = _static_getters[url.scheme]['application/hjson'](state, url_or_op)
-            else:
-                data = _static_getters[url.scheme]['application/json'](state, url_or_op)
+            extension = pathlib.Path(url.path).suffix
+            data = _static_ext_getter[url.scheme][extension](state, url_or_op)
 
             # breadth-first callback
             if breadth_first_callback:
@@ -299,19 +297,27 @@ def method(name):
     return inner
 
 
-def getter(*, schemes: Union[str, list[str]], media_type: str):
-    global _static_getters
+def getter(*, schemes: Union[str, list[str]], media_type: str, extensions: Union[str, list[str]] = []):
+    global _static_getters, _static_ext_getter
     if isinstance(schemes, str):
         schemes = [schemes]
+    if isinstance(extensions, str):
+        extensions = [extensions]
 
     def inner(func: Callable):
-        global _static_getters
+        global _static_getters, _static_ext_getter
         if func.__code__.co_argcount != 2:
             raise RuntimeError("function must take exactly two position arguments (state: svm.State, url: str)")
         for scheme in schemes:
             if scheme not in _static_getters:
                 _static_getters[scheme] = {}
             _static_getters[scheme][media_type] = func
+
+            if scheme not in _static_ext_getter:
+                _static_ext_getter[scheme] = {}
+            for ext in extensions:
+                _static_ext_getter[scheme][ext] = func
+
         return func
     return inner
 
@@ -363,34 +369,3 @@ def copier(*, types: Union[type, List[type]]):
             _static_copiers[t] = func
         return func
     return inner
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# notes:
-# - there needs to be a place to store metadata in the op (e.g., model name, provider name for QGIS model, details about inputs/outputs)

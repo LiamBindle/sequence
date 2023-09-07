@@ -10,7 +10,7 @@ except ImportError:
     ENABLE_JSON5 = False
 
 
-@svm.getter(schemes=['http', 'https'], media_type='application/json5')
+@svm.getter(schemes=['http', 'https'], media_type='application/json5', extensions=['.json5'])
 def fetch_json5_http(state: svm.State, url: str):
     """
     Loads a JSON5 file from a remote HTTP/HTTPS source.
@@ -28,7 +28,7 @@ def fetch_json5_http(state: svm.State, url: str):
     return json5.loads(response.read())
 
 
-@svm.getter(schemes=['file'], media_type='application/json5')
+@svm.getter(schemes=['file'], media_type='application/json5', extensions=['.json5'])
 def fetch_json5_file(state: svm.State, url: str):
     """
     Loads a JSON5 file from a local file.

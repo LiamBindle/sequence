@@ -3,7 +3,8 @@ import urllib.parse
 import urllib.request
 import sequence.vm as svm
 
-@svm.getter(schemes=['http', 'https'], media_type='application/json')
+
+@svm.getter(schemes=['http', 'https'], media_type='application/json', extensions=['.json'])
 def fetch_json_http(state: svm.State, url: str):
     """
     Loads a JSON file from a remote HTTP/HTTPS source.
@@ -19,7 +20,7 @@ def fetch_json_http(state: svm.State, url: str):
     return json.loads(response.read())
 
 
-@svm.getter(schemes=['file'], media_type='application/json')
+@svm.getter(schemes=['file'], media_type='application/json', extensions=['.json'])
 def fetch_json_file(state: svm.State, url: str):
     """
     Loads a JSON file from a local file.
