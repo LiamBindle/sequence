@@ -17,19 +17,19 @@
 
     "run": [
         7,
-        {"op": "put", "uri": "locals:seven"},
+        {"op": "put", "uri": "variables:seven"},
         5,
-        {"op": "put", "uri": "locals:five"},
+        {"op": "put", "uri": "variables:five"},
         3,
-        {"op": "put", "uri": "locals:three"},
+        {"op": "put", "uri": "variables:three"},
         2,
-        {"op": "put", "uri": "locals:two"},
+        {"op": "put", "uri": "variables:two"},
         {"op": "put-param-on-stack", "value": 1},
-        {"op": "put-param-on-stack", "value": "${locals:two}"},
-        {"op": "put-param-on-stack", "value": ["${locals:three}", 4]},
-        {"op": "put-param-on-stack", "value": {"five": "${locals:five}", "six": 6}},
+        {"op": "put-param-on-stack", "value": "${variables:two}"},
+        {"op": "put-param-on-stack", "value": ["${variables:three}", 4]},
+        {"op": "put-param-on-stack", "value": {"five": "${variables:five}", "six": 6}},
         {"op": "unpack", "keys": ["five", "six"]},
-        {"op": "put-param-on-stack", "value": [{"seven": "${locals:seven}"}]},
+        {"op": "put-param-on-stack", "value": [{"seven": "${variables:seven}"}]},
         {"op": "unpack", "keys": ["seven"]}
     ],
     "tests": [

@@ -10,23 +10,17 @@
         },
         "nested_ops": {
             "run": [
-                {"op": "get", "uri": "locals:///x"},
+                {"op": "get", "uri": "variables:///x"},
                 2,
                 {"op": "eq"},
     
                 3,
-                {"op": "put", "uri": "locals:///x"},
-                {"op": "get", "uri": "locals:///x"},
+                {"op": "put", "uri": "variables:///x"},
+                {"op": "get", "uri": "variables:///x"},
                 3,
                 {"op": "eq"},
     
-                {"op": "del", "uri": "locals:///y"},
-    
-                4,
-                {"op": "put", "uri": "globals:///z"},
-                {"op": "get", "uri": "globals:///z"},
-                4,
-                {"op": "eq"}
+                {"op": "del", "uri": "variables:///y"}
             ]
         }
     },
@@ -38,25 +32,19 @@
         {"op": "check_local", "key": "bar", "value": "baz"},
 
         2,
-        {"op": "put", "uri": "locals:///x"},
+        {"op": "put", "uri": "variables:///x"},
         3,
-        {"op": "put", "uri": "locals:///y"},
+        {"op": "put", "uri": "variables:///y"},
 
             {"op": "nested_ops"},
 
-        {"op": "get", "uri": "locals:///x"},
+        {"op": "get", "uri": "variables:///x"},
         2,
         {"op": "eq"},
 
-        {"op": "get", "uri": "locals:///y"},
+        {"op": "get", "uri": "variables:///y"},
         3,
-        {"op": "eq"},
-
-        {"op": "get", "uri": "globals:///z"},
-        4,
-        {"op": "eq"},
-
-        {"op": "del", "uri": "globals:///z"}
+        {"op": "eq"}
     ],
     "set": {
         "foo": 1,
@@ -67,9 +55,11 @@
             "name": "locals",
             "checks": [
                 {"answer": [
-                    1, 1, 0, 1, 1, 1,
-                    true, true, true,
-                    true, true, true
+                    1, 1, 0,
+                    1, 1,
+                    1,
+                    true, true,
+                    true, true
                 ]}
             ]
         }
