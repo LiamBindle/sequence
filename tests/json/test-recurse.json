@@ -53,29 +53,13 @@
     "tests": [
         {
             "name": "std.recurse - factorial(5)",
-            "setup": [
-                5
-            ],
-            "checks": [
-                {
-                    "answer": [
-                        120
-                    ]
-                }
-            ]
+            "init": [5],
+            "answer": [120]
         },
         {
             "name": "std.recurse - factorial(13)",
-            "setup": [
-                13
-            ],
-            "checks": [
-                {
-                    "answer": [
-                        6227020800
-                    ]
-                }
-            ]
+            "init": [13],
+            "answer": [6227020800]
         }
     ]
 }

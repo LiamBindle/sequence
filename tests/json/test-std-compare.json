@@ -56,31 +56,27 @@
     "tests": [
         {
             "name": "std.compare",
-            "checks": [
-                {
-                    "answer": [
-                        false,
-                        true,
-                        true,
-                        false,
+            "answer": [
+                false,
+                true,
+                true,
+                false,
 
-                        false,
-                        true,
-                        false,
+                false,
+                true,
+                false,
 
-                        false,
-                        true,
-                        true,
+                false,
+                true,
+                true,
 
-                        true,
-                        false,
-                        false,
+                true,
+                false,
+                false,
 
-                        true,
-                        false,
-                        true
-                    ]
-                }
+                true,
+                false,
+                true
             ]
         }
     ]

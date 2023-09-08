@@ -38,47 +38,39 @@
     "tests": [
         {
             "name": "std.if - Ie-Ie-Ie",
-            "setup": [
+            "init": [
                 true,
                 true,
                 true
             ],
-            "checks": [
-                {"answer": [1]}
-            ]
+            "answer": [1]
         },
         {
             "name": "std.if - iE-Ie-Ie",
-            "setup": [
+            "init": [
                 true,
                 true,
                 false
             ],
-            "checks": [
-                {"answer": [5]}
-            ]
+            "answer": [5]
         },
         {
             "name": "std.if - Ie-iE-I",
-            "setup": [
+            "init": [
                 true,
                 false,
                 true
             ],
-            "checks": [
-                {"answer": [3]}
-            ]
+            "answer": [3]
         },
         {
             "name": "std.if - Ie-iE-i",
-            "setup": [
+            "init": [
                 false,
                 false,
                 true
             ],
-            "checks": [
-                {"answer": []}
-            ]
+            "answer": []
         }
     ]
 }

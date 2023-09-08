@@ -26,8 +26,8 @@ TEST_FILES = [
 def test_all(path):
     with open(path, 'r') as f:
         test: dict = json.load(f)
-    checks_passed = svm.test(test)
-    assert checks_passed > 0, "Nothing checked"
+    tests_passed = svm.test(test)
+    assert tests_passed > 0, "Nothing checked"
 
 
 def test_bench_routine():
@@ -35,5 +35,5 @@ def test_bench_routine():
     name = "std.if - iE-Ie-Ie"
     with open(path, 'r') as f:
         test: dict = json.load(f)
-    checks_passed = svm.test(test, name)
-    assert checks_passed > 0, "Nothing checked"
+    tests_passed = svm.test(test, name)
+    assert tests_passed > 0, "Nothing checked"

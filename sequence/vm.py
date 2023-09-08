@@ -279,20 +279,20 @@ class VirtualMachine:
 
 def test(op: dict, tests_matching_re: str = None):
     tests: dict = op.get("tests", [])
-    checks_passed = 0
+    tests_passed = 0
     for test in tests:
         test_name = test.get("name", "unnamed-test")
         if tests_matching_re is not None and not re.match(tests_matching_re, test_name):
             continue
-        init_stack = test.get("setup", [])
+        init_stack = test.get("init", [])
         vm = VirtualMachine(init_stack=init_stack)
         vm.exec(op)
-        if "checks" in test:
-            for i, check in enumerate(test["checks"]):
-                if "answer" in check:
-                    assert vm.stack == check['answer'], f"check {i} of test '{test_name}' failed"
-                    checks_passed += 1
-    return checks_passed
+        if "answer" in test:
+            assert vm.stack == test["answer"], f"Test failed: {test_name}. Answer: {test['answer']}. Result: {vm.stack}."
+        else:
+            assert len(op) > 0, f"Test failed: {test_name}. Nothing was run."
+        tests_passed += 1
+    return tests_passed
 
 
 def method(name):

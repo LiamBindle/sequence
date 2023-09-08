@@ -12,15 +12,11 @@
     "tests": [
         {
             "name": "std.fstring",
-            "checks": [
-                {
-                    "answer": [
-                        "no replacement fields",
-                        "foobar",
-                        "foobarbaz",
-                        "foobarbaz"
-                    ]
-                }
+            "answer": [
+                "no replacement fields",
+                "foobar",
+                "foobarbaz",
+                "foobarbaz"
             ]
         }
     ]

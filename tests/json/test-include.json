@@ -8,17 +8,13 @@
     "tests": [
         {
             "name": "code.include - 1",
-            "setup": [1],
-            "checks": [
-                {"answer": [1]}
-            ]
+            "init": [1],
+            "answer": [1]
         },
         {
             "name": "code.import - 2",
-            "setup": [2],
-            "checks": [
-                {"answer": []}
-            ]
+            "init": [2],
+            "answer": []
         }
     ]
 }
