@@ -1,12 +1,12 @@
 from typing import List
 import copy
-import sequence.vm as svm
-from ..vm import _static_copiers
+import sequence
+import sequence.static
 
 
 # stack ops
-@svm.method("dup")
-def duplicate(state: svm.State, *, deep: bool = False, offset: int = 0):
+@sequence.method("dup")
+def duplicate(state: sequence.State, *, deep: bool = False, offset: int = 0):
     """
     Duplicates the item at the top of the stack. There are parameters
     to control if a shallow or deep copy is done, as well as control
@@ -24,12 +24,12 @@ def duplicate(state: svm.State, *, deep: bool = False, offset: int = 0):
     item_copy: Any
         A copy of the requested item.
     """
-    global _static_copiers
+    # global _static_copiers
     offset = -1 - offset
     item = state._frame.stack[offset]
     item_type = type(item)
-    if item_type in _static_copiers:
-        return _static_copiers[item_type](item, deep)
+    if item_type in sequence.static.copiers:
+        return sequence.static.copiers[item_type](item, deep)
     else:
         if deep:
             return copy.deepcopy(item)
@@ -37,8 +37,8 @@ def duplicate(state: svm.State, *, deep: bool = False, offset: int = 0):
             return copy.copy(item)
 
 
-@svm.method("swap")
-def swap(state: svm.State, *, order: list = [1, 0]):
+@sequence.method("swap")
+def swap(state: sequence.State, *, order: list = [1, 0]):
     """
     Swaps the order of the items at the top of the stack.
 
@@ -55,16 +55,16 @@ def swap(state: svm.State, *, order: list = [1, 0]):
     return new_items
 
 
-@svm.method("drop")
-def drop(state: svm.State):
+@sequence.method("drop")
+def drop(state: sequence.State):
     """
     Drops the item at the top of the stack.
     """
     state.pop()
 
 
-@svm.method("size")
-def stack_size(state: svm.State):
+@sequence.method("size")
+def stack_size(state: sequence.State):
     """
     Returns the current size (depth) of the stack.
 
@@ -76,8 +76,8 @@ def stack_size(state: svm.State):
     return len(state._frame.stack)
 
 
-@svm.method("pack")
-def pack_(state: svm.State, *, n: int, forward: bool = True, keys: List[str] = None):
+@sequence.method("pack")
+def pack_(state: sequence.State, *, n: int, forward: bool = True, keys: List[str] = None):
     """
     Packs N items from the top of the stack into a single array at the top of
     the stack.
@@ -112,8 +112,8 @@ def pack_(state: svm.State, *, n: int, forward: bool = True, keys: List[str] = N
     return items
 
 
-@svm.method("unpack")
-def unpack_(state: svm.State, *, keys: List[str] = None):
+@sequence.method("unpack")
+def unpack_(state: sequence.State, *, keys: List[str] = None):
     """
     Packs N items from the top of the stack into a single array at the top of
     the stack.

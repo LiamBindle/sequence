@@ -1,11 +1,11 @@
 import urllib.parse
 import urllib.request
 import pathlib
-import sequence.vm as svm
+import sequence
 
 
-@svm.deleter(schemes=['file'])
-def delete_generic_file(state: svm.State, uri: str, *, missing_ok: bool = False):
+@sequence.deleter(schemes=['file'])
+def delete_generic_file(state: sequence.State, uri: str, *, missing_ok: bool = False):
     """
     Deletes a local file.
     """

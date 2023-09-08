@@ -1,8 +1,8 @@
-import sequence.vm as svm
+import sequence
 
 
-@svm.method("asbool")
-def asbool_(state: svm.State):
+@sequence.method("asbool")
+def asbool_(state: sequence.State):
     """
     Coerces the item at the top of the stack to a boolean value.
 
@@ -20,8 +20,8 @@ def asbool_(state: svm.State):
     return bool(x)
 
 
-@svm.method("asint")
-def asint_(state: svm.State):
+@sequence.method("asint")
+def asint_(state: sequence.State):
     """
     Coerces the item at the top of the stack to an integer.
 
@@ -39,8 +39,8 @@ def asint_(state: svm.State):
     return int(x)
 
 
-@svm.method("asfloat")
-def asfloat_(state: svm.State):
+@sequence.method("asfloat")
+def asfloat_(state: sequence.State):
     """
     Coerces the item at the top of the stack to a float.
 

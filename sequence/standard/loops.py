@@ -1,25 +1,25 @@
-import sequence.vm as svm
+import sequence
 
 
 # looping
-@svm.method("begin")
-def begin_(state: svm.State):
+@sequence.method("begin")
+def begin_(state: sequence.State):
     """
     Marks the beginning of a loop.
     """
     state._frame.begins.append(state._frame.pc)
 
 
-@svm.method("repeat")
-def repeat_(state: svm.State):
+@sequence.method("repeat")
+def repeat_(state: sequence.State):
     """
     Marks the end of a loop.
     """
     state._frame.pc = state._frame.begins[-1]
 
 
-@svm.method("break")
-def break_(state: svm.State):
+@sequence.method("break")
+def break_(state: sequence.State):
     """
     Breaks out of a loop (terminates the loop).
     """
@@ -47,16 +47,16 @@ def break_(state: svm.State):
     raise RuntimeError("Unterminated begin statement")
 
 
-@svm.method("recurse")
-def recurse(state: svm.State):
+@sequence.method("recurse")
+def recurse(state: sequence.State):
     """
     Restarts the current procedure.
     """
     state._frame.pc = -1
 
 
-@svm.method("while")
-def while_(state: svm.State):
+@sequence.method("while")
+def while_(state: sequence.State):
     """
     Continues the loop if the item at the top of the stack is true. If the
     item at the top of the stack is not true, it terminates the loop.

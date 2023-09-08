@@ -1,6 +1,8 @@
 import pytest
-import sequence.vm as svm
+import sequence
 import json
+
+from sequence.visitors.tester import SequenceTester
 
 TEST_FILES = [
     "./tests/json/test-import.json",
@@ -24,6 +26,6 @@ TEST_FILES = [
 
 @pytest.mark.parametrize("path", TEST_FILES)
 def test_all(path):
-    seq = svm.SequenceLoader.load(path)
-    tests_passed = svm.test(seq)
-    assert tests_passed > 0, "Nothing checked"
+    seq = sequence.load(path)
+    tester = SequenceTester()
+    tester.visit(seq)

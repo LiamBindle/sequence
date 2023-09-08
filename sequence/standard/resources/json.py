@@ -1,11 +1,11 @@
 import json
 import urllib.parse
 import urllib.request
-import sequence.vm as svm
+import sequence
 
 
-@svm.getter(schemes=['http', 'https'], media_type='application/json', extensions=['.json'])
-def fetch_json_http(state: svm.State, url: str):
+@sequence.getter(schemes=['http', 'https'], media_type='application/json', extensions=['.json'])
+def fetch_json_http(state: sequence.State, url: str):
     """
     Loads a JSON file from a remote HTTP/HTTPS source.
 
@@ -20,8 +20,8 @@ def fetch_json_http(state: svm.State, url: str):
     return json.loads(response.read())
 
 
-@svm.getter(schemes=['file'], media_type='application/json', extensions=['.json'])
-def fetch_json_file(state: svm.State, url: str):
+@sequence.getter(schemes=['file'], media_type='application/json', extensions=['.json'])
+def fetch_json_file(state: sequence.State, url: str):
     """
     Loads a JSON file from a local file.
 
@@ -37,8 +37,8 @@ def fetch_json_file(state: svm.State, url: str):
     return data
 
 
-@svm.putter(schemes=['file'], media_type='application/json')
-def store_json_file(state: svm.State, data, uri: str):
+@sequence.putter(schemes=['file'], media_type='application/json')
+def store_json_file(state: sequence.State, data, uri: str):
     """
     Loads a JSON file from a local file.
 

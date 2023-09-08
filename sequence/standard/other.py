@@ -1,10 +1,10 @@
 import string
-import sequence.vm as svm
+import sequence
 
 
 # misc
-@svm.method("fstring")
-def format_string(state: svm.State, *, fmt: str, **params):
+@sequence.method("fstring")
+def format_string(state: sequence.State, *, fmt: str, **params):
     """
     Formats a string.
 
@@ -43,8 +43,8 @@ def format_string(state: svm.State, *, fmt: str, **params):
     return fmt.format(*args, **params)
 
 
-@svm.method("assert")
-def assert_(state: svm.State, *, error: str = '', negate: bool = False):
+@sequence.method("assert")
+def assert_(state: sequence.State, *, error: str = '', negate: bool = False):
     """
     Asserts that the item at the top of the stack is true. Terminates
     execution if false.
@@ -69,8 +69,8 @@ def assert_(state: svm.State, *, error: str = '', negate: bool = False):
         assert x, error
 
 
-@svm.method("set_next_params")
-def set_next_params(state: svm.State):
+@sequence.method("set_next_params")
+def set_next_params(state: sequence.State):
     """
     Initializes the next op's parameters to the key-value array at the top-of-the-stack.
 

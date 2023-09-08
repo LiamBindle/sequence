@@ -1,9 +1,9 @@
-import sequence.vm as svm
+import sequence
 
 
 # comparison
-@svm.method("eq")
-def equal(state: svm.State):
+@sequence.method("eq")
+def equal(state: sequence.State):
     """
     Checks if x == y.
 
@@ -23,8 +23,8 @@ def equal(state: svm.State):
     return x == y
 
 
-@svm.method("neq")
-def not_equal(state: svm.State):
+@sequence.method("neq")
+def not_equal(state: sequence.State):
     """
     Checks if x is not equal to y.
 
@@ -44,8 +44,8 @@ def not_equal(state: svm.State):
     return x != y
 
 
-@svm.method("gt")
-def greater_than(state: svm.State):
+@sequence.method("gt")
+def greater_than(state: sequence.State):
     """
     Checks if x is greater than y.
 
@@ -65,8 +65,8 @@ def greater_than(state: svm.State):
     return x > y
 
 
-@svm.method("ge")
-def greater_than_or_equal_to(state: svm.State):
+@sequence.method("ge")
+def greater_than_or_equal_to(state: sequence.State):
     """
     Checks if x is greater than or equal to y.
 
@@ -86,8 +86,8 @@ def greater_than_or_equal_to(state: svm.State):
     return x >= y
 
 
-@svm.method("lt")
-def less_than(state: svm.State):
+@sequence.method("lt")
+def less_than(state: sequence.State):
     """
     Checks if x is less than y.
 
@@ -107,8 +107,8 @@ def less_than(state: svm.State):
     return x < y
 
 
-@svm.method("le")
-def less_than_or_equal_to(state: svm.State):
+@sequence.method("le")
+def less_than_or_equal_to(state: sequence.State):
     """
     Checks if x is less than or equal to y.
 
@@ -128,8 +128,8 @@ def less_than_or_equal_to(state: svm.State):
     return x <= y
 
 
-@svm.method("/")
-def divide(state: svm.State):
+@sequence.method("/")
+def divide(state: sequence.State):
     """
     Divides the two numbers at the top of the stack. If the items at the top
     of the stack are  not numbers, the binary operator '/' is applied to the
@@ -151,8 +151,8 @@ def divide(state: svm.State):
     return x / y
 
 
-@svm.method("*")
-def multiply(state: svm.State):
+@sequence.method("*")
+def multiply(state: sequence.State):
     """
     Multiplies the two numbers at the top of the stack. If the items at the top
     of the stack are  not numbers, the binary operator '*' is applied to the
@@ -174,8 +174,8 @@ def multiply(state: svm.State):
     return x * y
 
 
-@svm.method("-")
-def minus(state: svm.State):
+@sequence.method("-")
+def minus(state: sequence.State):
     """
     Subtracts the two numbers at the top of the stack. If the items at the top
     of the stack are  not numbers, the binary operator '-' is applied to the
@@ -197,8 +197,8 @@ def minus(state: svm.State):
     return x - y
 
 
-@svm.method("+")
-def plus(state: svm.State):
+@sequence.method("+")
+def plus(state: sequence.State):
     """
     Adds the two numbers at the top of the stack. If the items at the top
     of the stack are  not numbers, the binary operator '+' is applied to the
@@ -220,8 +220,8 @@ def plus(state: svm.State):
     return x + y
 
 
-@svm.method("%")
-def mod(state: svm.State):
+@sequence.method("%")
+def mod(state: sequence.State):
     """
     Returns the modulous the two numbers at the top of the stack. If the items at the top
     of the stack are  not numbers, the binary operator '%' is applied to the
@@ -243,8 +243,8 @@ def mod(state: svm.State):
     return x % y
 
 
-@svm.method("not")
-def not_(state: svm.State):
+@sequence.method("not")
+def not_(state: sequence.State):
     """
     Inverts the True/False value at the top of the stack. If the item at the
     top of the stack is not a boolean value, it is coerced to a boolean and
@@ -264,8 +264,8 @@ def not_(state: svm.State):
     return not x
 
 
-@svm.method("and")
-def and_(state: svm.State):
+@sequence.method("and")
+def and_(state: sequence.State):
     """
     Logical AND of the two boolean values at the top of the stack.
     If the items at the top of the stack are not booleans, they are coerced to
@@ -287,8 +287,8 @@ def and_(state: svm.State):
     return x and y
 
 
-@svm.method("or")
-def or_(state: svm.State):
+@sequence.method("or")
+def or_(state: sequence.State):
     """
     Logical OR of the two boolean values at the top of the stack.
     If the items at the top of the stack are not booleans, they are coerced to
@@ -310,8 +310,8 @@ def or_(state: svm.State):
     return x or y
 
 
-@svm.method("xor")
-def xor_(state: svm.State):
+@sequence.method("xor")
+def xor_(state: sequence.State):
     """
     Logical XOR of the two boolean values at the top of the stack.
     If the items at the top of the stack are not booleans, they are coerced to

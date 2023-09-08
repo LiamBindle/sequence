@@ -1,8 +1,8 @@
-import sequence.vm as svm
+import sequence
 
 
-@svm.method("if")
-def if_(state: svm.State):
+@sequence.method("if")
+def if_(state: sequence.State):
     """
     Marks the beginning of an if-block. An if statment MUST be terminated by `{"op": "endif"}`.
 
@@ -37,8 +37,8 @@ def if_(state: svm.State):
     raise RuntimeError("Unterminated if statement")
 
 
-@svm.method("else")
-def else_(state: svm.State):
+@sequence.method("else")
+def else_(state: sequence.State):
     """
     Marks the beginning of an else-block. This method MUST be placed between
     `{"op": "if"}` and `{"op": "endif"}`.
@@ -67,8 +67,8 @@ def else_(state: svm.State):
     raise RuntimeError("Unterminated if statement")
 
 
-@svm.method("endif")
-def endif_(state: svm.State):
+@sequence.method("endif")
+def endif_(state: sequence.State):
     """
     Marks the end of an if statement.
     """

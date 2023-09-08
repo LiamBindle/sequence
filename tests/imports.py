@@ -1,15 +1,15 @@
-import sequence.vm as svm
+import sequence
 
 
-@svm.method("discard_if_neq")
-def discard_if_neq(state: svm.State, *, value):
+@sequence.method("discard_if_neq")
+def discard_if_neq(state: sequence.State, *, value):
     a = state.pop()
     if a == value:
         return value
 
 
-@svm.method("is_decreasing")
-def is_decreasing(state: svm.State, *, argc: int):
+@sequence.method("is_decreasing")
+def is_decreasing(state: sequence.State, *, argc: int):
     args = state.popn(argc)
     if len(args) == 0:
         return False
@@ -21,41 +21,41 @@ def is_decreasing(state: svm.State, *, argc: int):
     return all(lt)
 
 
-@svm.method("pass_through")
-def pass_through(state: svm.State, *, argc: int):
+@sequence.method("pass_through")
+def pass_through(state: sequence.State, *, argc: int):
     args = state.popn(argc)
     return list(args)
 
 
-@svm.method("check_local")
-def check_local(state: svm.State, *, key, value):
+@sequence.method("check_local")
+def check_local(state: sequence.State, *, key, value):
     if state.has(key) and state.get(key) == value:
         return 1
     else:
         return 0
 
 
-@svm.method("equals")
-def equals_(state: svm.State):
+@sequence.method("equals")
+def equals_(state: sequence.State):
     x, y = state.popn(2)
     return [x, x == y]
 
 
-@svm.method("append_value_to_key")
-def append_value_to_key(state: svm.State, *, key, value: int):
+@sequence.method("append_value_to_key")
+def append_value_to_key(state: sequence.State, *, key, value: int):
     d = state.pop()
     d[key].append(value)
     return d
 
 
-@svm.method("change_key_value")
-def change_key_value(state: svm.State, *, key, value):
+@sequence.method("change_key_value")
+def change_key_value(state: sequence.State, *, key, value):
     d = state.pop()
     d[key] = value
     return d
 
 
-@svm.method("check_file_exists")
-def check_file_exists(state: svm.State, *, path):
+@sequence.method("check_file_exists")
+def check_file_exists(state: sequence.State, *, path):
     import os.path
     return os.path.exists(path)

@@ -1,12 +1,13 @@
 from typing import Any, Callable
 import urllib.parse
-import sequence.vm as svm
-from ...vm import _static_getters, _static_deleters, _static_putters
+import sequence.static
+import sequence
+# from ...vm import _static_getters, _static_deleters, _static_putters
 
 
 # state
-@svm.method("get")
-def load(state: svm.State, *, uri: str, mediaType: str = None, **params):
+@sequence.method("get")
+def load(state: sequence.State, *, uri: str, mediaType: str = None, **params):
     """
     Loads an resource from a URI and places it as the top of the stack.
 
@@ -24,14 +25,14 @@ def load(state: svm.State, *, uri: str, mediaType: str = None, **params):
     item: Any
         The loaded resource.
     """
-    global _static_getters
+    # global _static_getters
     parsed_uri = urllib.parse.urlparse(uri)
-    uri_media_getter = _static_getters[parsed_uri.scheme][mediaType]
+    uri_media_getter = sequence.static.getters[parsed_uri.scheme][mediaType]
     return uri_media_getter(state, uri, **params)
 
 
-@svm.method("put")
-def store(state: svm.State, *, uri: str, mediaType: str = None, **params):
+@sequence.method("put")
+def store(state: sequence.State, *, uri: str, mediaType: str = None, **params):
     """
     Stores the item at the top of the stack.
 
@@ -49,15 +50,15 @@ def store(state: svm.State, *, uri: str, mediaType: str = None, **params):
     item: Any
         The item to be stored.
     """
-    global _static_putters
+    # global sequence.static.putters
     data = state.pop()
     parsed_uri = urllib.parse.urlparse(uri)
-    uri_media_putter = _static_putters[parsed_uri.scheme][mediaType]
+    uri_media_putter = sequence.static.putters[parsed_uri.scheme][mediaType]
     uri_media_putter(state, data, uri, **params)
 
 
-@svm.method("del")
-def delete(state: svm.State, *, uri: str, mediaType: str = None, **params):
+@sequence.method("del")
+def delete(state: sequence.State, *, uri: str, mediaType: str = None, **params):
     """
     Deletes a resource.
 
@@ -70,7 +71,7 @@ def delete(state: svm.State, *, uri: str, mediaType: str = None, **params):
     [**params]:
         Additional parameters are passed to the deleter.
     """
-    global _static_deleters
+    # global sequence.static.deleters
     parsed_uri = urllib.parse.urlparse(uri)
-    uri_media_deleter = _static_deleters[parsed_uri.scheme][mediaType]
+    uri_media_deleter = sequence.static.deleters[parsed_uri.scheme][mediaType]
     uri_media_deleter(state, uri, **params)

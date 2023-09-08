@@ -1,11 +1,11 @@
 from typing import Any
 import urllib.parse
 import urllib.request
-import sequence.vm as svm
+import sequence
 
 
-@svm.getter(schemes='variables', media_type=None)
-def get_variable(state: svm.State, key, *, default: Any = None):
+@sequence.getter(schemes='variables', media_type=None)
+def get_variable(state: sequence.State, key, *, default: Any = None):
     """
     Loads a variable and places it at the top of stack.
 
@@ -23,8 +23,8 @@ def get_variable(state: svm.State, key, *, default: Any = None):
     return state._frame.variables.get(path, default)
 
 
-@svm.putter(schemes='variables', media_type=None)
-def put_variable(state: svm.State, data, key):
+@sequence.putter(schemes='variables', media_type=None)
+def put_variable(state: sequence.State, data, key):
     """
     Saves a local variable (procedure-scope).
     """
@@ -32,8 +32,8 @@ def put_variable(state: svm.State, data, key):
     state._frame.variables[path] = data
 
 
-@svm.deleter(schemes='variables')
-def delete_variable(state: svm.State, key):
+@sequence.deleter(schemes='variables')
+def delete_variable(state: sequence.State, key):
     """
     Deletes a local variable.
     """
@@ -41,8 +41,8 @@ def delete_variable(state: svm.State, key):
     del state._frame.variables[path]
 
 
-@svm.getter(schemes='parameters', media_type=None)
-def get_parameter(state: svm.State, key, *, default: Any = None):
+@sequence.getter(schemes='parameters', media_type=None)
+def get_parameter(state: sequence.State, key, *, default: Any = None):
     """
     Loads a parameter and places it at the top of stack.
 
