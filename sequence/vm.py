@@ -1,4 +1,4 @@
-from typing import List, Any, Union, Callable
+from typing import List, Any, Union, Callable, Generator
 from dataclasses import dataclass, field
 import copy
 import importlib
@@ -10,6 +10,7 @@ import sys
 import urllib.request
 import urllib.parse
 import pathlib
+import logging
 
 
 _static_ops: dict[str, Union[dict, Callable]] = {}
@@ -19,25 +20,33 @@ _static_putters: dict[str, dict[str, Callable]] = {}
 _static_deleters: dict[str, dict[str, Callable]] = {}
 _static_copiers = {}
 
+_logger = logging.getLogger('sequence')
+
 
 class State:
     def __init__(self, vm: 'VirtualMachine', op_frame: 'OpFrame') -> None:
         self._stack = vm._stack
         self._set = op_frame._set
         self._op_frame = op_frame
+        self._started_at = datetime.datetime.utcnow()
         self._vm = vm
+        self._push_counter = 0
+        self._pop_counter = 0
 
     def push(self, value: Any):
         self._stack.append(value)
+        self._push_counter += 1
 
     def pop(self) -> Any:
         if len(self._stack) == 0:
             raise RuntimeError("Cannot pop from empty stack")
+        self._pop_counter += 1
         return self._stack.pop()
 
     def popn(self, n: int) -> List[Any]:
         if n > len(self._stack):
             raise RuntimeError("Cannot pop from empty stack")
+        self._pop_counter += n
         return [self._stack.pop() for _ in range(n)][::-1]
 
     def set(self, key: str, value: Any):
@@ -77,24 +86,8 @@ class State:
         else:
             return data
 
-
-def calc_depth(state: State) -> int:
-    depth = 0
-    frame = state._op_frame
-    parent = frame._parent
-    while parent is not None:
-        parent = parent._parent
-        depth += 1
-    return depth
-
-
-def print_console_update(state: State, name):
-    lpad = "  " * calc_depth(state)
-    rpad = " " * max(0, 10 - len(lpad))
-    if not state.has("logging") or (state.has("logging") and state.get("logging")):
-        pc_str = f"{state._op_frame._pc:02d}"[-2:]
-        name = name[-12:]
-        elapsed = datetime.datetime.utcnow() - state._vm._started_at
+    def _elapsed_time(self, total: bool = False) -> str:
+        elapsed = datetime.datetime.utcnow() - (self._vm._started_at if total else self._started_at)
         t = elapsed.total_seconds()
         seconds = t % 60
         minutes = int(t//60) % 60
@@ -105,7 +98,7 @@ def print_console_update(state: State, name):
         if minutes:
             elapsed += f"{minutes: 2d}m"
         elapsed += f"{seconds: 6.3f}"[:6] + "s"
-        print(f"{lpad}{pc_str}{rpad} {len(state._vm._stack):3d} {name:14s}{elapsed:>18s}")
+        return elapsed
 
 
 @dataclass
@@ -119,6 +112,16 @@ class OpFrame:
     _next_params: dict = field(default_factory=dict)
     _parameters: dict = field(default_factory=dict)
 
+    def breadcrumb_frames(self) -> Generator['OpFrame', None, None]:
+        frame = self
+        while frame is not None:
+            yield frame
+            frame = frame._parent
+
+    @property
+    def breadcrumb(self) -> str:
+        return ':'.join(reversed([f'{frame._name}.{frame._pc}' for frame in self.breadcrumb_frames()]))
+
     def run(self, vm: 'VirtualMachine', _run: List[Union[str, dict]]):
         self._run = _run
         self._pc = 0
@@ -127,11 +130,12 @@ class OpFrame:
             state = State(vm, self)
 
             # execute expression
+            name = None
             if isinstance(ex, dict) and "op" in ex:
                 # is an op
                 name = ex['op']
                 op = _static_ops[name]
-                print_console_update(state, name)
+                _logger.debug(f'Starting [{self.breadcrumb}] total elapsed: {state._elapsed_time(total=True)}')
 
                 if isinstance(op, dict):
                     params = self._next_params
@@ -173,13 +177,16 @@ class OpFrame:
                     result = op(state, **params)
             else:
                 # is a literal
-                print_console_update(state, "put")
                 result = ex
 
             if isinstance(result, list):
-                vm._stack.extend(result)
+                for item in result:
+                    state.push(item)
             elif result is not None:
-                vm._stack.append(result)
+                state.push(result)
+
+            if name is not None:
+                _logger.debug(f'Finished [{self.breadcrumb}] incl. elapsed: {state._elapsed_time()}, pop: -{state._pop_counter}, push: +{state._push_counter}')
 
             self._pc += 1
 
@@ -205,6 +212,7 @@ class VirtualMachine:
         if isinstance(url_or_op, str):
             url = urllib.parse.urlparse(url_or_op)
             extension = pathlib.Path(url.path).suffix
+            _logger.debug(f'GET {url_or_op}  (scheme: {url.scheme}, ext: {extension})')
             data = _static_ext_getter[url.scheme][extension](state, url_or_op)
 
             # breadth-first callback
@@ -227,6 +235,7 @@ class VirtualMachine:
 
     def _import(self, imports: list):
         for module in imports:
+            _logger.debug(f'Importing "{module}"')
             importlib.import_module(module)
 
     def eval(self, line: str, parameters: dict = None):
