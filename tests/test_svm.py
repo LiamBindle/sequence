@@ -24,16 +24,6 @@ TEST_FILES = [
 
 @pytest.mark.parametrize("path", TEST_FILES)
 def test_all(path):
-    with open(path, 'r') as f:
-        test: dict = json.load(f)
-    tests_passed = svm.test(test)
-    assert tests_passed > 0, "Nothing checked"
-
-
-def test_bench_routine():
-    path = "./tests/json/test-std-if.json"
-    name = "std.if - iE-Ie-Ie"
-    with open(path, 'r') as f:
-        test: dict = json.load(f)
-    tests_passed = svm.test(test, name)
+    seq = svm.SequenceLoader.load(path)
+    tests_passed = svm.test(seq)
     assert tests_passed > 0, "Nothing checked"

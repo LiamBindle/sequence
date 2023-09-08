@@ -20,7 +20,7 @@ def get_variable(state: svm.State, key, *, default: Any = None):
         The local variable.
     """
     path = urllib.parse.urlparse(key).path
-    return state._op_frame._set.get(path, default)
+    return state._frame.variables.get(path, default)
 
 
 @svm.putter(schemes='variables', media_type=None)
@@ -29,7 +29,7 @@ def put_variable(state: svm.State, data, key):
     Saves a local variable (procedure-scope).
     """
     path = urllib.parse.urlparse(key).path
-    state._op_frame._set[path] = data
+    state._frame.variables[path] = data
 
 
 @svm.deleter(schemes='variables')
@@ -38,7 +38,7 @@ def delete_variable(state: svm.State, key):
     Deletes a local variable.
     """
     path = urllib.parse.urlparse(key).path
-    del state._op_frame._set[path]
+    del state._frame.variables[path]
 
 
 @svm.getter(schemes='parameters', media_type=None)
@@ -57,4 +57,4 @@ def get_parameter(state: svm.State, key, *, default: Any = None):
         The parameter.
     """
     path = urllib.parse.urlparse(key).path
-    return state._op_frame._parameters.get(path, default)
+    return state._frame.parameters.get(path, default)

@@ -1,5 +1,5 @@
 {
-    "import": ["tests.imports"],
+    "toolkits": ["tests.imports"],
     "run": [
         {"op": "discard_if_neq", "value": 1}
     ],

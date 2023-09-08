@@ -84,4 +84,4 @@ def set_next_params(state: svm.State):
     params = state.pop()
     if not isinstance(params, dict):
         raise TypeError(f"Top-of-stack expected to be 'dict' but got '{type(params)}'")
-    state._op_frame._next_params = params
+    state._frame._next_params = params

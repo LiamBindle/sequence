@@ -17,10 +17,10 @@ def if_(state: svm.State):
         return
     # set PC to address to else/endif
     nested_branches = 0
-    pc = state._op_frame._pc
-    while pc < len(state._op_frame._run):
+    pc = state._frame.pc
+    while pc < len(state._frame.run):
         pc += 1
-        ex = state._op_frame._run[pc]
+        ex = state._frame.run[pc]
         if not isinstance(ex, dict):
             continue
         if 'op' not in ex:
@@ -29,7 +29,7 @@ def if_(state: svm.State):
         if op == 'if':
             nested_branches += 1
         elif nested_branches == 0 and (op == 'else' or op == 'endif'):
-            state._op_frame._pc = pc
+            state._frame.pc = pc
             return
         elif op == 'endif':
             nested_branches -= 1
@@ -45,10 +45,10 @@ def else_(state: svm.State):
     """
     # set PC to address to else/endif
     nested_branches = 0
-    pc = state._op_frame._pc
-    while pc < len(state._op_frame._run):
+    pc = state._frame.pc
+    while pc < len(state._frame.run):
         pc += 1
-        ex = state._op_frame._run[pc]
+        ex = state._frame.run[pc]
         if not isinstance(ex, dict):
             continue
         if 'op' not in ex:
@@ -62,7 +62,7 @@ def else_(state: svm.State):
             else:
                 nested_branches -= 1
         elif op == 'endif' and nested_branches == 0:
-            state._op_frame._pc = pc
+            state._frame.pc = pc
             return
     raise RuntimeError("Unterminated if statement")
 

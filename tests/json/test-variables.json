@@ -1,12 +1,12 @@
 {
-    "import": ["tests.imports"],
+    "toolkits": ["tests.imports"],
     "include": {
         "nested_check_local": {
             "run": [
                 {"op": "check_local", "key": "bar", "value": "bazbaz"},
                 {"op": "check_local", "key": "foo", "value": 1}
             ],
-            "set": {"bar": "bazbaz"}
+            "defaults": {"bar": "bazbaz"}
         },
         "nested_ops": {
             "run": [
@@ -46,7 +46,7 @@
         3,
         {"op": "eq"}
     ],
-    "set": {
+    "defaults": {
         "foo": 1,
         "bar": "baz"
     },

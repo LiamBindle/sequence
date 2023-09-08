@@ -1,5 +1,5 @@
 {
-    "import": ["tests.imports"],
+    "toolkits": ["tests.imports"],
     "run": [
         1,
         {"op": "dup"},

@@ -1,5 +1,5 @@
 {   
-    "import": ["tests.imports"],
+    "toolkits": ["tests.imports"],
     "include": {
         "not_ends_in_4": {"run": [{"op": "dup"}, 10, {"op": "%"}, 4, {"op": "neq"}]},
         "next10": {

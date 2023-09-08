@@ -26,7 +26,7 @@ def duplicate(state: svm.State, *, deep: bool = False, offset: int = 0):
     """
     global _static_copiers
     offset = -1 - offset
-    item = state._stack[offset]
+    item = state._frame.stack[offset]
     item_type = type(item)
     if item_type in _static_copiers:
         return _static_copiers[item_type](item, deep)
@@ -73,7 +73,7 @@ def stack_size(state: svm.State):
     stack_size: int
         The size of the stack.
     """
-    return len(state._stack)
+    return len(state._frame.stack)
 
 
 @svm.method("pack")
