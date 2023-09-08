@@ -19,8 +19,11 @@ class SequenceLoader(Visitor):
                 url_or_seq = self._dereference(url_or_seq)
             if isinstance(url_or_seq, str):
                 seq = self.load(url_or_seq)
+                seq.metadata['origin'] = url_or_seq
+                seq.metadata['name'] = name
             elif isinstance(url_or_seq, dict):
                 seq = Sequence(**url_or_seq)
+                seq.metadata['name'] = name
             else:
                 raise RuntimeError("include is not a url (str) or an op (dict)")
             if self.recurse:
@@ -37,7 +40,9 @@ class SequenceLoader(Visitor):
         extension = pathlib.Path(parsed_url.path).suffix
         sequence.static.logger.debug(f'GET {url}  (scheme: {parsed_url.scheme}, ext: {extension})')
         data = sequence.static.ext_getter[parsed_url.scheme][extension](None, url)
-        return Sequence(**data)
+        seq = Sequence(**data)
+        seq.metadata['origin'] = url
+        return seq
 
 
 def load(url: str) -> Sequence:

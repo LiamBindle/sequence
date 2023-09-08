@@ -1,0 +1,35 @@
+{
+    "include": {
+        "nest1": {
+            "include": {
+                "nest1.1": {},
+                "nest1.2": {}
+            },
+            "run": [
+                {"op": "nest1.1"},
+                {"op": "nest1.2"}
+            ]
+        },
+        "nest2": {
+            "include": {
+                "nest2.1": {
+                    "include": {
+                        "nest2.1.1": {}
+                    },
+                    "run": [
+                        {"op": "nest2.1.1"}
+                    ]
+                },
+                "nest2.2": {}
+            },
+            "run": [
+                {"op": "nest2.1"},
+                {"op": "nest2.2"}
+            ]
+        }
+    },
+    "run": [
+        {"op": "nest1"},
+        {"op": "nest2"}
+    ]
+}
