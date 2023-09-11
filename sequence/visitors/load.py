@@ -51,5 +51,8 @@ class SequenceLoader(Visitor):
         importlib.import_module(toolkit)
 
 
-def load(url: str) -> Sequence:
-    return SequenceLoader.load(url)
+def load(url: str, parameters: dict = {}) -> Sequence:
+    seq = SequenceLoader.load(url)
+    loader = SequenceLoader(parameters, recurse=True)
+    loader.visit(seq)
+    return seq
