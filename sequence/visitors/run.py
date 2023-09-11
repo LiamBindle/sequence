@@ -75,7 +75,7 @@ class SequenceFrame(Visitor):
                         elif "default" in param_def:
                             parameters[param_name] = param_def["default"]
                     if missing_parameters:
-                        raise TypeError(f'procedure "{name}" missing {len(missing_parameters)} parameter(s): {", ".join([f"{p}" for p in missing_parameters])}')
+                        raise TypeError(f'sequence "{name}" missing {len(missing_parameters)} parameter(s): {", ".join([f"{p}" for p in missing_parameters])}')
                     parameters = self._dereference(parameters)
 
                     child = SequenceFrame(name=name, parent=self, parameters=parameters)

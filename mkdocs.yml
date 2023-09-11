@@ -8,7 +8,7 @@ plugins:
   - mkdocstrings
 nav:
   - About: README.md
-  - procedure.md
+  - sequence.md
   - std.md
   - api.md
 extra_css: [extra.css]

@@ -1,4 +1,4 @@
-# Writing a Toolkit
+# Writing a Toolkit (STK)
 
 A toolkit is a Python package that provides methods and procedures. You should write your own toolkits to create
 the methods you need for your scripting. To load your toolkit, include it in the `import` list in your JSON scripts.
@@ -9,7 +9,7 @@ the methods you need for your scripting. To load your toolkit, include it in the
 A method is a Python function that uses the `@sequence.method` decorator. The decorator takes one argument, which is the name of the method.
 
 To create a method, write a Python function with one positional argument for the `sequence.State` which is the object you
-use to interact with the Sequence Virtual Machine (SVM) for things like popping items from the stack. Any parameters for your method should
+use to interact with the Sequence virtual machine for things like popping items from the stack. Any parameters for your method should
 be keyword-only arguments (i.e., after the `*` in the signature).
 
 ```python
@@ -32,7 +32,7 @@ Whatever your function returns is pushed to the stack, except for lists which ex
 
 ## Using `sequence.State`
 
-The `sequence.State` is the object you use to interact with the Sequence Virtual Machine (SVM). It's a simple object and it's functions are listed below
+The `sequence.State` is the object you use to interact with the Sequence virtual machine. It's a simple object and it's functions are listed below
 
 ```python
 state: sequence.State

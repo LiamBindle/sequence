@@ -1,18 +1,17 @@
 # Overview
 
-*Note: This documentation is a work in progress.*
-
-Sequence is a library that lets you script Python by writing procedures in configuration file formats like JSON or YAML.
+Sequence is a library that lets you build analysis tools that can be controlled by configuration files.
 This is useful when you want to define the logic for generating some sort of output, like data or an image, in a configuration file.
-In sequence, this type of configuration file is called a *procedure* and it defines a sequence of operations that do something.
+This type of configuration file is called a *sequence* and it defines a sequence of operations that do something.
 
-Under the hood, sequence has a virtual stack machine, *SVM*, that runs procedures.
-A procedure is a sequence of *operations*, where an operation is either another procedure (a subprocedure) or a *method*.
-A method is a Python function that uses the `@sequence.method` decorator and methods are what provide basic functionality.
-Methods and procedures pass data to each other by using SVM's stack, via pushing, popping, and swapping data on the stack.
 
-A *toolkit* is a Python package that provides a suite of methods.
-The *standard toolkit* (built-in) is a suite of turing-complete methods that provide the backbone for scripting logic in procedures (e.g., if blocks, while loops, string formatting, data resources, etc.).
+Under the hood, sequences are run by a virtual stack machine.
+A sequence is a list of *operations*, where an operation is either another sequence or a *method*.
+A method is a Python function that uses the `@sequence.method` decorator and methods provide basic functionality building blocks.
+Methods and sequences pass data to each other on the virtual machine's stack, via pushing, popping, and swapping data.
+
+A *sequence toolkit (STK)* is a Python package that provides a suite of methods.
+The *standard toolkit* (built-in) is a suite of turing-complete methods that provide the backbone for scripting logic in sequences (e.g., if blocks, while loops, string formatting, data resources, etc.).
 Additional functionality can be added by installing additional toolkits.
 
 ## About Stack Machines
@@ -24,22 +23,21 @@ The design of sequence took inspiration from these old RPN-style calculators as 
 
 
 ## Installing sequence
-Sequence can be install using `pip`. The basic install supports procedures written in
-JSON.
+Sequence can be install using `pip`. The basic install supports JSON.
 
 ```console
-$ pip install sequence
+$ pip install sequence-stk
 ```
 
-It's oftentimes useful to add comments and use multi-line strings in procedures.
-This can be done by writing your procedures in a configuration file format that supports comments and multi-line strings, such as JSON5, HSON, or YAML.
-Additional configuration languages can be installed via the `json5`, `hson`, and/or `yaml` extras.
+It's often useful to be able to write comments and use multi-line strings in sequences.
+JSON5 and HSON are extensions of JSON that support these features. 
+Additional configuration languages can be installed via the `json5`, and/ord `hson` extras.
 
 ```console
 $ pip install "sequence[json5,hson]"
 ```
 
-If you are developing a Sequence Toolkit (STK), the `dev` and `docs` extras install the requirements for running tests and building documentation.
+If you are developing an STK, the `dev` and `docs` extras install the requirements for running tests and building documentation.
 
 ```console
 $ pip install "sequence[dev,docs]"

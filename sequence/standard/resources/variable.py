@@ -17,7 +17,7 @@ def get_variable(state: sequence.State, key, *, default: Any = None):
     Outputs
     -------
     data: Any
-        The local variable.
+        The variable.
     """
     path = urllib.parse.urlparse(key).path
     return state._frame.variables.get(path, default)
@@ -26,7 +26,7 @@ def get_variable(state: sequence.State, key, *, default: Any = None):
 @sequence.putter(schemes='variables', media_type=None)
 def put_variable(state: sequence.State, data, key):
     """
-    Saves a local variable (procedure-scope).
+    Saves a variable (sequence-scope).
     """
     path = urllib.parse.urlparse(key).path
     state._frame.variables[path] = data
@@ -35,7 +35,7 @@ def put_variable(state: sequence.State, data, key):
 @sequence.deleter(schemes='variables')
 def delete_variable(state: sequence.State, key):
     """
-    Deletes a local variable.
+    Deletes a variable.
     """
     path = urllib.parse.urlparse(key).path
     del state._frame.variables[path]

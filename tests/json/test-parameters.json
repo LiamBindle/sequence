@@ -27,7 +27,7 @@
     ],
     "tests": [
         {
-            "name": "test procedure parameters and nested procedures",
+            "name": "test sequence parameters and nested sequence",
             "answer": [4, 5, 6, 0]
         }
     ]

@@ -50,7 +50,7 @@ def break_(state: sequence.State):
 @sequence.method("recurse")
 def recurse(state: sequence.State):
     """
-    Restarts the current procedure.
+    Restarts the current sequence.
     """
     state._frame.pc = -1
 
@@ -62,7 +62,7 @@ def while_(state: sequence.State):
     item at the top of the stack is not true, it terminates the loop.
 
     This method is useful for constructing traditional while-loops in a
-    procedure.
+    sequence.
 
     This method MUST be placed between `{"op": "begin"}` and `{"op": "repeat"}`.
 

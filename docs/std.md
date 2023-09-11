@@ -1,4 +1,4 @@
-# Standard Toolkit
+# The Standard Toolkit
 
 The standard toolkit is the collection of methods that are built into Sequence. The standard toolkit provides
 the methods for scripting logic such as branching (if-else-endif), looping (begin-while-repeat), and working
@@ -120,7 +120,7 @@ The standard toolkit provides data methods for loading/storing/deleting local va
 
 
 ## Variables
-These methods are used to store, load, and delete variables. Local variables are procedure-scoped.
+These methods are used to store, load, and delete variables. The scope of variables is local.
 ::: sequence
     handler: sequence
     options:
