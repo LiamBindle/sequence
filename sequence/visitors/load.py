@@ -20,18 +20,17 @@ class SequenceLoader(Visitor):
             if isinstance(url_or_seq, str):
                 seq = self.load(url_or_seq)
                 seq.metadata['origin'] = url_or_seq
-                seq.metadata['name'] = name
             elif isinstance(url_or_seq, dict):
                 seq = Sequence(**url_or_seq)
-                seq.metadata['name'] = name
             else:
                 raise RuntimeError("include is not a url (str) or an op (dict)")
             if self.recurse:
                 self.visit(seq)
+            seq.metadata['name'] = name
             sequence.static.ops[name] = seq
 
     @staticmethod
-    def load(url: str) -> Sequence:
+    def load(url: str, name: str = None) -> Sequence:
         importlib.import_module("sequence.standard")
         parsed_url = urllib.parse.urlparse(url)
         if parsed_url.scheme == '' and pathlib.Path(url).exists():
@@ -42,7 +41,14 @@ class SequenceLoader(Visitor):
         data = sequence.static.ext_getter[parsed_url.scheme][extension](None, url)
         seq = Sequence(**data)
         seq.metadata['origin'] = url
+        if name is not None:
+            seq.metadata['name'] = name
+            sequence.static.ops[name] = seq
         return seq
+
+    @staticmethod
+    def load_toolkit(toolkit: str):
+        importlib.import_module(toolkit)
 
 
 def load(url: str) -> Sequence:

@@ -2,7 +2,7 @@
 
 The standard toolkit is the collection of methods that are built into Sequence. The standard toolkit provides
 the methods for scripting logic such as branching (if-else-endif), looping (begin-while-repeat), and working
-with the stack, and data methods for loading/storing/deleting local variables, global variables, and JSON data.
+with the stack, and data methods for loading/storing/deleting variables, and JSON data.
 
 ## Stack Manipulation
 These methods are used to perform actions on the stack. They include operations such as duplicating items, reordering items, droping items, etc.
@@ -10,7 +10,7 @@ These methods are used to perform actions on the stack. They include operations 
 ::: sequence
     handler: sequence
     options:
-        imports:
+        toolkits:
           - sequence.standard
         ops:
           - dup
@@ -28,7 +28,7 @@ statement.
 ::: sequence
     handler: sequence
     options:
-        imports:
+        toolkits:
           - sequence.standard
         ops:
           - eq
@@ -46,7 +46,7 @@ The `while` method is provided for convenience, and effectively guards a `break`
 ::: sequence
     handler: sequence
     options:
-        imports:
+        toolkits:
           - sequence.standard
         ops:
           - begin
@@ -62,7 +62,7 @@ These methods facilitate conditional branching.
 ::: sequence
     handler: sequence
     options:
-        imports:
+        toolkits:
           - sequence.standard
         ops:
           - if
@@ -76,7 +76,7 @@ These methods are used to coerce the item at the top of the stack to a specific 
 ::: sequence
     handler: sequence
     options:
-        imports:
+        toolkits:
           - sequence.standard
         ops:
           - asbool
@@ -90,7 +90,7 @@ These methods are used to perform arithmetic.
 ::: sequence
     handler: sequence
     options:
-        imports:
+        toolkits:
           - sequence.standard
         ops:
           - "/"
@@ -106,31 +106,28 @@ These methods don't fit into the other categories, but they are useful.
 ::: sequence
     handler: sequence
     options:
-        imports:
+        toolkits:
           - sequence.standard
         ops:
           - fstring
           - assert
-          - set_next_params
 
 <hr>
 
 # Data Methods
 
-The standard toolkit provides data methods for loading/storing/deleting local variables, global variables, and
-JSON data.
+The standard toolkit provides data methods for loading/storing/deleting local variables, and JSON data.
 
 
 ## Variables
-These methods are used to store, load, and delete local and global variables. Local variables are procedure-scoped.
+These methods are used to store, load, and delete variables. Local variables are procedure-scoped.
 ::: sequence
     handler: sequence
     options:
-        imports:
+        toolkits:
           - sequence.standard
         data:
-          - locals
-          - globals
+          - variables
 
 
 ## JSON
@@ -138,7 +135,7 @@ These methods are used to store, load, and delete JSON files.
 ::: sequence
     handler: sequence
     options:
-        imports:
+        toolkits:
           - sequence.standard
         data:
           - http:application/json
@@ -153,7 +150,7 @@ JSON5 support (i.e., `pip install 'sequence[json5]'`).
 ::: sequence
     handler: sequence
     options:
-        imports:
+        toolkits:
           - sequence.standard
         data:
           - http:application/json5
@@ -166,7 +163,7 @@ These methods require that Sequence was installed with HJSON support (i.e., `pip
 ::: sequence
     handler: sequence
     options:
-        imports:
+        toolkits:
           - sequence.standard
         data:
           - http:application/hjson

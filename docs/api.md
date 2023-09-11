@@ -6,17 +6,17 @@ the methods you need for your scripting. To load your toolkit, include it in the
 <hr>
 
 ## Writing your own methods
-A method is a Python function that uses the `@svm.method` decorator. The decorator takes one argument, which is the name of the method.
+A method is a Python function that uses the `@sequence.method` decorator. The decorator takes one argument, which is the name of the method.
 
-To create a method, write a Python function with one positional argument for the `svm.State` which is the object you
+To create a method, write a Python function with one positional argument for the `sequence.State` which is the object you
 use to interact with the Sequence Virtual Machine (SVM) for things like popping items from the stack. Any parameters for your method should
 be keyword-only arguments (i.e., after the `*` in the signature).
 
 ```python
-import sequence.vm as svm
+import sequence
 
-@svm.method("divide")
-def my_divide(state: svm.State, *, reciprocal: bool = False):
+@sequence.method("divide")
+def my_divide(state: sequence.State, *, reciprocal: bool = False):
     y = state.pop()
     x = state.pop()
     if reciprocal:
@@ -30,23 +30,23 @@ Whatever your function returns is pushed to the stack, except for lists which ex
 
 <hr>
 
-## Using `svm.State`
+## Using `sequence.State`
 
-The `svm.State` is the object you use to interact with the Sequence Virtual Machine (SVM). It's a simple object and it's functions are listed below
+The `sequence.State` is the object you use to interact with the Sequence Virtual Machine (SVM). It's a simple object and it's functions are listed below
 
 ```python
-state: svm.State
+state: sequence.State
 
 # pop/push data
 x = state.pop()          # pops an item from the top-of-stack (TOS)
 z, y, x = state.popn(3)  # pops N items from the stack (last was the TOS)
 state.push(x)            # pushes an item to the TOS
 
-# local/global variables
-x = state.get("x", global_var=False)       # retrieves varible "x"
-state.set("x", x, global_var=False)        # sets variable "x"
-state.delete("x", global_var=False)        # deletes variable "x"
-exists = state.has("x", global_var=False)  # checks if variable "x" exists
+# variables
+x = state.get("x")       # retrieves varible "x"
+state.set("x", x)        # sets variable "x"
+state.delete("x")        # deletes variable "x"
+exists = state.has("x")  # checks if variable "x" exists
 ```
 
 <hr>
@@ -54,13 +54,13 @@ exists = state.has("x", global_var=False)  # checks if variable "x" exists
 ## Writing data methods
 
 To extend `get`, `put`, and `del` to work with your own data types you write Python functions to load, store, or delete data and use
-the `@svm.getter`, `@svm.putter`, and `@svm.deleter` wrappers.
+the `@sequence.getter`, `@sequence.putter`, and `@sequence.deleter` wrappers.
 
 The wrapper's take two arguments, `schemes` which is a list of URI schemes that the function works with (e.g., http, https), and
 `media_type` which is the type identifier for your data type.
 
 A getter function must have exactly two positional arguments, 
-the first is the `svm.State`, and the second is a URI. 
+the first is the `sequence.State`, and the second is a URI. 
 Your getter can include required/optional parameters as keyword-only arguments.
 
 ```python
@@ -68,7 +68,7 @@ import urllib.parse
 import pathlib
 import sequence
 
-@svm.getter(schemes=['file'], media_type='application/json')
+@sequence.getter(schemes=['file'], media_type='application/json')
 def get_json_file(state: State, uri: str):
     path = urllib.parse.urlparse(uri).path
     path = urllib.parse.unquote(path)
@@ -78,11 +78,11 @@ def get_json_file(state: State, uri: str):
 ```
 
 A putter function must have exactly three positional arguments, 
-the first is the `svm.State`, the second is the data object, and the third is a URI.
+the first is the `sequence.State`, the second is the data object, and the third is a URI.
 Your putter can include required/optional parameters as keyword-only arguments.
 
 ```python
-@svm.putter(schemes=['file'], media_type='application/json')
+@sequence.putter(schemes=['file'], media_type='application/json')
 def store_json_file(state: State, data, uri: str):
     path = urllib.parse.urlparse(uri).path
     path = urllib.parse.unquote(path)
@@ -91,10 +91,10 @@ def store_json_file(state: State, data, uri: str):
 ```
 
 A deleter function must have exactly two positional arguments, 
-the first is the `svm.State`, and the second is a URI.
+the first is the `sequence.State`, and the second is a URI.
 Your deleter can include required/optional parameters as keyword-only arguments.
 ```python
-@svm.deleter(schemes=['file'], media_type='application/json')
+@sequence.deleter(schemes=['file'], media_type='application/json')
 def delete_json_file(state: State, uri: str, *, missing_ok: bool = False):
     path = urllib.parse.urlparse(uri).path
     path = urllib.parse.unquote(path)
@@ -110,8 +110,8 @@ Note that you can set `media_type=None` to match any media types.
 Method docstrings can specify the following sections: Parameters, Inputs, Outputs, and References. Docstrings should follow numpy-style.
 
 ```python
-@svm.method("divide")
-def my_divide(state: svm.State, *, reciprocal: bool = False):
+@sequence.method("divide")
+def my_divide(state: sequence.State, *, reciprocal: bool = False):
     """
     Divides two numbers [1].
 

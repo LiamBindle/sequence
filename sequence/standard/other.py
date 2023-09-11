@@ -67,21 +67,3 @@ def assert_(state: sequence.State, *, error: str = '', negate: bool = False):
         assert not x, error
     else:
         assert x, error
-
-
-@sequence.method("set_next_params")
-def set_next_params(state: sequence.State):
-    """
-    Initializes the next op's parameters to the key-value array at the top-of-the-stack.
-
-    This is useful to set parameters dynamically.
-
-    Parameters
-    ----------
-    kv_arr: key-value array
-        Parameters for the next op.
-    """
-    params = state.pop()
-    if not isinstance(params, dict):
-        raise TypeError(f"Top-of-stack expected to be 'dict' but got '{type(params)}'")
-    state._frame._next_params = params

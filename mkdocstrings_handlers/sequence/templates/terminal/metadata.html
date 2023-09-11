@@ -8,13 +8,13 @@
         {%- for param_name, param_metadata in metadata.parameters.items() if param_metadata.optional == false  -%}
         <span style="float:left">
             {{ param_name }}*
-            {%- if 'type' in param_metadata -%}
+            {%- if param_metadata.type is defined  -%}
             : <i>{{ param_metadata.type }}</i>
             {%- endif -%}
         </span>
         <span style="float: right">(*required)</span>
         <br/>
-        {%- if 'description' in param_metadata -%}
+        {%- if param_metadata.description is defined -%}
         <p style='margin-left:2em'>
             {{ param_metadata.description }}
         </p>
@@ -24,15 +24,15 @@
         {%- for param_name, param_metadata in metadata.parameters.items() if (param_metadata.optional == true) or (param_metadata.optional is undefined) -%}
         <span style="float: left">
             {{ param_name }}
-            {%- if 'type' in param_metadata -%}
+            {%- if param_metadata.type is defined -%}
             : <i>{{ param_metadata.type }}</i>
             {%- endif -%}
         </span>
-        {%- if 'default' in param_metadata -%}
+        {%- if param_metadata.default is defined -%}
         <span style="float: right">(default: {{ param_metadata.default }})</span>
         {%- endif -%}
         <br/>
-        {%- if 'description' in param_metadata -%}
+        {%- if param_metadata.description is defined -%}
         <p style='margin-left:2em'>
             {{ param_metadata.description }}
         </p>
@@ -52,7 +52,7 @@
             {%- else -%}
             {{ input.name }}
             {%- endif -%}
-            {%- if 'type' in input -%}
+            {%- if input.type is defined -%}
             : <i>{{ input.type }}</i>
             {%- endif -%}
         </span>
@@ -76,7 +76,7 @@
             {%- else -%}
             {{ output.name }}
             {%- endif -%}
-            {%- if 'type' in output -%}
+            {%- if output.type is defined -%}
             : <i>{{ output.type }}</i>
             {%- endif -%}
         </span><br/>

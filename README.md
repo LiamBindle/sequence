@@ -8,7 +8,7 @@ In sequence, this type of configuration file is called a *procedure* and it defi
 
 Under the hood, sequence has a virtual stack machine, *SVM*, that runs procedures.
 A procedure is a sequence of *operations*, where an operation is either another procedure (a subprocedure) or a *method*.
-A method is a Python function that uses the `@svm.method` decorator and methods are what provide basic functionality.
+A method is a Python function that uses the `@sequence.method` decorator and methods are what provide basic functionality.
 Methods and procedures pass data to each other by using SVM's stack, via pushing, popping, and swapping data on the stack.
 
 A *toolkit* is a Python package that provides a suite of methods.

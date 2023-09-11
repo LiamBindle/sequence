@@ -7,7 +7,7 @@
 </details>
 {%- endfor -%}
 
-{%- for op, metadata, scheme, media_type in extdata_op|zip(extdata_metadata,extdata_scheme,extdata_media_type) -%}
+{%- for op, metadata, scheme, media_type in data_op|zip(data_op_metadata,data_op_scheme,data_op_media_type) -%}
 <details>
     <summary><code class="sequence-op-preview language-json">{ "op": "{{  op  }}",
         {{'"media_type": "' + media_type + '",' if media_type}}
