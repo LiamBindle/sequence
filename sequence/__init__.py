@@ -1,10 +1,10 @@
 # from .utils import op, getter, putter, deleter
 # from .vm import run, run_test
 
-from .utils import method, getter, putter, deleter, copier
-from .visitors.load import load
-from .visitors.base import Sequence
-from .visitors.state import State
+from sequence.utils import method, getter, putter, deleter, copier
+from sequence.visitors.load import load
+from sequence.visitors.base import Sequence
+from sequence.visitors.state import State
 import sequence.standard
 
 from . import _version
