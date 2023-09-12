@@ -59,8 +59,7 @@ class SequenceFrame(Visitor):
                 name = ex['op']
                 op = sequence.static.ops[name]
 
-                size_before = len(self.stack)
-                sequence.static.logger.debug(f'Starting [{self._breadcrumb}] total elapsed: {self._elapsed_time()}, stack size: {size_before}')
+                sequence.static.logger.info(f'Starting [{self._breadcrumb}] total elapsed: {self._elapsed_time()}, stack size: {len(self.stack)}, op: {name}')
                 time_before = datetime.datetime.utcnow()
 
                 if isinstance(op, Sequence):
@@ -88,9 +87,7 @@ class SequenceFrame(Visitor):
                     state = State(self)
                     result = op(state, **parameters)  # methods run within current frame
 
-                size_delta = len(self.stack) - size_before
-                stack_delta = '0' if size_delta == 0 else (f'+{size_delta}' if size_delta > 0 else f'{size_delta}')
-                sequence.static.logger.debug(f'Finished [{self._breadcrumb}] incl. elapsed: {self._elapsed_time(since=time_before)}, stack delta: +{stack_delta}')
+                sequence.static.logger.debug(f'Finished [{self._breadcrumb}] incl. elapsed: {self._elapsed_time(since=time_before)}, op: {name}')
             else:
                 # is a literal
                 result = ex

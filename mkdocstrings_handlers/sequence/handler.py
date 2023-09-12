@@ -27,7 +27,7 @@ class SequenceHandler(BaseHandler):
 
     def collect(self, identifier: str, config: MutableMapping[str, Any]) -> CollectorItem:
         for name, path in config.get('includes', {}).items():
-            SequenceLoader.load(name, path)
+            SequenceLoader.load(path, name)
 
         for toolkit in config.get('toolkits', []):
             SequenceLoader.load_toolkit(toolkit)

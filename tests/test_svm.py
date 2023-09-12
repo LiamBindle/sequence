@@ -53,7 +53,7 @@ def test_iter():
         "nest2.2",
         "nest2.1.1",
     ]
-    it = SequenceIterator(depth_first=False)
+    it = SequenceIterator(depth_first=False, visit_root=False)
     for i, seq in enumerate(it.visit(root)):
         assert seq.metadata.get("name") == answer[i]
 
@@ -66,7 +66,7 @@ def test_iter():
         "nest2.1.1",
         "nest2.2",
     ]
-    it = SequenceIterator(depth_first=True)
+    it = SequenceIterator(depth_first=True, visit_root=False)
     for i, seq in enumerate(it.visit(root)):
         assert seq.metadata.get("name") == answer[i]
 
@@ -75,7 +75,7 @@ def test_iter():
         sequence.standard.operators.plus,
         sequence.standard.operators.not_equal,
     ]
-    it = SequenceIterator(depth_first=True, mode=IteratorMode.Method)
+    it = SequenceIterator(depth_first=True, mode=IteratorMode.Method, visit_root=False)
     for i, meth in enumerate(it.visit(root)):
         assert meth is answer[i]
 
@@ -83,17 +83,17 @@ def test_iter():
         sequence.standard.operators.not_equal,
         sequence.standard.operators.plus,
     ]
-    it = SequenceIterator(depth_first=False, mode=IteratorMode.Method)
+    it = SequenceIterator(depth_first=False, mode=IteratorMode.Method, visit_root=False)
     for i, meth in enumerate(it.visit(root)):
         assert meth is answer[i]
 
     # test data
     answer = [1, 2, 3]
-    it = SequenceIterator(depth_first=True, mode=IteratorMode.Data)
+    it = SequenceIterator(depth_first=True, mode=IteratorMode.Data, visit_root=False)
     for i, meth in enumerate(it.visit(root)):
         assert meth is answer[i]
 
     answer = [1, 3, 2]
-    it = SequenceIterator(depth_first=False, mode=IteratorMode.Data)
+    it = SequenceIterator(depth_first=False, mode=IteratorMode.Data, visit_root=False)
     for i, meth in enumerate(it.visit(root)):
         assert meth is answer[i]
