@@ -1,5 +1,5 @@
 site_name: Sequence
-site_url: https://sequence.dev
+site_url: https://sequence.wiki
 theme:
   name: terminal
   logo: docs/img/sequence.png
