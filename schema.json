@@ -1,0 +1,138 @@
+
+
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+      "metadata": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "inputs": {
+            "type": "array",
+            "items": [
+              {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "type",
+                  "description"
+                ]
+              }
+            ]
+          },
+          "outputs": {
+            "type": "array",
+            "items": [
+              {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "type",
+                  "description"
+                ]
+              }
+            ]
+          },
+          "references": {
+            "type": "array",
+            "items": [
+              {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string"
+                  },
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "url",
+                  "text"
+                ]
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "required": [
+          "description",
+          "inputs",
+          "outputs",
+          "references"
+        ]
+      },
+      "toolkits": {
+        "type": "array",
+        "items": {
+            "type": "string"
+          }
+      },
+      "include": {
+        "type": "object",
+        "patternProperties": {
+            ".*": { "type": "string" }
+        }
+      },
+      "run": {
+        "type": "array",
+        "items": [
+          {
+            "type": "object",
+            "properties": {
+              "op": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "op"
+            ]
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "float"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      }
+    },
+    "required": [
+      "metadata",
+      "toolkits",
+      "include",
+      "run"
+    ]
+  }
+  
+  
