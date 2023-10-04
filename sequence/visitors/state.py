@@ -16,10 +16,10 @@ class State:
             raise RuntimeError("Cannot pop from empty stack")
         return self._frame.stack.pop()
 
-    def popn(self, n: int) -> list[Any]:
+    def popn(self, n: int) -> tuple[Any]:
         if n > len(self._frame.stack):
             raise RuntimeError("Cannot pop from empty stack")
-        return [self._frame.stack.pop() for _ in range(n)][::-1]
+        return tuple([self._frame.stack.pop() for _ in range(n)][::-1])
 
     def set(self, key: str, value: Any):
         self._frame.variables[key] = value

@@ -1,0 +1,23 @@
+{   
+    "toolkits": ["tests.imports"],
+    "run": [
+        [10, 20, 30, 40],
+        {"op": "begin"},
+        {"op": "foreach"},
+            [1, 2, 3, 4],
+            {"op": "begin"},
+            {"op": "foreach"},
+                {"op": "dup", "offset": 1},
+                {"op": "+"},
+                {"op": "swap"},
+            {"op": "repeat"},
+        {"op": "drop"},
+        {"op": "repeat"}
+    ],
+    "tests": [
+        {
+            "name": "std.foreach - 11..44",
+            "answer": [11, 12, 13, 14, 21, 22, 23, 24, 31, 32, 33, 34, 41, 42, 43, 44]
+        }
+    ]
+}

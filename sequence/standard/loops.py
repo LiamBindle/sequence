@@ -74,3 +74,43 @@ def while_(state: sequence.State):
     cond = state.pop()
     if not cond:
         break_(state)
+
+
+@sequence.method("foreach")
+def foreach_(state: sequence.State):
+    """
+    Loops through each element of an iterable. The next element is placed at the
+    TOS at the start of each loop.
+
+    This method MUST be placed between `{"op": "begin"}` and `{"op": "repeat"}`.
+    Usually, this method comes immediately after `{"op": "begin"}`.
+
+    Inputs
+    ------
+    [iterable]: list, iterable
+        The thing that is iterated through. This input only applies to initializing
+        the loop.
+
+    Outputs
+    -------
+    element: Any
+        The next element.
+    """
+    key = f'/_foreach/{state._frame._breadcrumb}'
+    if state.has(key):
+        # continue loop
+        it = state.get(key)
+        try:
+            return next(it)
+        except StopIteration:
+            state.delete(key)
+            break_(state)
+    else:
+        # start loop
+        it = iter(state.pop())
+        state.set(key, it)
+        try:
+            return next(it)
+        except StopIteration:
+            state.delete(key)
+            break_(state)

@@ -27,9 +27,11 @@
         {"op": "put-param-on-stack", "value": 1},
         {"op": "put-param-on-stack", "value": "${variables:two}"},
         {"op": "put-param-on-stack", "value": ["${variables:three}", 4]},
+        {"op": "unpack"},
         {"op": "put-param-on-stack", "value": {"five": "${variables:five}", "six": 6}},
         {"op": "unpack", "keys": ["five", "six"]},
         {"op": "put-param-on-stack", "value": [{"seven": "${variables:seven}"}]},
+        {"op": "unpack"},
         {"op": "unpack", "keys": ["seven"]}
     ],
     "tests": [

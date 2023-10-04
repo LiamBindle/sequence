@@ -45,14 +45,14 @@ def swap(state: sequence.State, *, order: list = [1, 0]):
     Parameters
     ----------
     [order]: list (default: [1, 0])
-        The new order of the TOS. The first integer is the list is TOS
+        The new order of the TOS. The first integer in the list is TOS
         offset of the item that should be moved to the TOS. The length
         of the list controls the number of items that are reordered.
     """
     size = len(order)
     items = state.popn(size)
     new_items = [items[size-1-i] for i in reversed(order)]
-    return new_items
+    return tuple(new_items)
 
 
 @sequence.method("drop")
@@ -102,13 +102,11 @@ def pack_(state: sequence.State, *, n: int, forward: bool = True, keys: List[str
     arr: Array
         An array of items.
     """
-    items = state.popn(n)
+    items = list(state.popn(n))
     if not forward:
         items.reverse()
     if keys is not None:
         items = {k: v for k, v in zip(keys, items)}
-    else:
-        items = tuple(items)
     return items
 
 
@@ -132,6 +130,4 @@ def unpack_(state: sequence.State, *, keys: List[str] = None):
     items = state.pop()
     if keys is not None:
         items = [items[k] for k in keys]
-    else:
-        items = list(items)
-    return items
+    return tuple(items)

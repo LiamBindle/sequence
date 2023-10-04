@@ -38,7 +38,7 @@ def check_local(state: sequence.State, *, key, value):
 @sequence.method("equals")
 def equals_(state: sequence.State):
     x, y = state.popn(2)
-    return [x, x == y]
+    return (x, x == y)
 
 
 @sequence.method("append_value_to_key")

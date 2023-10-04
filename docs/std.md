@@ -51,6 +51,7 @@ The `while` method is provided for convenience, and effectively guards a `break`
         ops:
           - begin
           - while
+          - foreach
           - break
           - repeat
           - recurse

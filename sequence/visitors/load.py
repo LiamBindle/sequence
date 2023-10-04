@@ -16,7 +16,7 @@ class SequenceLoader(Visitor):
             importlib.import_module(toolkit)
         for name, url_or_seq in seq.include.items():
             if isinstance(url_or_seq, str):
-                url_or_seq = self._dereference(url_or_seq)
+                url_or_seq = self._dereference(url_or_seq)  # TODO: remove because include should not be dereferenceable (can also move dereference to SequenceFrame)
             if isinstance(url_or_seq, str):
                 seq = self.load(url_or_seq)
                 seq.metadata['origin'] = url_or_seq

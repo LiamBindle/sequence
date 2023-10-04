@@ -93,7 +93,7 @@ class SequenceFrame(Visitor):
                 result = ex
                 name = None
 
-            if isinstance(result, list):
+            if isinstance(result, tuple):
                 self.stack.extend(result)
             elif result is not None:
                 self.stack.append(result)
