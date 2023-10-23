@@ -18,6 +18,14 @@ def repeat_(state: sequence.State):
     state._frame.pc = state._frame.begins[-1]
 
 
+@sequence.method("continue")
+def continue_(state: sequence.State):
+    """
+    Skips to the next loop iteration.
+    """
+    state._frame.pc = state._frame.begins[-1]
+
+
 @sequence.method("break")
 def break_(state: sequence.State):
     """
@@ -97,6 +105,7 @@ def foreach_(state: sequence.State):
         The next element.
     """
     key = f'/_foreach/{state._frame._breadcrumb}'
+    keep_alive_key = f'{key}/keep-alive'
     if state.has(key):
         # continue loop
         it = state.get(key)
@@ -104,11 +113,14 @@ def foreach_(state: sequence.State):
             return next(it)
         except StopIteration:
             state.delete(key)
+            state.delete(keep_alive_key)
             break_(state)
     else:
         # start loop
-        it = iter(state.pop())
+        iterable = state.pop()
+        it = iter(iterable)
         state.set(key, it)
+        state.set(keep_alive_key, iterable)  # avoids destructor call
         try:
             return next(it)
         except StopIteration:
