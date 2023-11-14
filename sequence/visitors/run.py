@@ -48,7 +48,8 @@ class SequenceFrame(Visitor):
         return elapsed
 
     def visit(self, seq: Sequence):
-        self.variables.update(seq.defaults)
+        for var_name, var_default in self._dereference(seq.variables).items():
+            self.variables.setdefault(var_name, var_default)
         self.run = seq.run
 
         while self.pc < len(seq.run):

@@ -11,7 +11,7 @@ class Sequence:
     toolkits: list[str] = field(default_factory=list)
     include: dict[str, Union[str, dict]] = field(default_factory=dict)
     run: list[Any] = field(default_factory=list)
-    defaults: dict[str, Any] = field(default_factory=dict)
+    variables: dict[str, Any] = field(default_factory=dict)
     metadata: dict = field(default_factory=dict)
     tests: list[dict] = field(default_factory=list)
 
