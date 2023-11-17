@@ -6,7 +6,7 @@
                 {"op": "check_local", "key": "bar", "value": "bazbaz"},
                 {"op": "check_local", "key": "foo", "value": 1}
             ],
-            "defaults": {"bar": "bazbaz"}
+            "variables": {"bar": "bazbaz"}
         },
         "nested_ops": {
             "run": [
@@ -46,7 +46,7 @@
         3,
         {"op": "eq"}
     ],
-    "defaults": {
+    "variables": {
         "foo": 1,
         "bar": "baz"
     },

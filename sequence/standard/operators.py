@@ -167,7 +167,7 @@ def less_than_or_equal_to(state: sequence.State, *, value=None):
 
 
 @sequence.method("/")
-def divide(state: sequence.State, *, value=None):
+def divide(state: sequence.State, *, value=None, div0_result: float = None):
     """
     Divides the two numbers at the top of the stack. If the items at the top
     of the stack are  not numbers, the binary operator '/' is applied to the
@@ -184,6 +184,8 @@ def divide(state: sequence.State, *, value=None):
     ----------
     [value]: Any
         Used to specify y as a parameter. Disables input y when specified.
+    [div0_result]: float
+        If div0_result ir provided and y is zero, result is set to div0_result.
 
     Outputs
     -------
@@ -191,6 +193,8 @@ def divide(state: sequence.State, *, value=None):
         The result of the division.
     """
     x, y = get_xy_operands(state, value)
+    if div0_result is not None and isinstance(y, (float, int)) and y == 0:
+        return div0_result
     return x / y
 
 
