@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="generator" content="mkdocs-1.5.3, mkdocs-terminal-4.4.0">
+     
+     
+    
+    <link rel="canonical" href="https://sequence.wiki/api/"><link rel="shortcut icon" type="image/png" sizes="48x48" href="/img/favicon.ico" />
+
+
+    
+ 
+<title>Writing a Toolkit (STK) - Sequence</title>
+    
+
+
+<link href="../css/fontawesome/css/fontawesome.min.css" rel="stylesheet">
+<link href="../css/fontawesome/css/solid.min.css" rel="stylesheet">
+<link href="../css/normalize.css" rel="stylesheet">
+<link href="../css/terminal.css" rel="stylesheet">
+<link href="../css/theme.css" rel="stylesheet">
+<link href="../css/theme.tile_grid.css" rel="stylesheet">
+<link href="../css/theme.footer.css" rel="stylesheet">
+<!-- default color palette -->
+<link href="../css/palettes/default.css" rel="stylesheet">
+
+<!-- page layout -->
+<style>
+/* initially set page layout to a one column grid */
+.terminal-mkdocs-main-grid {
+    display: grid;
+    grid-column-gap: 1.4em;
+    grid-template-columns: auto;
+    grid-template-rows: auto;
+}
+
+/*  
+*   when side navigation is not hidden, use a two column grid.  
+*   if the screen is too narrow, fall back to the initial one column grid layout.
+*   in this case the main content will be placed under the navigation panel. 
+*/
+@media only screen and (min-width: 70em) {
+    .terminal-mkdocs-main-grid {
+        grid-template-columns: 4fr 9fr;
+    }
+}</style>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/json.min.js"></script>
+    <script>
+        hljs.highlightAll();
+        document.addEventListener('DOMContentLoaded', (event) => {
+        document.querySelectorAll('summary code').forEach((el) => {
+            hljs.highlightElement(el);
+        });
+        });
+    </script>
+
+
+    
+    <link href="../assets/_mkdocstrings.css" rel="stylesheet"> 
+    <link href="../extra.css" rel="stylesheet">  
+    
+    
+
+    
+    
+    
+    
+    
+
+    
+</head>
+
+<body class="terminal"><div class="container">
+    <div class="terminal-nav">
+        <header class="terminal-logo">
+            <img src="/assets/sequence.png" style="width: 90%; border: none;">
+        </header>
+        
+        <nav class="terminal-menu">
+            
+            <ul vocab="https://schema.org/" typeof="BreadcrumbList">
+                
+                
+                <li property="itemListElement" typeof="ListItem">
+                    <a href=".." class="menu-item " property="item" typeof="WebPage">
+                        <span property="name">About</span>
+                    </a>
+                    <meta property="position" content="0">
+                </li>
+                
+                
+                <li property="itemListElement" typeof="ListItem">
+                    <a href="../sequence/" class="menu-item " property="item" typeof="WebPage">
+                        <span property="name">Writing a Sequence</span>
+                    </a>
+                    <meta property="position" content="1">
+                </li>
+                
+                
+                <li property="itemListElement" typeof="ListItem">
+                    <a href="../std/" class="menu-item " property="item" typeof="WebPage">
+                        <span property="name">The Standard Toolkit</span>
+                    </a>
+                    <meta property="position" content="2">
+                </li>
+                
+                
+                <li property="itemListElement" typeof="ListItem">
+                    <a href="./" class="menu-item active" property="item" typeof="WebPage">
+                        <span property="name">Writing a Toolkit (STK)</span>
+                    </a>
+                    <meta property="position" content="3">
+                </li>
+                
+                    
+                    
+                    
+            </ul>
+            
+        </nav>
+    </div>
+</div>
+        
+    <div class="container">
+        <div class="terminal-mkdocs-main-grid"><aside id="terminal-mkdocs-side-panel"><nav>
+  
+    <ul class="terminal-mkdocs-side-nav-items">
+        
+          
+
+
+
+<li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="
+
+    terminal-mkdocs-side-nav-item" href="..">About</a>
+        
+    
+    
+    
+  </li>
+        
+          
+
+
+
+<li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="
+
+    terminal-mkdocs-side-nav-item" href="../sequence/">Writing a Sequence</a>
+        
+    
+    
+    
+  </li>
+        
+          
+
+
+
+<li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="
+
+    terminal-mkdocs-side-nav-item" href="../std/">The Standard Toolkit</a>
+        
+    
+    
+    
+  </li>
+        
+          
+
+
+
+<li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        <span class="
+
+    terminal-mkdocs-side-nav-item--active">Writing a Toolkit (STK)</span>
+    
+    
+    
+  </li>
+        
+    </ul>
+  
+</nav><hr>
+<nav>
+    <ul>
+        <li><a href="#writing-a-toolkit-stk">Writing a Toolkit (STK)</a></li>
+        <li><a href="#writing-your-own-methods">Writing your own methods</a></li><li><a href="#using-sequencestate">Using sequence.State</a></li><li><a href="#writing-data-methods">Writing data methods</a></li><li><a href="#documenting-your-methods">Documenting your methods</a></li>
+    </ul>
+</nav>
+</aside>
+            <main id="terminal-mkdocs-main-content">
+<section id="mkdocs-terminal-content">
+    <h1 id="writing-a-toolkit-stk">Writing a Toolkit (STK)</h1>
+<p>A toolkit is a Python package that provides methods and procedures. You should write your own toolkits to create
+the methods you need for your scripting. To load your toolkit, include it in the <code>import</code> list in your JSON scripts.</p>
+<hr>
+
+<h2 id="writing-your-own-methods">Writing your own methods</h2>
+<p>A method is a Python function that uses the <code>@sequence.method</code> decorator. The decorator takes one argument, which is the name of the method.</p>
+<p>To create a method, write a Python function with one positional argument for the <code>sequence.State</code> which is the object you
+use to interact with the Sequence virtual machine for things like popping items from the stack. Any parameters for your method should
+be keyword-only arguments (i.e., after the <code>*</code> in the signature).</p>
+<pre><code class="language-python">import sequence
+
+@sequence.method(&quot;divide&quot;)
+def my_divide(state: sequence.State, *, reciprocal: bool = False):
+    y = state.pop()
+    x = state.pop()
+    if reciprocal:
+        result = y / x
+    else:
+        result = x / y
+    return result
+</code></pre>
+<p>Whatever your function returns is pushed to the stack, except for lists which expand onto the stack (the last element is the new TOS). If your function returns <code>None</code>, nothing is pushed to the stack.</p>
+<hr>
+
+<h2 id="using-sequencestate">Using <code>sequence.State</code></h2>
+<p>The <code>sequence.State</code> is the object you use to interact with the Sequence virtual machine. It's a simple object and it's functions are listed below</p>
+<pre><code class="language-python">state: sequence.State
+
+# pop/push data
+x = state.pop()          # pops an item from the top-of-stack (TOS)
+z, y, x = state.popn(3)  # pops N items from the stack (last was the TOS)
+state.push(x)            # pushes an item to the TOS
+
+# variables
+x = state.get(&quot;x&quot;)       # retrieves varible &quot;x&quot;
+state.set(&quot;x&quot;, x)        # sets variable &quot;x&quot;
+state.delete(&quot;x&quot;)        # deletes variable &quot;x&quot;
+exists = state.has(&quot;x&quot;)  # checks if variable &quot;x&quot; exists
+</code></pre>
+<hr>
+
+<h2 id="writing-data-methods">Writing data methods</h2>
+<p>To extend <code>get</code>, <code>put</code>, and <code>del</code> to work with your own data types you write Python functions to load, store, or delete data and use
+the <code>@sequence.getter</code>, <code>@sequence.putter</code>, and <code>@sequence.deleter</code> wrappers.</p>
+<p>The wrapper's take two arguments, <code>schemes</code> which is a list of URI schemes that the function works with (e.g., http, https), and
+<code>media_type</code> which is the type identifier for your data type.</p>
+<p>A getter function must have exactly two positional arguments, 
+the first is the <code>sequence.State</code>, and the second is a URI. 
+Your getter can include required/optional parameters as keyword-only arguments.</p>
+<pre><code class="language-python">import urllib.parse
+import pathlib
+import sequence
+
+@sequence.getter(schemes=['file'], media_type='application/json')
+def get_json_file(state: State, uri: str):
+    path = urllib.parse.urlparse(uri).path
+    path = urllib.parse.unquote(path)
+    with open(path, 'r') as f:
+        data = json.load(f)
+    return data
+</code></pre>
+<p>A putter function must have exactly three positional arguments, 
+the first is the <code>sequence.State</code>, the second is the data object, and the third is a URI.
+Your putter can include required/optional parameters as keyword-only arguments.</p>
+<pre><code class="language-python">@sequence.putter(schemes=['file'], media_type='application/json')
+def store_json_file(state: State, data, uri: str):
+    path = urllib.parse.urlparse(uri).path
+    path = urllib.parse.unquote(path)
+    with open(path, 'w') as f:
+        json.dump(data, f)
+</code></pre>
+<p>A deleter function must have exactly two positional arguments, 
+the first is the <code>sequence.State</code>, and the second is a URI.
+Your deleter can include required/optional parameters as keyword-only arguments.</p>
+<pre><code class="language-python">@sequence.deleter(schemes=['file'], media_type='application/json')
+def delete_json_file(state: State, uri: str, *, missing_ok: bool = False):
+    path = urllib.parse.urlparse(uri).path
+    path = urllib.parse.unquote(path)
+    pathlib.Path(path).unlink(missing_ok)
+</code></pre>
+<p>Note that you can set <code>media_type=None</code> to match any media types.</p>
+<hr>
+
+<h2 id="documenting-your-methods">Documenting your methods</h2>
+<p>Method docstrings can specify the following sections: Parameters, Inputs, Outputs, and References. Docstrings should follow numpy-style.</p>
+<pre><code class="language-python">@sequence.method(&quot;divide&quot;)
+def my_divide(state: sequence.State, *, reciprocal: bool = False):
+    &quot;&quot;&quot;
+    Divides two numbers [1].
+
+    Parameters
+    ----------
+    reciprocal: bool (default: false)
+        If true, returns the reciprocal
+
+    Inputs
+    ------
+    y: number
+        The denominator
+    x: number
+        The numerator
+
+    Outputs
+    -------
+    result: number
+        The result of the division
+    &quot;&quot;&quot;
+    # example usage: {&quot;op&quot;: &quot;divide&quot;, &quot;reciprocal&quot;: true}
+    y = state.pop()
+    x = state.pop()
+    if reciprocal:
+        result = y / x
+    else:
+        result = x / y
+    return result
+</code></pre>
+<p>You can generate documentation for your package using <a href="https://www.mkdocs.org/">MkDocs</a> with the 
+<a href="https://mkdocstrings.github.io/">mkdocstrings</a> plugin. Sequence automatically provides the <code>sequence</code> handler for mkdocstrings, which parses method docstrings. Package imports are specified by <code>options.imports</code> and procedures are included by <code>options.includes</code>. Data methods are included via <code>options.data</code> and methods/procedures are included via <code>options.ops</code>.</p>
+<pre><code>::: my_toolkit
+    handler: sequence
+    options:
+        imports:
+          - my_toolkit
+        data:
+          - http:application/foo
+          - https:application/foo
+        ops:
+          - process_foo
+</code></pre>
+</section>
+
+            </main>
+        </div>
+        <hr><footer>
+    <div class="terminal-mkdocs-footer-grid">
+        <div id="terminal-mkdocs-footer-copyright-info">
+             Site built with <a href="http://www.mkdocs.org">MkDocs</a> and <a href="https://github.com/ntno/mkdocs-terminal">Terminal for MkDocs</a>.
+        </div>
+    </div>
+</footer>
+    </div>
+
+    
+    
+    
+</body>
+
+</html>

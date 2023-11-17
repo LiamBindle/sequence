@@ -1,0 +1,16 @@
+h2 {
+    margin-top: 1.2em;
+    margin-bottom: 0.2em;
+}
+
+.sequence-op-preview {
+    display: inline;
+}
+
+:root {
+    --page-width: 80em;
+}
+
+pre {
+    border: 0;
+}
