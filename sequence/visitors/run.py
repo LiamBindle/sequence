@@ -76,7 +76,7 @@ class SequenceFrame(Visitor):
                             parameters[param_name] = param_def["default"]
                     if missing_parameters:
                         raise TypeError(f'sequence "{name}" missing {len(missing_parameters)} parameter(s): {", ".join([f"{p}" for p in missing_parameters])}')
-                    parameters = self._dereference(parameters)
+                    parameters = self._dereference(copy.deepcopy(parameters))
 
                     child = SequenceFrame(name=name, parent=self, parameters=parameters)
                     child.visit(op)
@@ -84,7 +84,7 @@ class SequenceFrame(Visitor):
                 else:
                     assert callable(op), "internal error"
                     parameters = {k: v for k, v in ex.items() if k != "op"}
-                    parameters = self._dereference(parameters)
+                    parameters = self._dereference(copy.deepcopy(parameters))
                     state = State(self)
                     result = op(state, **parameters)  # methods run within current frame
 
