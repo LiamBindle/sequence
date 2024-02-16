@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="generator" content="mkdocs-1.5.3, mkdocs-terminal-4.4.0">
+     
+     
+    
+    <link rel="canonical" href="https://sequence.wiki/std/"><link rel="shortcut icon" type="image/png" sizes="48x48" href="/img/favicon.ico" />
+
+
+    
+ 
+<title>The Standard Toolkit - Sequence</title>
+    
+
+
+<link href="../css/fontawesome/css/fontawesome.min.css" rel="stylesheet">
+<link href="../css/fontawesome/css/solid.min.css" rel="stylesheet">
+<link href="../css/normalize.css" rel="stylesheet">
+<link href="../css/terminal.css" rel="stylesheet">
+<link href="../css/theme.css" rel="stylesheet">
+<link href="../css/theme.tile_grid.css" rel="stylesheet">
+<link href="../css/theme.footer.css" rel="stylesheet">
+<!-- default color palette -->
+<link href="../css/palettes/default.css" rel="stylesheet">
+
+<!-- page layout -->
+<style>
+/* initially set page layout to a one column grid */
+.terminal-mkdocs-main-grid {
+    display: grid;
+    grid-column-gap: 1.4em;
+    grid-template-columns: auto;
+    grid-template-rows: auto;
+}
+
+/*  
+*   when side navigation is not hidden, use a two column grid.  
+*   if the screen is too narrow, fall back to the initial one column grid layout.
+*   in this case the main content will be placed under the navigation panel. 
+*/
+@media only screen and (min-width: 70em) {
+    .terminal-mkdocs-main-grid {
+        grid-template-columns: 4fr 9fr;
+    }
+}</style>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/json.min.js"></script>
+    <script>
+        hljs.highlightAll();
+        document.addEventListener('DOMContentLoaded', (event) => {
+        document.querySelectorAll('summary code').forEach((el) => {
+            hljs.highlightElement(el);
+        });
+        });
+    </script>
+
+
+    
+    <link href="../assets/_mkdocstrings.css" rel="stylesheet"> 
+    <link href="../extra.css" rel="stylesheet">  
+    
+    
+
+    
+    
+    
+    
+    
+
+    
+</head>
+
+<body class="terminal"><div class="container">
+    <div class="terminal-nav">
+        <header class="terminal-logo">
+            <img src="/assets/sequence.png" style="width: 90%; border: none;">
+        </header>
+        
+        <nav class="terminal-menu">
+            
+            <ul vocab="https://schema.org/" typeof="BreadcrumbList">
+                
+                
+                <li property="itemListElement" typeof="ListItem">
+                    <a href=".." class="menu-item " property="item" typeof="WebPage">
+                        <span property="name">About</span>
+                    </a>
+                    <meta property="position" content="0">
+                </li>
+                
+                
+                <li property="itemListElement" typeof="ListItem">
+                    <a href="../sequence/" class="menu-item " property="item" typeof="WebPage">
+                        <span property="name">Writing a Sequence</span>
+                    </a>
+                    <meta property="position" content="1">
+                </li>
+                
+                
+                <li property="itemListElement" typeof="ListItem">
+                    <a href="./" class="menu-item active" property="item" typeof="WebPage">
+                        <span property="name">The Standard Toolkit</span>
+                    </a>
+                    <meta property="position" content="2">
+                </li>
+                
+                
+                <li property="itemListElement" typeof="ListItem">
+                    <a href="../api/" class="menu-item " property="item" typeof="WebPage">
+                        <span property="name">Writing a Toolkit (STK)</span>
+                    </a>
+                    <meta property="position" content="3">
+                </li>
+                
+                    
+                    
+                    
+            </ul>
+            
+        </nav>
+    </div>
+</div>
+        
+    <div class="container">
+        <div class="terminal-mkdocs-main-grid"><aside id="terminal-mkdocs-side-panel"><nav>
+  
+    <ul class="terminal-mkdocs-side-nav-items">
+        
+          
+
+
+
+<li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="
+
+    terminal-mkdocs-side-nav-item" href="..">About</a>
+        
+    
+    
+    
+  </li>
+        
+          
+
+
+
+<li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="
+
+    terminal-mkdocs-side-nav-item" href="../sequence/">Writing a Sequence</a>
+        
+    
+    
+    
+  </li>
+        
+          
+
+
+
+<li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        <span class="
+
+    terminal-mkdocs-side-nav-item--active">The Standard Toolkit</span>
+    
+    
+    
+  </li>
+        
+          
+
+
+
+<li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="
+
+    terminal-mkdocs-side-nav-item" href="../api/">Writing a Toolkit (STK)</a>
+        
+    
+    
+    
+  </li>
+        
+    </ul>
+  
+</nav><hr>
+<nav>
+    <ul>
+        <li><a href="#the-standard-toolkit">The Standard Toolkit</a></li>
+        <li><a href="#stack-manipulation">Stack Manipulation</a></li><li><a href="#comparison">Comparison</a></li><li><a href="#looping">Looping</a></li><li><a href="#branching">Branching</a></li><li><a href="#conversion">Conversion</a></li><li><a href="#arithmetic">Arithmetic</a></li><li><a href="#miscellaneous">Miscellaneous</a></li><li><a href="#data-methods">Data Methods</a></li>
+        <li><a href="#variables">Variables</a></li><li><a href="#json">JSON</a></li>
+    </ul>
+</nav>
+</aside>
+            <main id="terminal-mkdocs-main-content">
+<section id="mkdocs-terminal-content">
+    <h1 id="the-standard-toolkit">The Standard Toolkit</h1>
+<p>The standard toolkit is the collection of methods that are built into Sequence. The standard toolkit provides
+the methods for scripting logic such as branching (if-else-endif), looping (begin-while-repeat), and working
+with the stack, and data methods for loading/storing/deleting variables, and JSON data.</p>
+<h2 id="stack-manipulation">Stack Manipulation</h2>
+<p>These methods are used to perform actions on the stack. They include operations such as duplicating items, reordering items, droping items, etc.</p>
+<details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "dup", ... }</code></summary>
+    <div style="padding: 1em;">
+        <p>Duplicates the item at the top of the stack. There are parameters
+to control if a shallow or deep copy is done, as well as control
+the TOS offset of the item to be duplicated.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float: left">
+            deep: <i>bool</i></span><span style="float: right">(default: false)</span><br/><p style='margin-left:2em'>
+            Controls if the copy is a shallow or deep copy.
+        </p><span style="float: left">
+            offset: <i>int</i></span><span style="float: right">(default: 0)</span><br/><p style='margin-left:2em'>
+            The offset (from TOS) of the item you want to duplicate.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">item_copy: <i>Any</i></span><br/><p style='margin-left:2em'>
+            A copy of the requested item.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "swap", ... }</code></summary>
+    <div style="padding: 1em;">
+        <p>Swaps the order of the items at the top of the stack.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float: left">
+            order: <i>list</i></span><span style="float: right">(default: [1, 0])</span><br/><p style='margin-left:2em'>
+            The new order of the TOS. The first integer in the list is TOS
+    offset of the item that should be moved to the TOS. The length
+    of the list controls the number of items that are reordered.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "drop" }</code></summary>
+    <div style="padding: 1em;">
+        <p>Drops the item at the top of the stack.</p>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "size" }</code></summary>
+    <div style="padding: 1em;">
+        <p>Returns the current size (depth) of the stack.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">stack_size: <i>int</i></span><br/><p style='margin-left:2em'>
+            The size of the stack.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "pack", ... }</code></summary>
+    <div style="padding: 1em;">
+        <p>Packs N items from the top of the stack into a single array at the top of
+the stack.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float:left">
+            n*: <i>int</i></span>
+        <span style="float: right">(*required)</span>
+        <br/><p style='margin-left:2em'>
+            The number of items at the top of the stack to pack into the array.
+        </p><span style="float: left">
+            forward: <i>bool</i></span><span style="float: right">(default: true)</span><br/><p style='margin-left:2em'>
+            If false, the items are packed in reverse order.
+        </p><span style="float: left">
+            keys: <i>list</i></span><span style="float: right">(default: None)</span><br/><p style='margin-left:2em'>
+            If provided, the items are packed as key-value pairs. The last key
+    applies to the TOS item.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Inputs</h2>
+        
+        <span style="float:left">...: <i>Any</i></span>
+        <br/><p style='margin-left:2em'>
+            n items are consumed from the top of the stack.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">arr: <i>Array</i></span><br/><p style='margin-left:2em'>
+            An array of items.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "unpack", ... }</code></summary>
+    <div style="padding: 1em;">
+        <p>Packs N items from the top of the stack into a single array at the top of
+the stack.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float: left">
+            keys: <i>list</i></span><span style="float: right">(default: None)</span><br/><p style='margin-left:2em'>
+            Required to unpack a list of key-value pairs. The last key refers to the
+    new TOS item.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">...: <i>Any</i></span><br/><p style='margin-left:2em'>
+            The unpacked items.
+        </p></div>
+    </div>
+</details><h2 id="comparison">Comparison</h2>
+<p>These methods are used to compare items on the stack. These are useful as conditional leading before an if or while
+statement.</p>
+<details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "eq", ... }</code></summary>
+    <div style="padding: 1em;">
+        <p>Checks if x == y.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float: left">
+            value: <i>Any</i></span><span style="float: right">(default: None)</span><br/><p style='margin-left:2em'>
+            Used to specify y as a parameter. Disables input y when specified.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Inputs</h2>
+        
+        <span style="float:left">[y]: <i>Any</i></span>
+        <br/><p style='margin-left:2em'>
+            The RHS operand.
+        </p>
+        <span style="float:left">[x]: <i>Any</i></span>
+        <br/><p style='margin-left:2em'>
+            The LHS operand.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">xy_eq: <i>bool</i></span><br/><p style='margin-left:2em'>
+            The result of x == y.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "neq", ... }</code></summary>
+    <div style="padding: 1em;">
+        <p>Checks if x is not equal to y.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float: left">
+            value: <i>Any</i></span><span style="float: right">(default: None)</span><br/><p style='margin-left:2em'>
+            Used to specify y as a parameter. Disables input y when specified.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Inputs</h2>
+        
+        <span style="float:left">[y]: <i>Any</i></span>
+        <br/><p style='margin-left:2em'>
+            The RHS operand.
+        </p>
+        <span style="float:left">[x]: <i>Any</i></span>
+        <br/><p style='margin-left:2em'>
+            The LHS operand.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">xy_neq: <i>bool</i></span><br/><p style='margin-left:2em'>
+            The result of x != y.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "gt", ... }</code></summary>
+    <div style="padding: 1em;">
+        <p>Checks if x is greater than y.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float: left">
+            value: <i>Any</i></span><span style="float: right">(default: None)</span><br/><p style='margin-left:2em'>
+            Used to specify y as a parameter. Disables input y when specified.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Inputs</h2>
+        
+        <span style="float:left">[y]: <i>Any</i></span>
+        <br/><p style='margin-left:2em'>
+            The RHS operand.
+        </p>
+        <span style="float:left">[x]: <i>Any</i></span>
+        <br/><p style='margin-left:2em'>
+            The LHS operand.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">x_gt_y: <i>bool</i></span><br/><p style='margin-left:2em'>
+            The result of x &gt; y.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "ge", ... }</code></summary>
+    <div style="padding: 1em;">
+        <p>Checks if x is greater than or equal to y.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float: left">
+            value: <i>Any</i></span><span style="float: right">(default: None)</span><br/><p style='margin-left:2em'>
+            Used to specify y as a parameter. Disables input y when specified.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Inputs</h2>
+        
+        <span style="float:left">[y]: <i>Any</i></span>
+        <br/><p style='margin-left:2em'>
+            The RHS operand.
+        </p>
+        <span style="float:left">[x]: <i>Any</i></span>
+        <br/><p style='margin-left:2em'>
+            The LHS operand.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">x_ge_y: <i>bool</i></span><br/><p style='margin-left:2em'>
+            The result of x &gt;= y.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "lt", ... }</code></summary>
+    <div style="padding: 1em;">
+        <p>Checks if x is less than y.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float: left">
+            value: <i>Any</i></span><span style="float: right">(default: None)</span><br/><p style='margin-left:2em'>
+            Used to specify y as a parameter. Disables input y when specified.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Inputs</h2>
+        
+        <span style="float:left">[y]: <i>Any</i></span>
+        <br/><p style='margin-left:2em'>
+            The RHS operand.
+        </p>
+        <span style="float:left">[x]: <i>Any</i></span>
+        <br/><p style='margin-left:2em'>
+            The LHS operand.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">x_lt_y: <i>bool</i></span><br/><p style='margin-left:2em'>
+            The result of x &lt; y.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "le", ... }</code></summary>
+    <div style="padding: 1em;">
+        <p>Checks if x is less than or equal to y.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float: left">
+            value: <i>Any</i></span><span style="float: right">(default: None)</span><br/><p style='margin-left:2em'>
+            Used to specify y as a parameter. Disables input y when specified.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Inputs</h2>
+        
+        <span style="float:left">[y]: <i>Any</i></span>
+        <br/><p style='margin-left:2em'>
+            The RHS operand.
+        </p>
+        <span style="float:left">[x]: <i>Any</i></span>
+        <br/><p style='margin-left:2em'>
+            The LHS operand.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">x_le_y: <i>bool</i></span><br/><p style='margin-left:2em'>
+            The result of x &lt;= y.
+        </p></div>
+    </div>
+</details><h2 id="looping">Looping</h2>
+<p>These methods facilitate looping and recursion. Loops start with <code>begin</code> and end with <code>repeat</code>. Loops are terminated by <code>break</code>. 
+The <code>while</code> method is provided for convenience, and effectively guards a <code>break</code> in an if-block.</p>
+<details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "begin" }</code></summary>
+    <div style="padding: 1em;">
+        <p>Marks the beginning of a loop.</p>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "while" }</code></summary>
+    <div style="padding: 1em;">
+        <p>Continues the loop if the item at the top of the stack is true. If the
+item at the top of the stack is not true, it terminates the loop.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Inputs</h2>
+        
+        <span style="float:left">cond: <i>bool, Any</i></span>
+        <br/><p style='margin-left:2em'>
+            If true, the loop continues. If false, the loop terminates.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "foreach" }</code></summary>
+    <div style="padding: 1em;">
+        <p>Loops through each element of an iterable. The next element is placed at the
+TOS at the start of each loop.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Inputs</h2>
+        
+        <span style="float:left">[iterable]: <i>list, iterable</i></span>
+        <br/><p style='margin-left:2em'>
+            The thing that is iterated through. This input only applies to initializing
+    the loop.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">element: <i>Any</i></span><br/><p style='margin-left:2em'>
+            The next element.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "break" }</code></summary>
+    <div style="padding: 1em;">
+        <p>Breaks out of a loop (terminates the loop).</p>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "repeat" }</code></summary>
+    <div style="padding: 1em;">
+        <p>Marks the end of a loop.</p>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "recurse" }</code></summary>
+    <div style="padding: 1em;">
+        <p>Restarts the current sequence.</p>
+    </div>
+</details><h2 id="branching">Branching</h2>
+<p>These methods facilitate conditional branching.</p>
+<details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "if" }</code></summary>
+    <div style="padding: 1em;">
+        <p>Marks the beginning of an if-block. An if statment MUST be terminated by `{"op": "endif"}`.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Inputs</h2>
+        
+        <span style="float:left">cond: <i>bool, Any</i></span>
+        <br/><p style='margin-left:2em'>
+            If true, the if-block is evaluated. If false, the else-block is
+    evaluated if it exists.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "else" }</code></summary>
+    <div style="padding: 1em;">
+        <p>Marks the beginning of an else-block. This method MUST be placed between
+`{"op": "if"}` and `{"op": "endif"}`.</p>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "endif" }</code></summary>
+    <div style="padding: 1em;">
+        <p>Marks the end of an if statement.</p>
+    </div>
+</details><h2 id="conversion">Conversion</h2>
+<p>These methods are used to coerce the item at the top of the stack to a specific data type.</p>
+<details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "asbool" }</code></summary>
+    <div style="padding: 1em;">
+        <p>Coerces the item at the top of the stack to a boolean value.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Inputs</h2>
+        
+        <span style="float:left">x: <i>Any</i></span>
+        <br/><p style='margin-left:2em'>
+            The item to be converted to a boolean value.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">x_bool: <i>bool</i></span><br/><p style='margin-left:2em'>
+            x as a boolean value.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "asint" }</code></summary>
+    <div style="padding: 1em;">
+        <p>Coerces the item at the top of the stack to an integer.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Inputs</h2>
+        
+        <span style="float:left">x: <i>Any</i></span>
+        <br/><p style='margin-left:2em'>
+            The item to be converted to an integer.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">x_int: <i>int</i></span><br/><p style='margin-left:2em'>
+            x as an integer.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "asfloat" }</code></summary>
+    <div style="padding: 1em;">
+        <p>Coerces the item at the top of the stack to a float.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Inputs</h2>
+        
+        <span style="float:left">x: <i>Any</i></span>
+        <br/><p style='margin-left:2em'>
+            The item to be converted to a float.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">x_float: <i>float</i></span><br/><p style='margin-left:2em'>
+            x as an float.
+        </p></div>
+    </div>
+</details><h2 id="arithmetic">Arithmetic</h2>
+<p>These methods are used to perform arithmetic.</p>
+<details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "/", ... }</code></summary>
+    <div style="padding: 1em;">
+        <p>Divides the two numbers at the top of the stack. If the items at the top
+of the stack are  not numbers, the binary operator '/' is applied to the
+objects.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float: left">
+            value: <i>Any</i></span><span style="float: right">(default: None)</span><br/><p style='margin-left:2em'>
+            Used to specify y as a parameter. Disables input y when specified.
+        </p><span style="float: left">
+            div0_result: <i>float</i></span><span style="float: right">(default: None)</span><br/><p style='margin-left:2em'>
+            If div0_result ir provided and y is zero, result is set to div0_result.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Inputs</h2>
+        
+        <span style="float:left">[y]: <i>number, Any</i></span>
+        <br/><p style='margin-left:2em'>
+            The denominator.
+        </p>
+        <span style="float:left">[x]: <i>number, Any</i></span>
+        <br/><p style='margin-left:2em'>
+            The numerator.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">result: <i>number, Any</i></span><br/><p style='margin-left:2em'>
+            The result of the division.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "*", ... }</code></summary>
+    <div style="padding: 1em;">
+        <p>Multiplies the two numbers at the top of the stack. If the items at the top
+of the stack are  not numbers, the binary operator '*' is applied to the
+objects.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float: left">
+            value: <i>Any</i></span><span style="float: right">(default: None)</span><br/><p style='margin-left:2em'>
+            Used to specify y as a parameter. Disables input y when specified.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Inputs</h2>
+        
+        <span style="float:left">[y]: <i>number, Any</i></span>
+        <br/><p style='margin-left:2em'>
+            The second term.
+        </p>
+        <span style="float:left">[x]: <i>number, Any</i></span>
+        <br/><p style='margin-left:2em'>
+            The first term.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">result: <i>number, Any</i></span><br/><p style='margin-left:2em'>
+            The result of the multiplication.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "-", ... }</code></summary>
+    <div style="padding: 1em;">
+        <p>Subtracts the two numbers at the top of the stack. If the items at the top
+of the stack are  not numbers, the binary operator '-' is applied to the
+objects.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float: left">
+            value: <i>Any</i></span><span style="float: right">(default: None)</span><br/><p style='margin-left:2em'>
+            Used to specify y as a parameter. Disables input y when specified.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Inputs</h2>
+        
+        <span style="float:left">[y]: <i>number, Any</i></span>
+        <br/><p style='margin-left:2em'>
+            The second term.
+        </p>
+        <span style="float:left">[x]: <i>number, Any</i></span>
+        <br/><p style='margin-left:2em'>
+            The first term.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">result: <i>number, Any</i></span><br/><p style='margin-left:2em'>
+            The result of the subtraction.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "+", ... }</code></summary>
+    <div style="padding: 1em;">
+        <p>Adds the two numbers at the top of the stack. If the items at the top
+of the stack are  not numbers, the binary operator '+' is applied to the
+objects.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float: left">
+            value: <i>Any</i></span><span style="float: right">(default: None)</span><br/><p style='margin-left:2em'>
+            Used to specify y as a parameter. Disables input y when specified.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Inputs</h2>
+        
+        <span style="float:left">[y]: <i>number, Any</i></span>
+        <br/><p style='margin-left:2em'>
+            The second term.
+        </p>
+        <span style="float:left">[x]: <i>number, Any</i></span>
+        <br/><p style='margin-left:2em'>
+            The first term.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">result: <i>number, Any</i></span><br/><p style='margin-left:2em'>
+            The result of the addition.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "%", ... }</code></summary>
+    <div style="padding: 1em;">
+        <p>Returns the modulous the two numbers at the top of the stack. If the items at the top
+of the stack are  not numbers, the binary operator '%' is applied to the
+objects.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float: left">
+            value: <i>Any</i></span><span style="float: right">(default: None)</span><br/><p style='margin-left:2em'>
+            Used to specify y as a parameter. Disables input y when specified.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Inputs</h2>
+        
+        <span style="float:left">[y]: <i>number, Any</i></span>
+        <br/><p style='margin-left:2em'>
+            The divisor.
+        </p>
+        <span style="float:left">[x]: <i>number, Any</i></span>
+        <br/><p style='margin-left:2em'>
+            The dividend.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">result: <i>number, Any</i></span><br/><p style='margin-left:2em'>
+            The result of x mod y.
+        </p></div>
+    </div>
+</details><h2 id="miscellaneous">Miscellaneous</h2>
+<p>These methods don't fit into the other categories, but they are useful.</p>
+<details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "fstring", ... }</code></summary>
+    <div style="padding: 1em;">
+        <p>Formats a string.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float:left">
+            fmt*: <i>str</i></span>
+        <span style="float: right">(*required)</span>
+        <br/><p style='margin-left:2em'>
+            The format string (a python f-string). See the Python documentation of
+    f-strings details.
+        </p><span style="float: left">
+            **params: <i>None</i></span><span style="float: right">(default: None)</span><br/><p style='margin-left:2em'>
+            Named arguments for the f-string.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Inputs</h2>
+        
+        <span style="float:left">...: <i>Any</i></span>
+        <br/><p style='margin-left:2em'>
+            The top N items are poped from the stack where N is the number of
+    positional arguments in the f-string.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">result: <i>str</i></span><br/><p style='margin-left:2em'>
+            The formatted string.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "assert", ... }</code></summary>
+    <div style="padding: 1em;">
+        <p>Asserts that the item at the top of the stack is true. Terminates
+execution if false.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float: left">
+            error: <i>str</i></span><span style="float: right">(default: None)</span><br/><p style='margin-left:2em'>
+            The error message to print if the assertion fails.
+        </p><span style="float: left">
+            negate: <i>bool</i></span><span style="float: right">(default: false)</span><br/><p style='margin-left:2em'>
+            Assert that the item at the top of the stack if false (rather than
+    true).
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Inputs</h2>
+        
+        <span style="float:left">cond: <i>bool</i></span>
+        <br/><p style='margin-left:2em'>
+            The boolean value to check.
+        </p></div>
+    </div>
+</details><hr>
+
+<h1 id="data-methods">Data Methods</h1>
+<p>The standard toolkit provides data methods for loading/storing/deleting local variables, and JSON data.</p>
+<h2 id="variables">Variables</h2>
+<p>These methods are used to store, load, and delete variables. The scope of variables is local.
+</p>
+<details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "get",
+        
+        "uri": "variables://..."
+        , ...
+    }</code></summary>
+    <div style="padding: 1em;">
+        <p>Loads a variable and places it at the top of stack.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float:left">
+            uri*: <i>str</i></span>
+        <span style="float: right">(*required)</span>
+        <br/><p style='margin-left:2em'>
+            The URI of the resource to load
+        </p><span style="float: left">
+            default: <i>Any</i></span><span style="float: right">(default: None)</span><br/><p style='margin-left:2em'>
+            The default value if the variable doesn&#39;t exist.
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">data: <i>Any</i></span><br/><p style='margin-left:2em'>
+            The variable.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "put",
+        
+        "uri": "variables://..."
+        
+    }</code></summary>
+    <div style="padding: 1em;">
+        <p>Saves a variable (sequence-scope).</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float:left">
+            uri*: <i>str</i></span>
+        <span style="float: right">(*required)</span>
+        <br/><p style='margin-left:2em'>
+            The URI of where the resource should be saved
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Inputs</h2>
+        
+        <span style="float:left">data: <i>None</i></span>
+        <br/><p style='margin-left:2em'>
+            The resource to save
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "del",
+        
+        "uri": "variables://..."
+        
+    }</code></summary>
+    <div style="padding: 1em;">
+        <p>Deletes a variable.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float:left">
+            uri*: <i>str</i></span>
+        <span style="float: right">(*required)</span>
+        <br/><p style='margin-left:2em'>
+            The URI of the resource to delete
+        </p></div>
+    </div>
+</details><h2 id="json">JSON</h2>
+<p>These methods are used to store, load, and delete JSON files.
+</p>
+<details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "get",
+        &#34;media_type&#34;: &#34;application/json&#34;,
+        "uri": "http://..."
+        
+    }</code></summary>
+    <div style="padding: 1em;">
+        <p>Loads a JSON file from a remote HTTP/HTTPS source.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float:left">
+            uri*: <i>str</i></span>
+        <span style="float: right">(*required)</span>
+        <br/><p style='margin-left:2em'>
+            The URI of the resource to load
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">json_data: <i>key-value array</i></span><br/><p style='margin-left:2em'>
+            The json data as a key-value array.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "get",
+        &#34;media_type&#34;: &#34;application/json&#34;,
+        "uri": "https://..."
+        
+    }</code></summary>
+    <div style="padding: 1em;">
+        <p>Loads a JSON file from a remote HTTP/HTTPS source.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float:left">
+            uri*: <i>str</i></span>
+        <span style="float: right">(*required)</span>
+        <br/><p style='margin-left:2em'>
+            The URI of the resource to load
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">json_data: <i>key-value array</i></span><br/><p style='margin-left:2em'>
+            The json data as a key-value array.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "get",
+        &#34;media_type&#34;: &#34;application/json&#34;,
+        "uri": "file://..."
+        
+    }</code></summary>
+    <div style="padding: 1em;">
+        <p>Loads a JSON file from a local file.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float:left">
+            uri*: <i>str</i></span>
+        <span style="float: right">(*required)</span>
+        <br/><p style='margin-left:2em'>
+            The URI of the resource to load
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">json_data: <i>key-value array</i></span><br/><p style='margin-left:2em'>
+            The json data as a key-value array.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "put",
+        &#34;media_type&#34;: &#34;application/json&#34;,
+        "uri": "file://..."
+        
+    }</code></summary>
+    <div style="padding: 1em;">
+        <p>Loads a JSON file from a local file.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float:left">
+            uri*: <i>str</i></span>
+        <span style="float: right">(*required)</span>
+        <br/><p style='margin-left:2em'>
+            The URI of where the resource should be saved
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Inputs</h2>
+        
+        <span style="float:left">data: <i>key-value array</i></span>
+        <br/><p style='margin-left:2em'>
+            The key-value array to be saved.
+        </p></div>
+    </div>
+</details><h3 id="json5">JSON5</h3>
+<p>JSON5 is an extension of JSON that adds functionality such as comments, multiline strings, trailing commas, and unquoted strings. You can read more about JSON5 <a href="https://json5.org/">here</a>. These methods require that Sequence was installed with
+JSON5 support (i.e., <code>pip install 'sequence[json5]'</code>).</p>
+<details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "get",
+        &#34;media_type&#34;: &#34;application/json5&#34;,
+        "uri": "http://..."
+        
+    }</code></summary>
+    <div style="padding: 1em;">
+        <p>Loads a JSON5 file from a remote HTTP/HTTPS source.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float:left">
+            uri*: <i>str</i></span>
+        <span style="float: right">(*required)</span>
+        <br/><p style='margin-left:2em'>
+            The URI of the resource to load
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">json_data: <i>key-value array</i></span><br/><p style='margin-left:2em'>
+            The json data as a key-value array.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "get",
+        &#34;media_type&#34;: &#34;application/json5&#34;,
+        "uri": "https://..."
+        
+    }</code></summary>
+    <div style="padding: 1em;">
+        <p>Loads a JSON5 file from a remote HTTP/HTTPS source.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float:left">
+            uri*: <i>str</i></span>
+        <span style="float: right">(*required)</span>
+        <br/><p style='margin-left:2em'>
+            The URI of the resource to load
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">json_data: <i>key-value array</i></span><br/><p style='margin-left:2em'>
+            The json data as a key-value array.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "get",
+        &#34;media_type&#34;: &#34;application/json5&#34;,
+        "uri": "file://..."
+        
+    }</code></summary>
+    <div style="padding: 1em;">
+        <p>Loads a JSON5 file from a local file.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float:left">
+            uri*: <i>str</i></span>
+        <span style="float: right">(*required)</span>
+        <br/><p style='margin-left:2em'>
+            The URI of the resource to load
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">json_data: <i>key-value array</i></span><br/><p style='margin-left:2em'>
+            The json data as a key-value array.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "put",
+        &#34;media_type&#34;: &#34;application/json5&#34;,
+        "uri": "file://..."
+        
+    }</code></summary>
+    <div style="padding: 1em;">
+        <p>Loads a JSON5 file from a local file.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float:left">
+            uri*: <i>str</i></span>
+        <span style="float: right">(*required)</span>
+        <br/><p style='margin-left:2em'>
+            The URI of where the resource should be saved
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Inputs</h2>
+        
+        <span style="float:left">data: <i>key-value array</i></span>
+        <br/><p style='margin-left:2em'>
+            The key-value array to be saved.
+        </p></div>
+    </div>
+</details><h3 id="hjson">HJSON</h3>
+<p>HJSON is an extension of JSON that is less prone to syntax errors and adds functionality such as comments, multiline strings, trailing commas, and unquoted strings. You can read more about HJSON <a href="https://hjson.github.io/">here</a>.
+These methods require that Sequence was installed with HJSON support (i.e., <code>pip install 'sequence[hjson]'</code>).
+</p>
+<details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "get",
+        &#34;media_type&#34;: &#34;application/hjson&#34;,
+        "uri": "http://..."
+        
+    }</code></summary>
+    <div style="padding: 1em;">
+        <p>Loads a HJSON file from a remote HTTP/HTTPS source.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float:left">
+            uri*: <i>str</i></span>
+        <span style="float: right">(*required)</span>
+        <br/><p style='margin-left:2em'>
+            The URI of the resource to load
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">json_data: <i>key-value array</i></span><br/><p style='margin-left:2em'>
+            The json data as a key-value array.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "get",
+        &#34;media_type&#34;: &#34;application/hjson&#34;,
+        "uri": "https://..."
+        
+    }</code></summary>
+    <div style="padding: 1em;">
+        <p>Loads a HJSON file from a remote HTTP/HTTPS source.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float:left">
+            uri*: <i>str</i></span>
+        <span style="float: right">(*required)</span>
+        <br/><p style='margin-left:2em'>
+            The URI of the resource to load
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">json_data: <i>key-value array</i></span><br/><p style='margin-left:2em'>
+            The json data as a key-value array.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "get",
+        &#34;media_type&#34;: &#34;application/hjson&#34;,
+        "uri": "file://..."
+        
+    }</code></summary>
+    <div style="padding: 1em;">
+        <p>Loads a HJSON file from a local file.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float:left">
+            uri*: <i>str</i></span>
+        <span style="float: right">(*required)</span>
+        <br/><p style='margin-left:2em'>
+            The URI of the resource to load
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Outputs</h2>
+        
+        <span style="float:left">json_data: <i>key-value array</i></span><br/><p style='margin-left:2em'>
+            The json data as a key-value array.
+        </p></div>
+    </div>
+</details><details>
+    <summary><code class="sequence-op-preview language-json">{ "op": "put",
+        &#34;media_type&#34;: &#34;application/hjson&#34;,
+        "uri": "file://..."
+        
+    }</code></summary>
+    <div style="padding: 1em;">
+        <p>Loads a HJSON file from a local file.</p><div>
+        <h2 style="margin-bottom: 0.2em;">Parameters</h2><span style="float:left">
+            uri*: <i>str</i></span>
+        <span style="float: right">(*required)</span>
+        <br/><p style='margin-left:2em'>
+            The URI of where the resource should be saved
+        </p></div><div>
+        <h2 style="margin-bottom: 0.2em;">Inputs</h2>
+        
+        <span style="float:left">data: <i>key-value array</i></span>
+        <br/><p style='margin-left:2em'>
+            The key-value array to be saved.
+        </p></div>
+    </div>
+</details>
+</section>
+
+            </main>
+        </div>
+        <hr><footer>
+    <div class="terminal-mkdocs-footer-grid">
+        <div id="terminal-mkdocs-footer-copyright-info">
+             Site built with <a href="http://www.mkdocs.org">MkDocs</a> and <a href="https://github.com/ntno/mkdocs-terminal">Terminal for MkDocs</a>.
+        </div>
+    </div>
+</footer>
+    </div>
+
+    
+    
+    
+</body>
+
+</html>

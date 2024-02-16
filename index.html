@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="generator" content="mkdocs-1.5.3, mkdocs-terminal-4.4.0">
+     
+     
+    
+    <link rel="canonical" href="https://sequence.wiki/"><link rel="shortcut icon" type="image/png" sizes="48x48" href="/img/favicon.ico" />
+
+
+    
+ 
+<title>About - Sequence</title>
+    
+
+
+<link href="css/fontawesome/css/fontawesome.min.css" rel="stylesheet">
+<link href="css/fontawesome/css/solid.min.css" rel="stylesheet">
+<link href="css/normalize.css" rel="stylesheet">
+<link href="css/terminal.css" rel="stylesheet">
+<link href="css/theme.css" rel="stylesheet">
+<link href="css/theme.tile_grid.css" rel="stylesheet">
+<link href="css/theme.footer.css" rel="stylesheet">
+<!-- default color palette -->
+<link href="css/palettes/default.css" rel="stylesheet">
+
+<!-- page layout -->
+<style>
+/* initially set page layout to a one column grid */
+.terminal-mkdocs-main-grid {
+    display: grid;
+    grid-column-gap: 1.4em;
+    grid-template-columns: auto;
+    grid-template-rows: auto;
+}
+
+/*  
+*   when side navigation is not hidden, use a two column grid.  
+*   if the screen is too narrow, fall back to the initial one column grid layout.
+*   in this case the main content will be placed under the navigation panel. 
+*/
+@media only screen and (min-width: 70em) {
+    .terminal-mkdocs-main-grid {
+        grid-template-columns: 4fr 9fr;
+    }
+}</style>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/json.min.js"></script>
+    <script>
+        hljs.highlightAll();
+        document.addEventListener('DOMContentLoaded', (event) => {
+        document.querySelectorAll('summary code').forEach((el) => {
+            hljs.highlightElement(el);
+        });
+        });
+    </script>
+
+
+    
+    <link href="assets/_mkdocstrings.css" rel="stylesheet"> 
+    <link href="extra.css" rel="stylesheet">  
+    
+    
+
+    
+    
+    
+    
+    
+
+    
+</head>
+
+<body class="terminal"><div class="container">
+    <div class="terminal-nav">
+        <header class="terminal-logo">
+            <img src="/assets/sequence.png" style="width: 90%; border: none;">
+        </header>
+        
+        <nav class="terminal-menu">
+            
+            <ul vocab="https://schema.org/" typeof="BreadcrumbList">
+                
+                
+                <li property="itemListElement" typeof="ListItem">
+                    <a href="." class="menu-item active" property="item" typeof="WebPage">
+                        <span property="name">About</span>
+                    </a>
+                    <meta property="position" content="0">
+                </li>
+                
+                
+                <li property="itemListElement" typeof="ListItem">
+                    <a href="sequence/" class="menu-item " property="item" typeof="WebPage">
+                        <span property="name">Writing a Sequence</span>
+                    </a>
+                    <meta property="position" content="1">
+                </li>
+                
+                
+                <li property="itemListElement" typeof="ListItem">
+                    <a href="std/" class="menu-item " property="item" typeof="WebPage">
+                        <span property="name">The Standard Toolkit</span>
+                    </a>
+                    <meta property="position" content="2">
+                </li>
+                
+                
+                <li property="itemListElement" typeof="ListItem">
+                    <a href="api/" class="menu-item " property="item" typeof="WebPage">
+                        <span property="name">Writing a Toolkit (STK)</span>
+                    </a>
+                    <meta property="position" content="3">
+                </li>
+                
+                    
+                    
+                    
+            </ul>
+            
+        </nav>
+    </div>
+</div>
+        
+    <div class="container">
+        <div class="terminal-mkdocs-main-grid"><aside id="terminal-mkdocs-side-panel"><nav>
+  
+    <ul class="terminal-mkdocs-side-nav-items">
+        
+          
+
+
+
+<li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        <span class="
+
+    terminal-mkdocs-side-nav-item--active">About</span>
+    
+    
+    
+  </li>
+        
+          
+
+
+
+<li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="
+
+    terminal-mkdocs-side-nav-item" href="sequence/">Writing a Sequence</a>
+        
+    
+    
+    
+  </li>
+        
+          
+
+
+
+<li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="
+
+    terminal-mkdocs-side-nav-item" href="std/">The Standard Toolkit</a>
+        
+    
+    
+    
+  </li>
+        
+          
+
+
+
+<li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="
+
+    terminal-mkdocs-side-nav-item" href="api/">Writing a Toolkit (STK)</a>
+        
+    
+    
+    
+  </li>
+        
+    </ul>
+  
+</nav><hr>
+<nav>
+    <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#about-stack-machines">About Stack Machines</a></li><li><a href="#installing-sequence">Installing sequence</a></li>
+    </ul>
+</nav>
+</aside>
+            <main id="terminal-mkdocs-main-content">
+<section id="mkdocs-terminal-content">
+    <h1 id="overview">Overview</h1>
+<p>Sequence is a library that lets you build analysis tools that can be controlled by configuration files.
+This is useful when you want to define the logic for generating some sort of output, like data or an image, in a configuration file.
+This type of configuration file is called a <em>sequence</em> and it defines a sequence of operations that do something.</p>
+<p>Under the hood, sequences are run by a virtual stack machine.
+A sequence is a list of <em>operations</em>, where an operation is either another sequence or a <em>method</em>.
+A method is a Python function that uses the <code>@sequence.method</code> decorator and methods provide basic functionality building blocks.
+Methods and sequences pass data to each other on the virtual machine's stack, via pushing, popping, and swapping data.</p>
+<p>A <em>sequence toolkit (STK)</em> is a Python package that provides a suite of methods.
+The <em>standard toolkit</em> (built-in) is a suite of turing-complete methods that provide the backbone for scripting logic in sequences (e.g., if blocks, while loops, string formatting, data resources, etc.).
+Additional functionality can be added by installing additional toolkits.</p>
+<h2 id="about-stack-machines">About Stack Machines</h2>
+<p>If it isn't clear how operations pass data using the stack, a good way to get familiar with the concept is by playing around with an RPN calculator like <a href="http://www.alcula.com/calculators/rpn/">this</a>. Try calculating the hypotenuse of a triangle with side length of 3 and 4 using the Pythagorean Theorem (the answer is <em>3, Enter, X, Enter, 4, Enter, X, +, SQRT</em>). Every button-press is equivalent to an operation in sequence.</p>
+<p>The design of sequence took inspiration from these old RPN-style calculators as well as the
+<a href="https://en.wikipedia.org/wiki/Forth_(programming_language)">FORTH</a> programming language.</p>
+<h2 id="installing-sequence">Installing sequence</h2>
+<p>Sequence can be install using <code>pip</code>. The basic install supports JSON.</p>
+<pre><code class="language-console">$ pip install sequence-stk
+</code></pre>
+<p>It's often useful to be able to write comments and use multi-line strings in sequences.
+JSON5 and HSON are extensions of JSON that support these features. 
+Additional configuration languages can be installed via the <code>json5</code>, and/ord <code>hson</code> extras.</p>
+<pre><code class="language-console">$ pip install &quot;sequence[json5,hson]&quot;
+</code></pre>
+<p>If you are developing an STK, the <code>dev</code> and <code>docs</code> extras install the requirements for running tests and building documentation.</p>
+<pre><code class="language-console">$ pip install &quot;sequence[dev,docs]&quot;
+</code></pre>
+</section>
+
+            </main>
+        </div>
+        <hr><footer>
+    <div class="terminal-mkdocs-footer-grid">
+        <div id="terminal-mkdocs-footer-copyright-info">
+             Site built with <a href="http://www.mkdocs.org">MkDocs</a> and <a href="https://github.com/ntno/mkdocs-terminal">Terminal for MkDocs</a>.
+        </div>
+    </div>
+</footer>
+    </div>
+
+    
+    
+    
+</body>
+
+</html>

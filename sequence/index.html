@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="generator" content="mkdocs-1.5.3, mkdocs-terminal-4.4.0">
+     
+     
+    
+    <link rel="canonical" href="https://sequence.wiki/sequence/"><link rel="shortcut icon" type="image/png" sizes="48x48" href="/img/favicon.ico" />
+
+
+    
+ 
+<title>Writing a Sequence - Sequence</title>
+    
+
+
+<link href="../css/fontawesome/css/fontawesome.min.css" rel="stylesheet">
+<link href="../css/fontawesome/css/solid.min.css" rel="stylesheet">
+<link href="../css/normalize.css" rel="stylesheet">
+<link href="../css/terminal.css" rel="stylesheet">
+<link href="../css/theme.css" rel="stylesheet">
+<link href="../css/theme.tile_grid.css" rel="stylesheet">
+<link href="../css/theme.footer.css" rel="stylesheet">
+<!-- default color palette -->
+<link href="../css/palettes/default.css" rel="stylesheet">
+
+<!-- page layout -->
+<style>
+/* initially set page layout to a one column grid */
+.terminal-mkdocs-main-grid {
+    display: grid;
+    grid-column-gap: 1.4em;
+    grid-template-columns: auto;
+    grid-template-rows: auto;
+}
+
+/*  
+*   when side navigation is not hidden, use a two column grid.  
+*   if the screen is too narrow, fall back to the initial one column grid layout.
+*   in this case the main content will be placed under the navigation panel. 
+*/
+@media only screen and (min-width: 70em) {
+    .terminal-mkdocs-main-grid {
+        grid-template-columns: 4fr 9fr;
+    }
+}</style>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/json.min.js"></script>
+    <script>
+        hljs.highlightAll();
+        document.addEventListener('DOMContentLoaded', (event) => {
+        document.querySelectorAll('summary code').forEach((el) => {
+            hljs.highlightElement(el);
+        });
+        });
+    </script>
+
+
+    
+    <link href="../assets/_mkdocstrings.css" rel="stylesheet"> 
+    <link href="../extra.css" rel="stylesheet">  
+    
+    
+
+    
+    
+    
+    
+    
+
+    
+</head>
+
+<body class="terminal"><div class="container">
+    <div class="terminal-nav">
+        <header class="terminal-logo">
+            <img src="/assets/sequence.png" style="width: 90%; border: none;">
+        </header>
+        
+        <nav class="terminal-menu">
+            
+            <ul vocab="https://schema.org/" typeof="BreadcrumbList">
+                
+                
+                <li property="itemListElement" typeof="ListItem">
+                    <a href=".." class="menu-item " property="item" typeof="WebPage">
+                        <span property="name">About</span>
+                    </a>
+                    <meta property="position" content="0">
+                </li>
+                
+                
+                <li property="itemListElement" typeof="ListItem">
+                    <a href="./" class="menu-item active" property="item" typeof="WebPage">
+                        <span property="name">Writing a Sequence</span>
+                    </a>
+                    <meta property="position" content="1">
+                </li>
+                
+                
+                <li property="itemListElement" typeof="ListItem">
+                    <a href="../std/" class="menu-item " property="item" typeof="WebPage">
+                        <span property="name">The Standard Toolkit</span>
+                    </a>
+                    <meta property="position" content="2">
+                </li>
+                
+                
+                <li property="itemListElement" typeof="ListItem">
+                    <a href="../api/" class="menu-item " property="item" typeof="WebPage">
+                        <span property="name">Writing a Toolkit (STK)</span>
+                    </a>
+                    <meta property="position" content="3">
+                </li>
+                
+                    
+                    
+                    
+            </ul>
+            
+        </nav>
+    </div>
+</div>
+        
+    <div class="container">
+        <div class="terminal-mkdocs-main-grid"><aside id="terminal-mkdocs-side-panel"><nav>
+  
+    <ul class="terminal-mkdocs-side-nav-items">
+        
+          
+
+
+
+<li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="
+
+    terminal-mkdocs-side-nav-item" href="..">About</a>
+        
+    
+    
+    
+  </li>
+        
+          
+
+
+
+<li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        <span class="
+
+    terminal-mkdocs-side-nav-item--active">Writing a Sequence</span>
+    
+    
+    
+  </li>
+        
+          
+
+
+
+<li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="
+
+    terminal-mkdocs-side-nav-item" href="../std/">The Standard Toolkit</a>
+        
+    
+    
+    
+  </li>
+        
+          
+
+
+
+<li class="terminal-mkdocs-side-nav-li">
+    
+    
+    
+        
+        
+            <a class="
+
+    terminal-mkdocs-side-nav-item" href="../api/">Writing a Toolkit (STK)</a>
+        
+    
+    
+    
+  </li>
+        
+    </ul>
+  
+</nav><hr>
+<nav>
+    <ul>
+        <li><a href="#writing-a-sequence">Writing a Sequence</a></li>
+        <li><a href="#a-basic-sequence">A basic sequence</a></li>
+    </ul>
+</nav>
+</aside>
+            <main id="terminal-mkdocs-main-content">
+<section id="mkdocs-terminal-content">
+    <h1 id="writing-a-sequence">Writing a Sequence</h1>
+<p>Coming soon...</p>
+<h2 id="a-basic-sequence">A basic sequence</h2>
+<pre><code class="language-json">{
+    &quot;toolkits&quot;: [
+        &quot;foobar_stk&quot;, // toolkits that provide methods called here
+        &quot;barbaz_stk&quot;,
+    ],
+    &quot;include&quot;: {
+        &quot;nested_seq1&quot;: &quot;file:/foo/bar.json5&quot;, // load other sequences called here
+        &quot;nested_seq2&quot;: &quot;file:/foo/baz.json5&quot;,
+    },
+    &quot;run&quot;: [
+        1, // puts 1 on the stack
+        2, // puts 2 on the stack
+        &quot;+&quot;, // + method adds the two items at the top of stack
+        3,
+        &quot;nested_seq1&quot;, // calls &quot;nested_seq1&quot;
+
+    ]
+}
+</code></pre>
+</section>
+
+            </main>
+        </div>
+        <hr><footer>
+    <div class="terminal-mkdocs-footer-grid">
+        <div id="terminal-mkdocs-footer-copyright-info">
+             Site built with <a href="http://www.mkdocs.org">MkDocs</a> and <a href="https://github.com/ntno/mkdocs-terminal">Terminal for MkDocs</a>.
+        </div>
+    </div>
+</footer>
+    </div>
+
+    
+    
+    
+</body>
+
+</html>
